@@ -21,30 +21,30 @@ function Review() {
   }, []);
 
   const loadMovies = () => {
-    callApiLoadMovies()
-      .then(res => {
-        console.log("callApiLoadMovies returned: ", res)
-        var parsed = JSON.parse(res.express);
-        console.log("callApiLoadMovies parsed: ", parsed);
-        setMovies(parsed);
-      })
+    // callApiLoadMovies()
+    //   .then(res => {
+    //     console.log("callApiLoadMovies returned: ", res)
+    //     var parsed = JSON.parse(res.express);
+    //     console.log("callApiLoadMovies parsed: ", parsed);
+    //     setMovies(parsed);
+    //   })
   }
 
-  const callApiLoadMovies = async () => {
-    const url = serverURL + "/api/getMovies";
-    console.log(url);
+  // const callApiLoadMovies = async () => {
+  //   const url = serverURL + "/api/getMovies";
+  //   console.log(url);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      }
-    });
-    const body = await response.json();
-    if (response.status !== 200) throw Error(body.message);
-    console.log("User settings: ", body);
-    return body;
-  }
+  //   const response = await fetch(url, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     }
+  //   });
+  //   const body = await response.json();
+  //   if (response.status !== 200) throw Error(body.message);
+  //   console.log("User settings: ", body);
+  //   return body;
+  // }
 
   const handleMovieChange = (movie) => {
     setSelectedMovie(movie);
