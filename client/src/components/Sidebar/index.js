@@ -17,11 +17,14 @@ import CreateIcon from '@mui/icons-material/Create';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LoginIcon from '@mui/icons-material/Login';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 const SB = (props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const navigate = useNavigate();
 
   const MenuItemStyles = {
     root: {
@@ -63,13 +66,13 @@ const SB = (props) => {
                     justifyContent="space-between"
                     alignItems="center"
                 >
-                    <Typography variant="h3" color={colors.grey[100]} fontWeight="bold">
-                        {!props.isCollapsed ? ('Fritter19') : ' '}
+                    <Typography color={colors.grey[100]}>
+                        {!props.isCollapsed ? ('Fritter1919@gmail.com') : ' '}
                     </Typography>
                 </Box>
             </MenuItem>
 
-            {/* EXPLORE */}
+            {/* HOME */}
             <Typography
                 variant="h5"
                 color={colors.grey[300]}
@@ -79,65 +82,74 @@ const SB = (props) => {
                 {!props.isCollapsed ? 'Home' : ' '}
             </Typography>
             <MenuItem icon={<ExploreIcon/>}>Explore</MenuItem>
+            {!props.user &&
+                <>
+                    <MenuItem icon={<LoginIcon/>} onClick={() => navigate('/signin')}>Sign In</MenuItem>
+                    <MenuItem icon={<LockOpenIcon/>} onClick={() => navigate('/signup')}>Register</MenuItem>
+                </>
+            }
 
             {/* LEARNING */}
-            <div style={{justifyContent: 'center', alignItems: "center", flex: 1}}>
+            {props.user &&
+                <div style={{justifyContent: 'center', alignItems: "center", flex: 1}}>
                     <Typography
-                    variant="h5"
-                    color={colors.grey[300]}
-                    fontWeight="bold"
-                    sx={{ m: "15px 0 15px 20px" }}
+                        variant="h5"
+                        color={colors.grey[300]}
+                        fontWeight="bold"
+                        sx={{ m: "15px 0 15px 20px" }}
                     >
                         {!props.isCollapsed ? 'Learning' : ' '}
                     </Typography>
-                {/* LESSONS */}
-                <SubMenu label="Lessons" icon={<ArticleIcon />}>
-                    <MenuItem icon={<CreateIcon/>}>
-                        By Me
-                    </MenuItem>
-                    <MenuItem icon={<PeopleOutlinedIcon/>}>
-                        Shared With Me
-                    </MenuItem>
-                    <MenuItem icon={<GradeIcon/>}>
-                        Starred
-                    </MenuItem>
-                    <MenuItem icon={<RemoveRedEyeIcon/>}>
-                        Recently Viewed
-                    </MenuItem>
-                </SubMenu>
 
-                {/* MODULES */}
-                <SubMenu label="Modules" icon={<ViewModuleIcon />}>
-                    <MenuItem icon={<CreateIcon />}>
-                        By Me
-                    </MenuItem>
-                    <MenuItem icon={<PeopleOutlinedIcon/>}>
-                        Shared With Me
-                    </MenuItem>
-                    <MenuItem icon={<GradeIcon/>}>
-                        Starred
-                    </MenuItem>
-                    <MenuItem icon={<RemoveRedEyeIcon/>}>
-                        Recently Viewed
-                    </MenuItem>
-                </SubMenu>
+                    {/* LESSONS */}
+                    <SubMenu label="Lessons" icon={<ArticleIcon />}>
+                        <MenuItem icon={<CreateIcon/>}>
+                            By Me
+                        </MenuItem>
+                        <MenuItem icon={<PeopleOutlinedIcon/>}>
+                            Shared With Me
+                        </MenuItem>
+                        <MenuItem icon={<GradeIcon/>}>
+                            Starred
+                        </MenuItem>
+                        <MenuItem icon={<RemoveRedEyeIcon/>}>
+                            Recently Viewed
+                        </MenuItem>
+                    </SubMenu>
 
-                {/* COURSES */}
-                <SubMenu label="Courses" icon={<SchoolIcon />}>
-                    <MenuItem icon={<CreateIcon />}>
-                        By Me
-                    </MenuItem>
-                    <MenuItem icon={<HistoryEduIcon/>}>
-                        Enrolled
-                    </MenuItem>
-                    <MenuItem icon={<GradeIcon/>}>
-                        Starred
-                    </MenuItem>
-                    <MenuItem icon={<RemoveRedEyeIcon/>}>
-                        Recently Viewed
-                    </MenuItem>
-                </SubMenu>
-            </div>
+                    {/* MODULES */}
+                    <SubMenu label="Modules" icon={<ViewModuleIcon />}>
+                        <MenuItem icon={<CreateIcon />}>
+                            By Me
+                        </MenuItem>
+                        <MenuItem icon={<PeopleOutlinedIcon/>}>
+                            Shared With Me
+                        </MenuItem>
+                        <MenuItem icon={<GradeIcon/>}>
+                            Starred
+                        </MenuItem>
+                        <MenuItem icon={<RemoveRedEyeIcon/>}>
+                            Recently Viewed
+                        </MenuItem>
+                    </SubMenu>
+
+                    {/* COURSES */}
+                    <SubMenu label="Courses" icon={<SchoolIcon />}>
+                        <MenuItem icon={<CreateIcon />}>
+                            By Me
+                        </MenuItem>
+                        <MenuItem icon={<HistoryEduIcon/>}>
+                            Enrolled
+                        </MenuItem>
+                        <MenuItem icon={<GradeIcon/>}>
+                            Starred
+                        </MenuItem>
+                        <MenuItem icon={<RemoveRedEyeIcon/>}>
+                            Recently Viewed
+                        </MenuItem>
+                    </SubMenu>
+                </div>
+            }
 
             {/* MORE */}
             <Typography
