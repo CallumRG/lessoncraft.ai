@@ -12,6 +12,7 @@ import HomePage from '../Home';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import PasswordForgetPage from '../PasswordForget';
+import NewCourse from '../NewCourse';
 import * as constants from '../../constants/routes'
 
 const App = () => {
@@ -37,7 +38,7 @@ const App = () => {
                   <Route path={constants.ACCOUNT} element={<AccountPage />} />
                   <Route path={constants.ADMIN} element={<AdminPage />} />
                   <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
-
+                  <Route path={constants.NEWCOURSE} element={<NewCourse />} />
                   {/* Default Route */}
                   <Route path="*" element={<LandingPage />} />
                 </Routes>
