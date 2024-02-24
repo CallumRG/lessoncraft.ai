@@ -1,40 +1,66 @@
 import {React, useState, useEffect} from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../../theme";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import SB from '../Sidebar';
 import Topbar from '../Topbar';
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
-import HomePage from '../Home';
+import ExplorePage from '../Explore';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import PasswordForgetPage from '../PasswordForget';
 import NewCourse from '../NewCourse';
 import * as constants from '../../constants/routes'
+import Firebase from '../Firebase/firebase';
 
 const App = () => {
+  const firebase = new Firebase();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const logout = () => {
+    firebase.doSignOut();
+    toast.success("Sign out Successful!");
+    navigate('/');
+  }
+
+  // check session on render
+  useEffect(() => {
+    const unsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    // Cleanup listener when component unmounts
+    return () => unsubscribe();
+  }, []);
+
   return(
-    <Router>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline/>
 
           <div className='app'>
+            <ToastContainer/>
 
-            <SB isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed}/>
+            <SB isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} user={user} logout={logout}/>
             <main className="content">
-                <Topbar/>
+                <Topbar user={user}/>
                 <Routes>
                   <Route path={constants.LANDING} element={<LandingPage />} />
-                  <Route path={constants.SIGN_UP} element={<SignUpPage />} />
-                  <Route path={constants.SIGN_IN} element={<SignInPage />} />
-                  <Route path={constants.HOME} element={<HomePage />} />
+                  <Route path={constants.SIGN_UP} element={<SignUpPage/>} />
+                  <Route path={constants.SIGN_IN} element={<SignInPage/>} />
+                  <Route path={constants.EXPLORE} element={<ExplorePage />} />
                   <Route path={constants.ACCOUNT} element={<AccountPage />} />
                   <Route path={constants.ADMIN} element={<AdminPage />} />
                   <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
@@ -46,7 +72,6 @@ const App = () => {
           </div>
         </ThemeProvider>
       </ColorModeContext.Provider>
-    </Router>
   )
 };
 

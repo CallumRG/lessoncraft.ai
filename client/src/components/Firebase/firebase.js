@@ -1,22 +1,38 @@
-import app from 'firebase/app';
-import 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  sendPasswordResetEmail, 
+  updatePassword, 
+  getIdToken, 
+  getUserByEmail } from 'firebase/auth';
 
 const firebaseConfig = {
-  //Enter your firebase API details
-  };
+  apiKey: process.env.REACT_APP_FB_APIKEY,
+  authDomain: process.env.REACT_APP_FB_AUTHDOMAIN,
+  projectId: process.env.REACT_APP_FB_PROJECTID,
+  storageBucket: process.env.REACT_APP_FB_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_FB_MESSAGINGSENDERID,
+  appId: process.env.REACT_APP_FB_APPID,
+  measurementId: process.env.REACT_APP_FB_MEASUREMENTID
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 class Firebase {
   constructor() {
-    app.initializeApp(firebaseConfig);
-    this.auth = app.auth();
+    this.auth = auth;
   }
   
   // *** Auth API ***
 
   doCreateUserWithEmailAndPassword = (email, password) =>
-  this.auth.createUserWithEmailAndPassword(email, password);
+    createUserWithEmailAndPassword(this.auth, email, password);
 
   doSignInWithEmailAndPassword = (email, password) =>
-  this.auth.signInWithEmailAndPassword(email, password);
+    signInWithEmailAndPassword(this.auth, email, password);
 
   doSignOut = () => this.auth.signOut();
 
