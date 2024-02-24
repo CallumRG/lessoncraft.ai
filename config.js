@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 let config = {
-  host    : 'ec2-3-137-65-169.us-east-2.compute.amazonaws.com',
-  user    : '',
-  password: '',
-  database: ''
+  host    : process.env.DB_HOST,
+  user    : process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_SCHEMA
 };
  
 export default config;
