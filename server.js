@@ -6,16 +6,59 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import response from 'express';
+import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 5000;
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
 app.use(express.static(path.join(__dirname, "client/build")));
+
+// database connection
+let db = mysql.createConnection(config);
+db.connect((err) => {
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      return;
+    }
+    console.log('Connected to the MySQL database');
+});
+  
+function queryAsync(sql) {
+    return new Promise((resolve, reject) => {
+        db.query(sql, (err, result) => {
+        if (err) {
+            reject(err);
+        } else {
+            resolve(result);
+        }
+        });
+    });
+}
+
+// registration endpoint
+app.post('/register', async (req, res) => {
+	let newUser = req.body;
+
+	// check if users exists
+	var result = await queryAsync(`SELECT * FROM users WHERE email=\'${newUser.email}\'`);
+	if(result.length == 0){
+		const query = 'INSERT INTO users (first_name, last_name, email, firebase_uid) VALUES (?, ?, ?, ?)';
+		db.query(query, [newUser.first_name, newUser.last_name, newUser.email, newUser.firebase_uid], (err, results) => {
+			if (err) {
+				console.error('Error inserting new user:', err);
+				return res.status(500).json({ error: 'Internal Server Error' });
+			}
+			res.json({success : "Registration success", status : 200});
+		});
+	} else{
+		res.status(400).json({ error: 'A user with that email already exists' });
+	}
+});
 
 // API to read movies from the database
 app.post('/api/getMovies', (req, res) => {
