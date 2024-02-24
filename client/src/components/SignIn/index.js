@@ -1,70 +1,153 @@
-import * as React from 'react';
+import {React, useState} from "react";
+import { Typography, TextField, Button, Grid, useTheme } from "@mui/material";
+import { tokens, ColorModeContext } from "../../theme";
+import { Link, useNavigate } from "react-router-dom";
+import Firebase from '../Firebase/firebase';
+import { toast } from 'react-toastify';
+import Loading from "../Loading";
 
-import Typography from "@mui/material/Typography";
-import Paper from '@mui/material/Paper';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
-import Grid from "@mui/material/Grid";
+const SignInPage = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const firebase = new Firebase();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-//import BackgroundImage from "./backgroundImage.jpg"
+  const handleChange = (field, newVal) => {
+    setError(false)
+    switch (field) {
+        case "email":
+            setEmail(newVal);
+            break;
+        case "password":
+            setPassword(newVal);
+            break;
+        default:
+            break;
+    }
+  };
 
-const serverURL = "";
+  const handleSubmit = async (event) => {
+    setLoading(true)
+    event.preventDefault();
+    
+    try {
+      const res = await firebase.doSignInWithEmailAndPassword(email, password);
+      console.log("FB RESULT:", res);
 
-const opacityValue = 0.9;
+      toast.success("Sign in successful!");
 
-const lightTheme = createTheme({
-  palette: {
-    type: 'light',
-    background: {
-      default: "#ffffff"
-    },
-    primary: {
-      main: '#ef9a9a',
-      light: '#ffcccb',
-      dark: '#ba6b6c',
-      background: '#eeeeee'
-    },
-    secondary: {
-      main: "#b71c1c",
-      light: '#f05545',
-      dark: '#7f0000'
-    },
-  },
-});
-
-
-const SignIn = () => {
+      setLoading(false);
+      navigate('/explore');
+    } catch (error) {
+      setLoading(false);
+      console.error("Error signing in:", error.message);
+      setError(true);
+    }
+  };
 
   return (
-    <ThemeProvider theme={lightTheme}>
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        justify="flex-start"
-        alignItems="flex-start"
-        style={{ minHeight: '100vh' }}
-      >
-        <Grid item>
-
-          <Typography
-            variant={"h3"}
-            align="flex-start"
+    <>
+      {!loading ? (
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+            style={{ height: "80vh", width: "80%", margin: "auto" }}
           >
-
-
-              <React.Fragment>
-                Sign In page
-              </React.Fragment>
-
-          </Typography>
-
-        </Grid>
-      </Grid>
-    </ThemeProvider>
+            <Grid item xs={12}>
+              <Typography variant="h2" align="center">
+                Sign In
+              </Typography>
+            </Grid>
+      
+            <Grid item xs={12}>
+              <form
+                style={{ width: "100%" }}
+                onSubmit={handleSubmit}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      label="Email"
+                      type="email"
+                      variant="standard"
+                      InputLabelProps={{
+                        sx: {
+                          '&.Mui-focused': {
+                            color: colors.blueAccent[100],
+                          },
+                        },
+                      }}
+                      value={email}
+                      onChange={(e) => handleChange("email", e.target.value)}
+                      
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      label="Password"
+                      type="password"
+                      variant="standard"
+                      InputLabelProps={{
+                        sx: {
+                          '&.Mui-focused': {
+                            color: colors.blueAccent[100],
+                          },
+                        },
+                      }}
+                      value={password}
+                      onChange={(e) => handleChange("password", e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="secondary"
+                      fullWidth
+                      style={{
+                        boxShadow: "none",
+                        color: colors.grey[100],
+                        borderRadius: 20,
+                      }}
+                    >
+                      Sign In
+                    </Button>
+      
+                    {error &&
+                      <Typography color="red" style={{alignItems: "center"}}>Invalid Credentials. Try again.</Typography>
+                    }
+                  </Grid>
+                </Grid>
+              </form>
+            </Grid>
+      
+            <Grid item xs={12} align="center">
+              <Typography>
+                Don't have an account?{" "}
+                <Link to="/signup" style={{cursor: "pointer", color: colors.blueAccent[100]}}>
+                  Sign Up
+                </Link>
+              </Typography>
+            </Grid>
+          </Grid>
+        )
+        :
+        (
+          <Loading/>
+        )
+      }
+    </>
   );
-}
+};
 
-
-
-
-export default SignIn;
+export default SignInPage;

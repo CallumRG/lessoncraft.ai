@@ -19,6 +19,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LoginIcon from '@mui/icons-material/Login';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const SB = (props) => {
   const theme = useTheme();
@@ -52,7 +53,7 @@ const SB = (props) => {
       <Sidebar collapsed={props.isCollapsed} backgroundColor={colors.primary[100]}>
         <Menu iconShape="square" menuItemStyles={MenuItemStyles}>
 
-            {/* EXPAND ICON AND NAME*/}
+            {/* EXPAND/COLLAPSE ICON AND NAME*/}
             <MenuItem
                 onClick={() => props.setIsCollapsed(!props.isCollapsed)}
                 icon={props.isCollapsed ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon/>}
@@ -67,7 +68,7 @@ const SB = (props) => {
                     alignItems="center"
                 >
                     <Typography color={colors.grey[100]}>
-                        {!props.isCollapsed ? ('Fritter1919@gmail.com') : ' '}
+                        {!props.isCollapsed ? (props.user ? props.user.email : 'Not Signed in') : ' '}
                     </Typography>
                 </Box>
             </MenuItem>
@@ -81,7 +82,7 @@ const SB = (props) => {
             >
                 {!props.isCollapsed ? 'Home' : ' '}
             </Typography>
-            <MenuItem icon={<ExploreIcon/>}>Explore</MenuItem>
+            <MenuItem icon={<ExploreIcon/>} onClick={() => navigate('/explore')}>Explore</MenuItem>
             {!props.user &&
                 <>
                     <MenuItem icon={<LoginIcon/>} onClick={() => navigate('/signin')}>Sign In</MenuItem>
@@ -169,6 +170,11 @@ const SB = (props) => {
             (
                 <MenuItem icon={<LightModeIcon/>} onClick={colorMode.toggleColorMode}>Light Mode</MenuItem>
             )
+            }
+
+            {/* SIGN OUT */}
+            {props.user &&
+                <MenuItem icon={<LogoutIcon/>} onClick={() => props.logout()}>Sign Out</MenuItem>
             }
         </Menu>
       </Sidebar>
