@@ -38,20 +38,49 @@ const SignupPage = (props) => {
         }
     };
 
+    const makeRegRequest = (firebaseId) => {
+        let data = JSON.stringify({
+                "first_name": firstName,
+                "last_name": lastName,
+                "email": email,
+                "firebase_uid": firebaseId
+            });
+    
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `${API_URL}/register`,
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                data : data
+            };
+            
+            return config;
+    }
+
     const handleSubmit = async (event) => {
         setLoading(true);
         event.preventDefault();
-        console.log(firstName, lastName, email, password);
 
         // register with firebase
         const regRes = await firebase.doCreateUserWithEmailAndPassword(email, password);
         console.log("FB RESULT:", regRes)
 
-        toast.success("Registration successful!");
-        // Add user to MySQL db
+        // Add new user to MySQL
+        const regReq = makeRegRequest(regRes.user.uid);
 
-        setLoading(false);
-        navigate('/explore');
+        axios.request(regReq)
+            .then((response) => {
+                console.log(JSON.stringify(response.data));
+                toast.success("Registration successful!");
+
+                setLoading(false);
+                navigate('/explore');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     return (
