@@ -1,110 +1,141 @@
 import React, { useState } from "react";
-import { Typography, Button, Grid, TextField } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import {Typography, Button, Grid, TextField,
+} from "@mui/material";
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import Firebase from "../Firebase/firebase";
+import { API_URL } from "../../config";
 
-//page for making new course
 const NewCourse = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const firebase = new Firebase();
 
-    //form data
-    const [formData, setFormData] = useState({
-        courseName: "",
-        subjects: "", 
-        isPublic: true,
-        maxUsers: 100,
-    });
+  const [formData, setFormData] = useState({
+    courseName: "",
+    subjects: "",
+    isPublic: true,
+    maxUsers: 100,
+  });
 
-    // update form input
-    const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
+  const handleChange = (name, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    //once submit pressed
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-        // validation
-        if (!formData.courseName || !formData.subjects || formData.maxUsers <= 0) {
-            alert("Please fill in all required fields and ensure maxUsers is greater than 0.");
-            return;
-            }
+    // validation
+    if (!formData.courseName || !formData.subjects || formData.maxUsers <= 0) {
+        toast.error("Please fill in all required fields and ensure maxUsers is greater than 0.");
+        return;
+    }
 
-        navigate("/success"); // placehlder navigation post submit
-    };
+    // ccheck if the user is authenticated
+    if (firebase.auth.currentUser) {
+      try {
+        // Create the new course on the server using fetch
+        const response = await fetch(`${API_URL}/createCourse`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            courseName: formData.courseName,
+            subjects: formData.subjects,
+            isPublic: formData.isPublic,
+            maxUsers: formData.maxUsers,
+            user_id: firebase.auth.currentUser.uid,
+          }),
+        });
 
+        if (response.ok) {
+          const data = await response.json();
+          console.log(JSON.stringify(data));
+          toast.success("New course created!");
 
-    return (
+          //placeholder
+          navigate('/success');
+          
+        } else {
+          console.error("Error creating new course:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error creating new course:", error);
+        toast.error("Error creating new course");
+      }
+    } else {
+      toast.error("User not authenticated");
+    }
+  };
+
+  return (
     <Grid container spacing={3} alignItems="center" justifyContent="center" padding={12}>
-        <Grid item xs={12}> 
-
-        {/* title */}
+      <Grid item xs={12}>
         <Typography variant="h4" gutterBottom>
-            Create New Course:
+          Create New Course:
         </Typography>
-        {/* form for input */}
-        <form onSubmit={handleSubmit}> 
-
-            {/* course name input */}
-            <TextField
+        <form onSubmit={handleSubmit}>
+          {/* course name input */}
+          <TextField
             label="Course Name"
             name="courseName"
             value={formData.courseName}
-            onChange={handleInputChange}
+            onChange={(e) => handleChange("courseName", e.target.value)}
             fullWidth
             required
             margin="normal"
-            />
+          />
 
-            {/* subject input, can input multiple seperated by comma */}
-            <TextField
+          {/* subjects input */}
+          <TextField
             label="Subjects (Comma-separated)"
-            name="subjects" // Updated label to be more clear
+            name="subjects"
             value={formData.subjects}
-            onChange={handleInputChange}
+            onChange={(e) => handleChange("subjects", e.target.value)}
             fullWidth
             required
             margin="normal"
-            />
+          />
 
-            {/* max users input for course */}
-            <TextField
+          {/* max users input */}
+          <TextField
             label="Maximum Users"
             type="number"
             name="maxUsers"
             value={formData.maxUsers}
-            onChange={handleInputChange}
+            onChange={(e) => handleChange("maxUsers", e.target.value)}
             fullWidth
             required
             margin="normal"
-            />
+          />
 
-            <br></br>
+          <br></br>
 
-            {/* turn off or on public setting of course */}
-            <div>
+          {/* turn off or on public setting of the course */}
+          <div>
             <label>
-                <input
+              <input
                 type="checkbox"
                 name="isPublic"
                 checked={formData.isPublic}
-                onChange={handleInputChange}
-                />
-                Public Course
+                onChange={(e) => handleChange("isPublic", e.target.checked)}
+              />
+              Public Course
             </label>
-            </div>
-            <br></br>
-            {/* submit button */}
-            <Button type="submit" variant="contained" color="primary">
+          </div>
+          <br></br>
+
+          {/* submit button */}
+          <Button type="submit" variant="contained" color="primary">
             Submit
-            </Button>
+          </Button>
         </form>
-        </Grid>
+      </Grid>
     </Grid>
-    );
+  );
 };
 
 export default NewCourse;
