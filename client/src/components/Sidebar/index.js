@@ -20,6 +20,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LoginIcon from '@mui/icons-material/Login';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const SB = (props) => {
   const theme = useTheme();
@@ -82,12 +83,22 @@ const SB = (props) => {
             >
                 {!props.isCollapsed ? 'Home' : ' '}
             </Typography>
+
+            {/* EXPLORE */}
             <MenuItem icon={<ExploreIcon/>} onClick={() => navigate('/explore')}>Explore</MenuItem>
-            {!props.user &&
-                <>
-                    <MenuItem icon={<LoginIcon/>} onClick={() => navigate('/signin')}>Sign In</MenuItem>
-                    <MenuItem icon={<LockOpenIcon/>} onClick={() => navigate('/signup')}>Register</MenuItem>
-                </>
+
+            {props.user ? (
+                    // CREATE
+                    <MenuItem icon={<AddCircleOutlineIcon/>} onClick={() => navigate('/create')}>Create</MenuItem>
+                )
+                :
+                (
+                    // SIGN IN/REGISTER
+                    <>
+                        <MenuItem icon={<LoginIcon/>} onClick={() => navigate('/signin')}>Sign In</MenuItem>
+                        <MenuItem icon={<LockOpenIcon/>} onClick={() => navigate('/signup')}>Register</MenuItem>
+                    </>
+                )
             }
 
             {/* LEARNING */}
@@ -104,9 +115,6 @@ const SB = (props) => {
 
                     {/* LESSONS */}
                     <SubMenu label="Lessons" icon={<ArticleIcon />}>
-                        <MenuItem icon={<CreateIcon/>}>
-                            By Me
-                        </MenuItem>
                         <MenuItem icon={<PeopleOutlinedIcon/>}>
                             Shared With Me
                         </MenuItem>
@@ -115,14 +123,14 @@ const SB = (props) => {
                         </MenuItem>
                         <MenuItem icon={<RemoveRedEyeIcon/>}>
                             Recently Viewed
+                        </MenuItem>
+                        <MenuItem icon={<CreateIcon/>}>
+                            By Me
                         </MenuItem>
                     </SubMenu>
 
                     {/* MODULES */}
                     <SubMenu label="Modules" icon={<ViewModuleIcon />}>
-                        <MenuItem icon={<CreateIcon />}>
-                            By Me
-                        </MenuItem>
                         <MenuItem icon={<PeopleOutlinedIcon/>}>
                             Shared With Me
                         </MenuItem>
@@ -132,13 +140,13 @@ const SB = (props) => {
                         <MenuItem icon={<RemoveRedEyeIcon/>}>
                             Recently Viewed
                         </MenuItem>
+                        <MenuItem icon={<CreateIcon/>}>
+                            By Me
+                        </MenuItem>
                     </SubMenu>
 
                     {/* COURSES */}
                     <SubMenu label="Courses" icon={<SchoolIcon />}>
-                        <MenuItem icon={<CreateIcon />}>
-                            By Me
-                        </MenuItem>
                         <MenuItem icon={<HistoryEduIcon/>}>
                             Enrolled
                         </MenuItem>
@@ -147,6 +155,9 @@ const SB = (props) => {
                         </MenuItem>
                         <MenuItem icon={<RemoveRedEyeIcon/>}>
                             Recently Viewed
+                        </MenuItem>
+                        <MenuItem icon={<CreateIcon/>}>
+                            By Me
                         </MenuItem>
                     </SubMenu>
                 </div>
