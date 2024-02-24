@@ -12,6 +12,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import LoginIcon from '@mui/icons-material/Login';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Topbar = (props) => {
   const theme = useTheme();
@@ -41,6 +42,9 @@ const Topbar = (props) => {
 
             {props.user ? (
                     <>
+                        <Button component={Link} to="/create" variant="contained" startIcon={<AddCircleOutlineIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none'}}>
+                            Create
+                        </Button>
                         <IconButton size="large" color="secondary">
                             <PersonOutlinedIcon/>
                         </IconButton>
