@@ -14,6 +14,7 @@ import ExplorePage from '../Explore';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import PasswordForgetPage from '../PasswordForget';
+import CreatePage from '../Create';
 import NewCourse from '../NewCourse';
 import * as constants from '../../constants/routes'
 import Firebase from '../Firebase/firebase';
@@ -65,6 +66,7 @@ const App = () => {
                   <Route path={constants.ACCOUNT} element={<AccountPage />} />
                   <Route path={constants.ADMIN} element={<AdminPage />} />
                   <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
+                  <Route path={constants.CREATE} element={<CreatePage />} />
                   <Route path={constants.NEWCOURSE} element={<NewCourse />} />
                   <Route path={constants.PROFILE_PAGE} element={<ProfilePage />} />
                   {/* Default Route */}
