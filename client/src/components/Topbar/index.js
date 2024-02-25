@@ -3,6 +3,7 @@ import { useContext, useCallback } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
+import * as constants from '../../constants/routes';
 
 // Icons
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -42,12 +43,16 @@ const Topbar = (props) => {
 
             {props.user ? (
                     <>
+
                         <Button component={Link} to="/create" variant="contained" startIcon={<AddCircleOutlineIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none'}}>
                             Create
                         </Button>
+                       
+                     <Link to={constants.PROFILE_PAGE} style={{ color: 'inherit' }}>                        
                         <IconButton size="large" color="secondary">
                             <PersonOutlinedIcon/>
                         </IconButton>
+                    </Link>
 
                         <IconButton size="large" color="secondary">
                             <SettingsOutlinedIcon/>
