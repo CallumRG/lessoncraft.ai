@@ -3,6 +3,7 @@ import { useContext, useCallback } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
+import * as constants from '../../constants/routes';
 
 // Icons
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -41,9 +42,11 @@ const Topbar = (props) => {
 
             {props.user ? (
                     <>
+                     <Link to={constants.PROFILE_PAGE} style={{ color: 'inherit' }}>
                         <IconButton size="large" color="secondary">
                             <PersonOutlinedIcon/>
                         </IconButton>
+                    </Link>
 
                         <IconButton size="large" color="secondary">
                             <SettingsOutlinedIcon/>
