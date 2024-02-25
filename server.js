@@ -62,7 +62,6 @@ app.post('/register', async (req, res) => {
 
 //create course, put in tables
 app.post('/createCourse', async (req, res) => {
-	console.log("call Createcourse")
     try {
 
         const { courseName, subjects, isPublic, maxUsers, user_id } = req.body;
@@ -77,10 +76,10 @@ app.post('/createCourse', async (req, res) => {
             }
 
             //get courseid
-            const courseId = courseResult.insertId;
+            const course_id = courseResult.insertId;
 
-            // Insert subjects into the course_subjects table
-            const subjectsArray = subjects.split(',').map((subject) => [courseId, subject.trim()]);
+            // inserts corresponding subjects and course_id
+            const subjectsArray = subjects.split(',').map((subject) => [course_id, subject.trim()]);
             const subjectsQuery = 'INSERT INTO course_subjects (course_id, subject_name) VALUES ?';
             db.query(subjectsQuery, [subjectsArray], (subjectsError) => {
                 if (subjectsError) {
@@ -89,14 +88,44 @@ app.post('/createCourse', async (req, res) => {
                     return;
                 }
 
-                // Return the courseId in the response
-                res.status(200).json({ success: true, courseId });
+                // return status and course_id
+                res.status(200).json({ success: true, course_id });
             });
         });
     } catch (error) {
         console.error('Error creating course:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+//grab course info 
+app.post('/courseInfo', async (req, res) => {
+    let course_id = req.body.course_id;
+
+    const query = `
+        SELECT courses.id, courses.course_name, courses.is_public, courses.max_users, courses.user_id, users.first_name, users.last_name, users.email
+        FROM courses
+        JOIN users ON courses.user_id = users.firebase_uid
+        WHERE courses.id = ?;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+        if (err) {
+            console.error('Error retrieving course info:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        // check if any rows were returned
+        if (results.length > 0) {
+
+            // send the result back to the client
+            res.json({ courseInfo: results[0] });
+        } else {
+
+            // no matching course found
+            return res.status(404).json({ error: 'Course not found' });
+        }
+    });
 });
 
 

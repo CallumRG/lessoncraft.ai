@@ -53,11 +53,11 @@ const NewCourse = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(JSON.stringify(data));
+          console.log(data);
           toast.success("New course created!");
 
-          //placeholder
-          navigate('/success');
+          //navigate to new course 
+          navigate('/course/'+data.course_id);
           
         } else {
           console.error("Error creating new course:", response.statusText);
