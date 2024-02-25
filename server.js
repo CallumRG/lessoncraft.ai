@@ -60,21 +60,46 @@ app.post('/register', async (req, res) => {
 	}
 });
 
-// API to read movies from the database
-app.post('/api/getMovies', (req, res) => {
-	let connection = mysql.createConnection(config);
+//create course, put in tables
+app.post('/createCourse', async (req, res) => {
+	console.log("call Createcourse")
+    try {
 
-	const sql = `SELECT id, name, year, quality FROM movies`;
+        const { courseName, subjects, isPublic, maxUsers, user_id } = req.body;
 
-	connection.query(sql, (error, results, fields) => {
-		if (error) {
-			return console.error(error.message);
-		}
-		let string = JSON.stringify(results);
-		res.send({ express: string });
-	});
-	connection.end();
+        // Insert data into the courses table
+        const courseQuery = 'INSERT INTO courses (course_name, is_public, max_users, user_id) VALUES (?, ?, ?, ?)';
+        db.query(courseQuery, [courseName, isPublic, maxUsers, user_id], (courseError, courseResult) => {
+            if (courseError) {
+                console.error('Error inserting course:', courseError.message);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+
+            //get courseid
+            const courseId = courseResult.insertId;
+
+            // Insert subjects into the course_subjects table
+            const subjectsArray = subjects.split(',').map((subject) => [courseId, subject.trim()]);
+            const subjectsQuery = 'INSERT INTO course_subjects (course_id, subject_name) VALUES ?';
+            db.query(subjectsQuery, [subjectsArray], (subjectsError) => {
+                if (subjectsError) {
+                    console.error('Error inserting subjects:', subjectsError.message);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
+                }
+
+                // Return the courseId in the response
+                res.status(200).json({ success: true, courseId });
+            });
+        });
+    } catch (error) {
+        console.error('Error creating course:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
+
+
 
 // API to add a review to the database
 app.post('/api/addReview', (req, res) => {
