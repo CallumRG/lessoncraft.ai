@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { API_URL } from "../../config";
 import { toast } from 'react-toastify'
 import LessonPage from '../LessonPage';
@@ -58,12 +58,15 @@ const CoursePage = () => {
           ) : courseInfo ? (
             <>
               <h1>{`Course Page - ${courseInfo.course_name}`}</h1>
-    
+
               {/* renders course inforamtion */}
               <div>
                 <p>{`Course ID: ${courseInfo.id}`}</p>
                 <p>{`Instructor: ${courseInfo.first_name} ${courseInfo.last_name}`}</p>
                 <p>{`Email: ${courseInfo.email}`}</p>
+                <Link to={`/course/${course_id}/admin`}>
+                  <button>Admin Settings</button>
+                </Link>
               </div>
     
               {/* navigation buttons */}
