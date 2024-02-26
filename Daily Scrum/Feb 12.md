@@ -1,8 +1,8 @@
 ## Feb 12, 2024
 Callum:
-- What did I do yesterday
-- What was in my way
-- What will I do today
+- What did I do yesterday: Looked into additional packages for use in our application for navigation, UI, and notifications.
+- What was in my way: Waiting on basic UI construction
+- What will I do today: Discuss course creation database design and integration with authentication.
 
 Kaitlyn:
 - What did I do yesterday: Researching on UI what our website colour choices should be
