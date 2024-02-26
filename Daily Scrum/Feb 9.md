@@ -10,7 +10,7 @@ Kaitlyn:
 - What will I do today: Continue to do research of design ideas
 
 Michael:
-- What did I do yesterday
-- What was in my way
-- What will I do today
+- What did I do yesterday: Decided on how the sidebar should look
+- What was in my way: Needed a color palette setup beforehand to implement it
+- What will I do today: Research firebase and start development on sidebar
 
