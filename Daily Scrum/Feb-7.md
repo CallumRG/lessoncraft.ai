@@ -1,8 +1,8 @@
 ## Feb 07, 2024
 Callum:
-- What did I do yesterday
-- What was in my way
-- What will I do today
+- What did I do yesterday: N/A
+- What was in my way: N/A
+- What will I do today: Sprint planning
 
 Kaitlyn:
 - What did I do yesterday: N/A
