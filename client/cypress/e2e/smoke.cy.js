@@ -56,7 +56,7 @@ describe('landing page', () => {
 
     //should be on page
     cy.url().should('include', '/explore');
-    cy.contains('h3', 'Explore Page');
+    cy.contains('h3', 'Explore');
   });
 
   it('should navigate to /singin after clicking on the sing in icon', () => {
@@ -111,7 +111,7 @@ describe('landing page', () => {
 
     //wait to login
     cy.url().should('include', '/explore');
-    cy.contains('h3', 'Explore Page');
+    cy.contains('h3', 'Explore');
     
     // go back to home
     cy.visit('/');
