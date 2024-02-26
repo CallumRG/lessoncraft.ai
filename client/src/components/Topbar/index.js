@@ -2,7 +2,7 @@ import { Box, IconButton, useTheme, Button, TextField, Typography } from "@mui/m
 import { useContext, useCallback } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as constants from '../../constants/routes';
 
 // Icons
@@ -19,6 +19,7 @@ const Topbar = (props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const navigate = useNavigate();
 
   return (
     <div style={{ display: "flex", 
@@ -37,7 +38,8 @@ const Topbar = (props) => {
         <Box ml="30px">
             <Typography variant="h1">Lessoncraft</Typography>
         </Box>
-
+        
+        
         {/* Icons */}
         <Box display="flex" justifyContent="space-between" mr="15px">
 
@@ -48,11 +50,11 @@ const Topbar = (props) => {
                             Create
                         </Button>
                        
-                     <Link to={constants.PROFILE_PAGE} style={{ color: 'inherit' }}>                        
-                        <IconButton size="large" color="secondary">
+                        
+                        <IconButton size="large" color="secondary" onClick={()=> navigate('/profile')} data-testid = "PersonOutlinedIcon">
                             <PersonOutlinedIcon/>
                         </IconButton>
-                    </Link>
+                  
 
                         <IconButton size="large" color="secondary">
                             <SettingsOutlinedIcon/>
