@@ -36,7 +36,6 @@ const SignInPage = () => {
     
     try {
       const res = await firebase.doSignInWithEmailAndPassword(email, password);
-      console.log("FB RESULT:", res);
 
       toast.success("Sign in successful!");
 

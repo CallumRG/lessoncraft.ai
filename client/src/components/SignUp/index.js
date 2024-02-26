@@ -65,14 +65,12 @@ const SignupPage = (props) => {
 
         // register with firebase
         const regRes = await firebase.doCreateUserWithEmailAndPassword(email, password);
-        console.log("FB RESULT:", regRes)
 
         // Add new user to MySQL
         const regReq = makeRegRequest(regRes.user.uid);
 
         axios.request(regReq)
             .then((response) => {
-                console.log(JSON.stringify(response.data));
                 toast.success("Registration successful!");
 
                 setLoading(false);
