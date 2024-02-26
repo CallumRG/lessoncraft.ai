@@ -20,6 +20,7 @@ import * as constants from '../../constants/routes'
 import Firebase from '../Firebase/firebase';
 import ProfilePage from '../ProfilePage';
 import CoursePage from "../CoursePage";
+import CourseAdmin from "../CourseAdmin";
 
 const App = () => {
   const firebase = new Firebase();
@@ -71,6 +72,7 @@ const App = () => {
                   <Route path={constants.NEWCOURSE} element={<NewCourse />} />
                   <Route path={constants.PROFILE_PAGE} element={<ProfilePage />} />
                   <Route path={constants.COURSE} element={<CoursePage />} />
+                  <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
                   {/* Default Route */}
                   <Route path="*" element={<LandingPage />} />
                 </Routes>
