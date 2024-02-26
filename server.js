@@ -100,6 +100,30 @@ app.post('/createCourse', async (req, res) => {
 });
 
 
+app.post('/getUserDetails', async (req, res) => {
+    const { userId } = req.body; // Assuming you're sending a user ID to identify the user
+
+    try {
+        const query = `SELECT first_name, last_name FROM users WHERE user_id = ?`;
+        db.query(query, [userId], (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            if (result.length > 0) {
+                const userDetails = result[0];
+                res.json(userDetails);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 // API to add a review to the database
 app.post('/api/addReview', (req, res) => {
