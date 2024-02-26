@@ -12,4 +12,4 @@ Kaitlyn:
 Michael:
 - What did I do yesterday: configured server with database details, set up and endpoint and axios request to insert a newly registered user to MySQL
 - What was in my way: Took a while to decide which schema to use, decided on m32steve database
-- What will I do today: Setup a 'create' page where users can choose between making a new lesson, module, or course
+- What will I do today: Finish setting up a 'create' page where users can choose between making a new lesson, module, or course - link to callums 'newcourse' page
