@@ -1,37 +1,52 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Button, TextField, Typography } from "@mui/material";
 import Firebase from "../Firebase/firebase";
+import axios from "axios";
+import {API_URL} from '../../config';
 
-const ProfilePage = () => {
+const ProfilePage = (props) => {
     const firebase = new Firebase();
     const [userInfo, setUserInfo] = useState({ firstName: '', lastName: '' });
     const [passwordOne, setPasswordOne] = useState('');
     const [passwordTwo, setPasswordTwo] = useState('');
     const [error, setError] = useState(null);
 
+    const makeUserFetchRequest = (firebaseId) => {
     
-    const fetchUserDetails = async () => {
-        if (firebase.auth.currentUser) {
-            const userId = firebase.auth.currentUser.uid; // Get the UID for the current user
-            const response = await fetch(`/getUserDetails`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userId }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setUserInfo({ firstName: data.first_name, lastName: data.last_name });
-            } else {
-                console.error('Failed to fetch user details');
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `${API_URL}/getUserDetails`,
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            params : {
+                firebase_uid: firebaseId
             }
+        };
+
+        return config;
+    };
+
+    const fetchUserDetails = async () => {
+        if (props.user) {
+            const userRequest = makeUserFetchRequest(props.user.uid);
+
+            axios.request(userRequest)
+            .then((response) => {
+                console.log("user details response:", JSON.stringify(response.data));
+                setUserInfo({ firstName: response.data.first_name, lastName: response.data.last_name });
+
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         }
     };
 
-    // Call fetchUserDetails
-    fetchUserDetails().catch(console.error);
+    useEffect(() => {
+        fetchUserDetails();
+    }, []);
 
 
     

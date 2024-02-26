@@ -283,12 +283,12 @@ app.post('/courseAddAdmin', async (req, res) => {
 });
 
 
-app.post('/getUserDetails', async (req, res) => {
-    const { userId } = req.body; // Assuming you're sending a user ID to identify the user
+app.get('/getUserDetails', async (req, res) => {
+    const firebaseId = req.query.firebase_uid;
 
     try {
-        const query = `SELECT first_name, last_name FROM users WHERE user_id = ?`;
-        db.query(query, [userId], (err, result) => {
+        const query = `SELECT first_name, last_name FROM users WHERE firebase_uid = ?`;
+        db.query(query, [firebaseId], (err, result) => {
             if (err) {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });

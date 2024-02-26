@@ -70,7 +70,7 @@ const App = () => {
                   <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
                   <Route path={constants.CREATE} element={<CreatePage />} />
                   <Route path={constants.NEWCOURSE} element={<NewCourse />} />
-                  <Route path={constants.PROFILE_PAGE} element={<ProfilePage />} />
+                  <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                   <Route path={constants.COURSE} element={<CoursePage />} />
                   <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
                   {/* Default Route */}
