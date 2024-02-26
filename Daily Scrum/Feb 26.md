@@ -5,9 +5,9 @@ Callum:
 - What will I do today
 
 Kaitlyn:
-- What did I do yesterday: Researching on UI what our website colour choices should be
-- What was in my way: Nothing
-- What will I do today: Continue on research and bring up the colour choice ideas to my group mate. 
+- What did I do yesterday:Finishing up the profile page  
+- What was in my way: the first and last name on profile page was not showing.
+- What will I do today: Figuring out the problem and make sure everyone had merge their code to main
 
 Michael:
 - What did I do yesterday: configured server with database details, set up and endpoint and axios request to insert a newly registered user to MySQL
