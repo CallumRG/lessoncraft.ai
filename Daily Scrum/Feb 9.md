@@ -1,6 +1,6 @@
 ## Feb 09, 2024
 Callum:
-- What did I do yesterday: Thought about database layout of course
+- What did I do yesterday: Thought about database layout of course and Lab 
 - What was in my way: Development of basic structure of application being currently limited
 - What will I do today: Continue thinking designs of databases in regards to course creation
 
