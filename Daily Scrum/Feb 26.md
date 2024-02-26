@@ -1,8 +1,8 @@
 ## Feb 26, 2024
 Callum:
-- What did I do yesterday
-- What was in my way
-- What will I do today
+- What did I do yesterday: Finished up admin page.
+- What was in my way: Issues figuring out proper authentication of course owner when allowing changes to admin adding and deleteing.
+- What will I do today: Develop test case and write report documenting additions to the codebase in the sprint.
 
 Kaitlyn:
 - What did I do yesterday:Finishing up the profile page  
