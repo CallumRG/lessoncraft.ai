@@ -1,8 +1,8 @@
 ## Feb 16, 2024
 Callum:
-- What did I do yesterday
-- What was in my way
-- What will I do today
+- What did I do yesterday: Continued researching and thinking about set up of courses and querying to database
+- What was in my way: Firebase authentication not fully integrated yet
+- What will I do today: Start working on real code base
 
 Kaitlyn:
 - What did I do yesterday: Figuring out how to let user change password  
