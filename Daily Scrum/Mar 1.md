@@ -10,6 +10,6 @@ Kaitlyn:
 - What will I do today: Sprint 2 planning
 
 Michael:
-- What did I do yesterday: 
-- What was in my way: 
-- What will I do today: 
+- What did I do yesterday: Midterm Studying
+- What was in my way: N/A
+- What will I do today: Research OpenAI Assistants for generating AI lessons
