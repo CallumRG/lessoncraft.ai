@@ -5,9 +5,9 @@ Callum:
 - What will I do today: Discuss and finalize sprint planning
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way: 
-- What will I do today: 
+- What did I do yesterday: Midterm Studying
+- What was in my way: Nothing
+- What will I do today: Sprint 2 planning
 
 Michael:
 - What did I do yesterday: 
