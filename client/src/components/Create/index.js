@@ -33,6 +33,7 @@ const CreatePage = () => {
                         style={{ width: '200px', height: '200px', margin: '20px',color: colors.grey[100], boxShadow: 'none' }}
                         startIcon={<ArticleIcon />}
                         color="secondary"
+                        component={Link} to="/newlesson"
                     >
                         New Lesson
                     </Button>

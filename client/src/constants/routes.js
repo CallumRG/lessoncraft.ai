@@ -9,4 +9,5 @@ export const NEWCOURSE = '/newcourse';
 export const PROFILE_PAGE = '/profile';
 export const CREATE = '/create';
 export const COURSE ="/course/:course_id";
-export const COURSE_ADMIN="/course/:course_id/admin"
+export const COURSE_ADMIN="/course/:course_id/admin";
+export const NEWLESSON ="/newlesson";

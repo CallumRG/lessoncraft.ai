@@ -36,7 +36,7 @@ const Topbar = (props) => {
     >
         {/* Website Name */}
         <Box ml="30px">
-            <Typography variant="h1">Lessoncraft</Typography>
+            <Typography variant="h2">L E S S O N C R A F T</Typography>
         </Box>
         
         
@@ -46,7 +46,7 @@ const Topbar = (props) => {
             {props.user ? (
                     <>
 
-                        <Button component={Link} to="/create" variant="contained" startIcon={<AddCircleOutlineIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none'}}>
+                        <Button component={Link} to="/create" variant="outlined" startIcon={<AddCircleOutlineIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
                             Create
                         </Button>
                        
@@ -68,10 +68,10 @@ const Topbar = (props) => {
                 :
                 (
                     <>
-                        <Button component={Link} to="/signin" variant="contained" startIcon={<LoginIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none',}}>
+                        <Button component={Link} to="/signin" variant="outlined" startIcon={<LoginIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none',}}>
                             Sign in
                         </Button>
-                        <Button component={Link} to="/signup" variant="contained" startIcon={<LockOpenIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none'}}>
+                        <Button component={Link} to="/signup" variant="outlined" startIcon={<LockOpenIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
                             Register
                         </Button>
                     </>

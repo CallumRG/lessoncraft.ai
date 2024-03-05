@@ -16,11 +16,13 @@ import AdminPage from '../Admin';
 import PasswordForgetPage from '../PasswordForget';
 import CreatePage from '../Create';
 import NewCourse from '../NewCourse';
-import * as constants from '../../constants/routes'
 import Firebase from '../Firebase/firebase';
 import ProfilePage from '../ProfilePage';
 import CoursePage from "../CoursePage";
 import CourseAdmin from "../CourseAdmin";
+import NewLesson from '../NewLesson';
+
+import * as constants from '../../constants/routes'
 
 const App = () => {
   const firebase = new Firebase();
@@ -70,6 +72,7 @@ const App = () => {
                   <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
                   <Route path={constants.CREATE} element={<CreatePage />} />
                   <Route path={constants.NEWCOURSE} element={<NewCourse />} />
+                  <Route path={constants.NEWLESSON} element={<NewLesson />} />
                   <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                   <Route path={constants.COURSE} element={<CoursePage />} />
                   <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
