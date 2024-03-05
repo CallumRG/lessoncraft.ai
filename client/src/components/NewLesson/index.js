@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { makePrompt } from './prompt';
 import React, { useState } from 'react';
 import { TextField, Button, IconButton, Typography, Grid, useTheme, Input } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -51,7 +52,67 @@ const NewLesson = () => {
         setError(null);
     };
 
-    const handleCreateLesson = () => {
+    const MakeOpenAIAssistantCall = async () => {
+        // Set up API connection
+        const openai = new OpenAI({
+            apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+            dangerouslyAllowBrowser: true,
+        });
+
+        // Upload selected file to openAI
+        const file = await openai.files.create({
+            file: selectedFile,
+            purpose: "assistants",
+        });
+
+        // Retrieve lessoncraft assistant
+        const assistant = await openai.beta.assistants.retrieve('asst_Vc4ANHMRkhJnlQ4U6W1RkSs2');
+
+        // Create new thread
+        const thread = await openai.beta.threads.create();
+
+        // Lesson generation prompt
+        const prompt = makePrompt(lessonTitle, topics, selectedFile.name);
+        await openai.beta.threads.messages.create(
+            thread.id,
+            { 
+                role: "user", 
+                content: prompt, 
+                file_ids: [file.id] 
+            }
+        );
+
+        // Run the thread with lessoncraft assistant
+        const run = await openai.beta.threads.runs.create(
+            thread.id,
+            { assistant_id: assistant.id }
+        );
+
+        // Fetch the run status
+        let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+
+        // Wait for the run to finish
+        while (runStatus.status === "in_progress" || runStatus.status === "queued") {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+        }
+
+        // Fetch the messages in the thread
+        const messageList = await openai.beta.threads.messages.list(thread.id);
+
+        // Choose the latest message from the assistant
+        const lastMessage = messageList.data.filter((message) => message.run_id === run.id && message.role === "assistant").pop();
+
+        // Grab the text response of the latest message
+        console.log(lastMessage.content[0]["text"].value);
+
+        // Delete the selected file from OpenAI Storage
+        await openai.files.del(
+            file.id
+        );
+    }
+
+    const handleCreateLesson = async () => {
         setLoading(true);
         
         if(lessonTitle === ""){
@@ -65,12 +126,17 @@ const NewLesson = () => {
             setLoading(false);
         }
         else{
-            setTimeout(() => {
-                console.log('Lesson Title:', lessonTitle);
-                console.log('Topics:', topics);
-                console.log('Selected File:', selectedFile ? selectedFile.name : 'No file selected');
-                setLoading(false);
-            }, 1000);
+            console.log('Lesson Title:', lessonTitle);
+            console.log('Topics:', topics);
+            console.log('Selected File:', selectedFile ? selectedFile.name : 'No file selected');
+
+            // GENERATE LESSON
+            try{
+                await MakeOpenAIAssistantCall();
+            } catch (error){
+                console.error(error)
+            }
+            setLoading(false);
         }
     };
 
@@ -87,7 +153,7 @@ const NewLesson = () => {
                 >
                     <Grid item xs={12}>
                         <Typography variant="h2" align="center">
-                            New Lesson
+                            New Lesson:
                         </Typography>
                     </Grid>
 

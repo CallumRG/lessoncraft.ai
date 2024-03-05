@@ -36,7 +36,7 @@ const Topbar = (props) => {
     >
         {/* Website Name */}
         <Box ml="30px">
-            <Typography variant="h1">Lessoncraft</Typography>
+            <Typography variant="h2">L E S S O N C R A F T</Typography>
         </Box>
         
         
