@@ -133,11 +133,11 @@ export const themeSettings = (mode) => {
           fontSize: 20,
         },
         h5: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 16,
         },
         h6: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 14,
         },
     },
