@@ -4,6 +4,8 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "../../theme";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import {API_URL} from '../../config';
 
 import SB from '../Sidebar';
 import Topbar from '../Topbar';
@@ -37,11 +39,47 @@ const App = () => {
     navigate('/');
   }
 
+  const makeUserFetchRequest = (firebaseId) => {
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${API_URL}/getUserDetails`,
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        params : {
+            firebase_uid: firebaseId
+        }
+    };
+    return config;
+  };
+
+  const fetchUserDetails = async (authUser) => {
+    const userRequest = makeUserFetchRequest(authUser.uid);
+
+    axios.request(userRequest)
+    .then((response) => {
+        const currUser = { id:response.data.id, 
+          firstName: response.data.first_name, 
+          lastName: response.data.last_name, 
+          email:authUser.email, 
+          uid: authUser.uid, 
+          created_at: response.data.created_at,
+          updated_at: response.data.updated_at
+        };
+        console.log('curruser:', currUser);
+        setUser(currUser);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+  };
+
   // check session on render
   useEffect(() => {
     const unsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        setUser(authUser);
+        fetchUserDetails(authUser);
       } else {
         setUser(null);
       }
@@ -72,7 +110,7 @@ const App = () => {
                   <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
                   <Route path={constants.CREATE} element={<CreatePage />} />
                   <Route path={constants.NEWCOURSE} element={<NewCourse />} />
-                  <Route path={constants.NEWLESSON} element={<NewLesson />} />
+                  <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
                   <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                   <Route path={constants.COURSE} element={<CoursePage />} />
                   <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />

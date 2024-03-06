@@ -40,6 +40,20 @@ function queryAsync(sql) {
     });
 }
 
+// Insert new Lesson Record
+app.post('/createLesson', async (req, res) => {
+	let { title, user_id, description} = req.body;
+
+    const query = 'INSERT INTO lessons (title, description, user_id) VALUES (?, ?, ?)';
+    db.query(query, [title, description, user_id], (err, results) => {
+        if (err) {
+            console.error('Error inserting new lesson:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.json({success : "New Lesson created successfully", status : 200});
+    });
+});
+
 // registration endpoint
 app.post('/register', async (req, res) => {
 	let newUser = req.body;
@@ -287,7 +301,7 @@ app.get('/getUserDetails', async (req, res) => {
     const firebaseId = req.query.firebase_uid;
 
     try {
-        const query = `SELECT first_name, last_name FROM users WHERE firebase_uid = ?`;
+        const query = `SELECT * FROM users WHERE firebase_uid = ?`;
         db.query(query, [firebaseId], (err, result) => {
             if (err) {
                 console.error('Database error:', err);
