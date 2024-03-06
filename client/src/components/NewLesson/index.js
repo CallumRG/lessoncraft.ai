@@ -73,6 +73,7 @@ const NewLesson = (props) => {
             try{
                 const completeLesson = await MakeOpenAIAssistantCall(lessonTitle, topics, selectedFile, (status) => setGenerationStatus(status));
                 console.log(completeLesson);
+                // INSERT NEW LESSON TO MYSQL
                 await insertLessonComponents(props.user, completeLesson, lessonTitle, topics);
                 setLoading(false);
                 setGenerationStatus('');

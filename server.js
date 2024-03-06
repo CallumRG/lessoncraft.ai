@@ -40,6 +40,8 @@ function queryAsync(sql) {
     });
 }
 
+// LESSONS---------------------------------------------------------------------------------------
+
 // Insert new Lesson Record
 app.post('/createLesson', async (req, res) => {
 	let { title, user_id, description} = req.body;
@@ -82,6 +84,70 @@ app.post('/createLessonPracticeQuestion', async (req, res) => {
     });
 });
 
+// Get a lesson
+app.post('/lesson', async (req, res) => {
+    let lesson_id = req.body.lesson_id;
+
+    const query = `SELECT * FROM lessons WHERE id=?`;
+
+    db.query(query, [lesson_id], (err, results) => {
+        if (err) {
+            console.error('Error retrieving lesson:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        if (results.length > 0) {
+            res.json({ lesson: results });
+        } else {
+            return res.status(404).json({ error: 'Lesson not found' });
+        }
+    });
+});
+
+// Get Lesson Sections
+app.post('/lessonSections', async (req, res) => {
+    let lesson_id = req.body.lesson_id;
+
+    const query = `SELECT * FROM lesson_sections WHERE lesson_id=? ORDER BY id ASC`;
+
+    db.query(query, [lesson_id], (err, results) => {
+        if (err) {
+            console.error('Error retrieving lesson sections:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        if (results.length > 0) {
+            res.json({ lesson: results });
+        } else {
+            return res.status(404).json({ error: 'No Lesson Sections were found' });
+        }
+    });
+});
+
+// Get Lesson Practice Questions
+app.post('/lessonPracticeQuestions', async (req, res) => {
+    let lesson_id = req.body.lesson_id;
+
+    const query = `SELECT * FROM lesson_practice_questions WHERE lesson_id=?`;
+
+    db.query(query, [lesson_id], (err, results) => {
+        if (err) {
+            console.error('Error retrieving lesson practice questions:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        if (results.length > 0) {
+            res.json({ lesson: results });
+        } else {
+            return res.status(404).json({ error: 'No Practice Questions were found for the provided lesson id' });
+        }
+    });
+});
+
+// ------------------------------------------------------------------------------------------------------------
+
+// USERS--------------------------------------------------------------------------------------------------
+
 // registration endpoint
 app.post('/register', async (req, res) => {
 	let newUser = req.body;
@@ -101,6 +167,34 @@ app.post('/register', async (req, res) => {
 		res.status(400).json({ error: 'A user with that email already exists' });
 	}
 });
+
+app.get('/getUserDetails', async (req, res) => {
+    const firebaseId = req.query.firebase_uid;
+
+    try {
+        const query = `SELECT * FROM users WHERE firebase_uid = ?`;
+        db.query(query, [firebaseId], (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            if (result.length > 0) {
+                const userDetails = result[0];
+                res.json(userDetails);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// ----------------------------------------------------------------------------------------------------------
+
+
+// COURSES--------------------------------------------------------------------------------------------------
 
 //create course, put in tables
 app.post('/createCourse', async (req, res) => {
@@ -324,53 +418,7 @@ app.post('/courseAddAdmin', async (req, res) => {
     });
 });
 
-
-app.get('/getUserDetails', async (req, res) => {
-    const firebaseId = req.query.firebase_uid;
-
-    try {
-        const query = `SELECT * FROM users WHERE firebase_uid = ?`;
-        db.query(query, [firebaseId], (err, result) => {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
-            if (result.length > 0) {
-                const userDetails = result[0];
-                res.json(userDetails);
-            } else {
-                res.status(404).json({ error: 'User not found' });
-            }
-        });
-    } catch (err) {
-        console.error('Database error:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-
-// API to add a review to the database
-app.post('/api/addReview', (req, res) => {
-	const { userID, movieID, reviewTitle, reviewContent, reviewScore } = req.body;
-
-	let connection = mysql.createConnection(config);
-
-	const sql = `INSERT INTO Review (userID, movieID, reviewTitle, reviewContent, reviewScore) 
-				 VALUES (?, ?, ?, ?, ?)`;
-
-	const data = [userID, movieID, reviewTitle, reviewContent, reviewScore];
-
-	connection.query(sql, data, (error, results, fields) => {
-		if (error) {
-			console.error("Error adding review:", error.message);
-			return res.status(500).json({ error: "Error adding review to the database" });
-		}
-
-		return res.status(200).json({ success: true });
-	});
-	connection.end();
-});
+// ---------------------------------------------------------------------------------------------------------------------
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version

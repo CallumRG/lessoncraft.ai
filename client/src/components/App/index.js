@@ -23,6 +23,7 @@ import ProfilePage from '../ProfilePage';
 import CoursePage from "../CoursePage";
 import CourseAdmin from "../CourseAdmin";
 import NewLesson from '../NewLesson';
+import LessonPage from '../LessonPage';
 
 import * as constants from '../../constants/routes'
 
@@ -111,6 +112,7 @@ const App = () => {
                   <Route path={constants.CREATE} element={<CreatePage />} />
                   <Route path={constants.NEWCOURSE} element={<NewCourse />} />
                   <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
+                  <Route path={constants.LESSON} element={<LessonPage user={user}/>} />
                   <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                   <Route path={constants.COURSE} element={<CoursePage />} />
                   <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
