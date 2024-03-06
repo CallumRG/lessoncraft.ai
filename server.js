@@ -50,7 +50,35 @@ app.post('/createLesson', async (req, res) => {
             console.error('Error inserting new lesson:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
-        res.json({success : "New Lesson created successfully", status : 200});
+        res.json({success : "New Lesson created successfully", status : 200, id: results.insertId});
+    });
+});
+
+// Insert new Lesson Section Record
+app.post('/createLessonSection', async (req, res) => {
+	let { lessonId, title, body} = req.body;
+
+    const query = 'INSERT INTO lesson_sections (title, body, lesson_id) VALUES (?, ?, ?)';
+    db.query(query, [title, body, lessonId], (err, results) => {
+        if (err) {
+            console.error('Error inserting new lesson section:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.json({success : "New Lesson Section created successfully", status : 200});
+    });
+});
+
+// Insert new Lesson Practice Question
+app.post('/createLessonPracticeQuestion', async (req, res) => {
+	let { question, option_a, option_b, option_c, option_d, answer, lessonId } = req.body;
+
+    const query = 'INSERT INTO lesson_practice_questions (question, option_a, option_b, option_c, option_d, answer, lesson_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(query, [question, option_a, option_b, option_c, option_d, answer, lessonId], (err, results) => {
+        if (err) {
+            console.error('Error inserting new lesson practice question:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.json({success : "New Lesson Practice Question created successfully", status : 200});
     });
 });
 
