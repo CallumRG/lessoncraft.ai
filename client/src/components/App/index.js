@@ -100,25 +100,27 @@ const App = () => {
 
             <SB isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} user={user} logout={logout}/>
             <main className="content" style={{marginLeft: isCollapsed ? "80px" : "250px", transition: "margin-left 0.3s ease",}}>
-                <Topbar user={user}/>
-                <Routes>
-                  <Route path={constants.LANDING} element={<LandingPage />} />
-                  <Route path={constants.SIGN_UP} element={<SignUpPage/>} />
-                  <Route path={constants.SIGN_IN} element={<SignInPage/>} />
-                  <Route path={constants.EXPLORE} element={<ExplorePage />} />
-                  <Route path={constants.ACCOUNT} element={<AccountPage />} />
-                  <Route path={constants.ADMIN} element={<AdminPage />} />
-                  <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
-                  <Route path={constants.CREATE} element={<CreatePage />} />
-                  <Route path={constants.NEWCOURSE} element={<NewCourse />} />
-                  <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
-                  <Route path={constants.LESSON} element={<LessonPage user={user}/>} />
-                  <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
-                  <Route path={constants.COURSE} element={<CoursePage />} />
-                  <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
-                  {/* Default Route */}
-                  <Route path="*" element={<LandingPage />} />
-                </Routes>
+                <Topbar user={user} isCollapsed={isCollapsed}/>
+                <div style={{marginTop: 80}}>
+                  <Routes>
+                    <Route path={constants.LANDING} element={<LandingPage />} />
+                    <Route path={constants.SIGN_UP} element={<SignUpPage/>} />
+                    <Route path={constants.SIGN_IN} element={<SignInPage/>} />
+                    <Route path={constants.EXPLORE} element={<ExplorePage />} />
+                    <Route path={constants.ACCOUNT} element={<AccountPage />} />
+                    <Route path={constants.ADMIN} element={<AdminPage />} />
+                    <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
+                    <Route path={constants.CREATE} element={<CreatePage />} />
+                    <Route path={constants.NEWCOURSE} element={<NewCourse />} />
+                    <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
+                    <Route path={constants.LESSON} element={<LessonPage user={user}/>} />
+                    <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
+                    <Route path={constants.COURSE} element={<CoursePage />} />
+                    <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
+                    {/* Default Route */}
+                    <Route path="*" element={<LandingPage />} />
+                  </Routes>
+                </div>
             </main>
           </div>
         </ThemeProvider>

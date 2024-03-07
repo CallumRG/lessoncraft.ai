@@ -22,12 +22,15 @@ const Topbar = (props) => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ display: "flex", 
+    <div style={{ 
+                position: 'fixed',
+                display: "flex", 
+                width: props.isCollapsed ? '96%' : '90%',
+                transition: "width 0.3s ease",
                 justifyContent: "space-between", 
-                alignItems: 'center', position: "sticky",
+                alignItems: 'center',
                 paddingTop: "15px", 
                 zIndex: 1000, 
-                marginBottom:"15px", 
                 paddingBottom: "10px", 
                 paddingRight: "75px",
                 borderBottom: `1px solid ${colors.primary[300]}`,
