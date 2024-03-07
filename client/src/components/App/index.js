@@ -99,7 +99,7 @@ const App = () => {
             <ToastContainer/>
 
             <SB isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} user={user} logout={logout}/>
-            <main className="content">
+            <main className="content" style={{marginLeft: isCollapsed ? "80px" : "250px", transition: "margin-left 0.3s ease",}}>
                 <Topbar user={user}/>
                 <Routes>
                   <Route path={constants.LANDING} element={<LandingPage />} />

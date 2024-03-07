@@ -43,7 +43,6 @@ const LessonPage = () => {
     const lessonSectionsReq = makeLessonReq(`${API_URL}/lessonSections`);
     axios.request(lessonSectionsReq)
     .then((response) => {
-      console.log(response.data.lesson)
       setLessonSections(response.data.lesson);
     })
     .catch((error) => {
@@ -55,7 +54,8 @@ const LessonPage = () => {
     const practiceQuestionsReq = makeLessonReq(`${API_URL}/lessonPracticeQuestions`);
     axios.request(practiceQuestionsReq)
     .then((response) => {
-      setLessonPracticeQuestions(response.data)
+      console.log(response.data.lesson);
+      setLessonPracticeQuestions(response.data.lesson);
     })
     .catch((error) => {
       console.log(error);
@@ -78,6 +78,19 @@ const LessonPage = () => {
           <div key={section.id}>
             <h2>{section.title}</h2>
             <p>{section.body}</p>
+          </div>
+        ))
+      }
+
+      {lessonPracticeQuestions &&
+        lessonPracticeQuestions.map((question) => (
+          <div key={question.id}>
+            <h2>{question.question}</h2>
+            <p>{question.option_a}</p>
+            <p>{question.option_b}</p>
+            <p>{question.option_c}</p>
+            <p>{question.option_d}</p>
+            <p>{question.answer}</p>
           </div>
         ))
       }
