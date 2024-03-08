@@ -1,6 +1,7 @@
 import MakeOpenAIAssistantCall from './openai';
 import insertLessonComponents from './lessoninsert';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Button, IconButton, Typography, Grid, useTheme, Input, Box } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -11,9 +12,12 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 const NewLesson = (props) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const navigate = useNavigate();
     const [lessonTitle, setLessonTitle] = useState('');
     const [topics, setTopics] = useState(['']);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isPublic, setIsPublic] = useState(true);
+    const [citation, setCitation] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [generationStatus, setGenerationStatus] = useState('');
@@ -21,6 +25,11 @@ const NewLesson = (props) => {
     const handleTitleChange = (e) => {
         setError(null);
         setLessonTitle(e.target.value);
+    }
+
+    const handleCitationChange = (e) => {
+        setError(null);
+        setCitation(e.target.value);
     }
 
     const handleTopicChange = (index, value) => {
@@ -74,25 +83,26 @@ const NewLesson = (props) => {
                 const completeLesson = await MakeOpenAIAssistantCall(lessonTitle, topics, selectedFile, (status) => setGenerationStatus(status));
                 console.log(completeLesson);
                 // INSERT NEW LESSON TO MYSQL
-                await insertLessonComponents(props.user, completeLesson, lessonTitle, topics);
+                const lessonId = await insertLessonComponents(props.user, completeLesson, lessonTitle, topics, isPublic, citation);
+                console.log(lessonId)
                 setLoading(false);
                 setGenerationStatus('');
+                navigate(`/lesson/${lessonId}`);
             } catch (error){
                 console.error(error)
                 setError('Failed to generate lesson');
+                setLoading(false);
+                setGenerationStatus('');
             }
-            setLoading(false);
-            setGenerationStatus('');
         }
     };
 
     return (
         <>
             {!loading ? (
-                <div style={{display: "flex", flex: 1, alignItems: "center", justifyContent:"center", height: "90vh"}}>
                     <Box
                         height="94%"
-                        width="75%"
+                        width="85%"
                         borderRadius="50px"
                         border={`3px solid ${colors.blueAccent[100]}`}
                         margin="auto"
@@ -102,7 +112,7 @@ const NewLesson = (props) => {
                             spacing={0}
                             alignItems="center"
                             justifyContent="center"
-                            style={{ height: "80vh", width: "50%", margin: "auto" }}
+                            style={{ height: "90vh", width: "50%", margin: "auto" }}
                             sx={{ marginTop: '-50px' }}
                         >
                             <Grid item xs={12}>
@@ -129,10 +139,39 @@ const NewLesson = (props) => {
                                     }}
                                 />
                             </Grid>
+                            <Grid item xs={12} style={{ marginTop: -50 }} textAlign='center'>
+                                <Button 
+                                    variant={isPublic ? 'contained' : 'outlined'} 
+                                    color="secondary"
+                                    style={{
+                                        boxShadow: 'none',
+                                        borderRadius: 25, 
+                                        color: isPublic ? 'white' : colors.blueAccent[100], 
+                                        marginTop: -5, 
+                                        marginRight: 10
+                                    }}
+                                    onClick={() => setIsPublic(true)}
+                                >
+                                    Public
+                                </Button>
+                                <Button 
+                                    variant={isPublic ? 'outlined' : 'contained'} 
+                                    color="secondary"
+                                    style={{
+                                        boxShadow: 'none',
+                                        borderRadius: 25, 
+                                        color: isPublic ? colors.blueAccent[100] : 'white', 
+                                        marginTop: -5
+                                    }}
+                                    onClick={() => setIsPublic(false)}
+                                >
+                                    Private
+                                </Button>
+                            </Grid>
 
                             {/* Topics */}
                             <Grid item xs={12}>
-                                <Typography variant="h5" style={{ marginTop: 30 }} align='center'>
+                                <Typography variant="h5" align='center'>
                                     Lesson Topics:
                                 </Typography>
                             </Grid>
@@ -193,6 +232,25 @@ const NewLesson = (props) => {
                                 )}
                             </Grid>
 
+                            <Grid item xs={10} style={{ marginTop: -50 }}>
+                                {/* Context Citation */}
+                                <TextField
+                                    label="Context Citation"
+                                    fullWidth
+                                    value={citation}
+                                    onChange={(e) => {handleCitationChange(e)}}
+                                    margin="normal"
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        sx: {
+                                        '&.Mui-focused': {
+                                            color: colors.blueAccent[100],
+                                        },
+                                        },
+                                    }}
+                                />
+                            </Grid>
+
                             {/* Error display for incomplete form */}
                             {error &&
                                 <>
@@ -212,7 +270,6 @@ const NewLesson = (props) => {
                             </Grid>
                         </Grid>
                     </Box>
-                </div>
             ) 
             : 
             (

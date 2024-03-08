@@ -44,10 +44,10 @@ function queryAsync(sql) {
 
 // Insert new Lesson Record
 app.post('/createLesson', async (req, res) => {
-	let { title, user_id, description} = req.body;
+	let { title, user_id, description, is_public, citation} = req.body;
 
-    const query = 'INSERT INTO lessons (title, description, user_id) VALUES (?, ?, ?)';
-    db.query(query, [title, description, user_id], (err, results) => {
+    const query = 'INSERT INTO lessons (title, description, user_id, is_public, citation) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [title, description, user_id, is_public, citation], (err, results) => {
         if (err) {
             console.error('Error inserting new lesson:', err);
             return res.status(500).json({ error: 'Internal Server Error' });

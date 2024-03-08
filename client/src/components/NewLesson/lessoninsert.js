@@ -2,11 +2,13 @@ import axios from "axios";
 import {API_URL} from '../../config';
 import { parsePracticeQuestionsString } from "./utils";
 
-const makeNewLessonRequest = (user_id, title, description) => {
+const makeNewLessonRequest = (user_id, title, description, isPublic, citation) => {
     let data = JSON.stringify({
         title: title,
         user_id: user_id,
-        description: description
+        description: description,
+        is_public: isPublic,
+        citation: citation
     });
 
     let config = {
@@ -66,43 +68,41 @@ const makeNewPracticeQuestionRequest = (question, lessonId) => {
     return config;
 }
 
-const insertLessonComponents = async (user, completeLesson, lessonTitle, topics) => {
-    // Insert lesson record
-    const newLessonRequest = makeNewLessonRequest(user.id, lessonTitle, completeLesson.description);
-    axios.request(newLessonRequest)
-    .then((response) => {
-        console.log('INSERT LESSON RESPONSE:',  response.data.status);
-        const lessonId = response.data.id;
+const insertLessonComponents = async (user, completeLesson, lessonTitle, topics, isPublic, citation) => {
+    try {
+        // Insert lesson record
+        console.log('citation passed to lesson insert:', citation)
+        const newLessonRequest = makeNewLessonRequest(user.id, lessonTitle, completeLesson.description, isPublic, citation);
+        const lessonResponse = await axios.request(newLessonRequest);
+        console.log('INSERT LESSON RESPONSE:', lessonResponse.data.status);
+
+        const lessonId = lessonResponse.data.id;
 
         // Insert Lesson Sections
-        for(let i = 0; i < topics.length; i++){
-            const newSectionRequest = makeNewSectionRequest(lessonId, topics[i], completeLesson['sections'][i]);
-            axios.request(newSectionRequest)
-            .then((response) => {
-                console.log(`insert "${topics[i]}" section response:`, response.data.status);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        }
+        const sectionPromises = topics.map(async (topic, i) => {
+            const newSectionRequest = makeNewSectionRequest(lessonId, topic, completeLesson['sections'][i]);
+            const sectionResponse = await axios.request(newSectionRequest);
+            console.log(`insert "${topic}" section response:`, sectionResponse.data.status);
+        });
+        await Promise.all(sectionPromises);
 
         // Insert Lesson Practice Questions
         const practiceQuestionsString = completeLesson.practice_questions;
+        console.log(practiceQuestionsString);
         const questionList = parsePracticeQuestionsString(practiceQuestionsString);
-        for(const question of questionList){
+
+        console.log(questionList)
+        const questionPromises = questionList.map(async (question) => {
             const newQuestionRequest = makeNewPracticeQuestionRequest(question, lessonId);
-            axios.request(newQuestionRequest)
-            .then((response) => {
-                console.log(`insert practice question response:`, response.data.status);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        }
-    })
-    .catch((error) => {
+            const questionResponse = await axios.request(newQuestionRequest);
+            console.log(`insert practice question response:`, questionResponse.data.status);
+        });
+        await Promise.all(questionPromises);
+
+        return lessonId;
+    } catch (error) {
         console.log(error);
-    });
-}
+    }
+};
 
 export default insertLessonComponents;
