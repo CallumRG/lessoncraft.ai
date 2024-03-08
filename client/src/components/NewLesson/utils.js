@@ -27,8 +27,8 @@ export const parsePracticeQuestionsString = (questionsString) => {
       questionObj['option_d'] = optionDSubstring.substring(optionDSubstring.indexOf('d:') + 2,);
       
       // answer
-      const answerSubstring = question.substring(question.indexOf('answer:'),);
-      questionObj['answer'] = answerSubstring.substring(answerSubstring.indexOf('answer:') + 7,answerSubstring.indexOf('answer:') + 8);
+      const answerSubstring = question.substring(question.indexOf('answer:') + 7);
+      questionObj['answer'] = answerSubstring.trim().substring(0, 1);
       
       result.push(questionObj);
     }
