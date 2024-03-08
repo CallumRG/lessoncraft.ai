@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Grid, Typography, useTheme } from '@mui/material';
+import { tokens } from "../../theme";
 import axios from "axios";
 import {API_URL} from '../../config';
+import PracticeQuestion from "./practiceQuestion";
 
 const LessonPage = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const { lesson_id } = useParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -69,32 +74,45 @@ const LessonPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1>{title}</h1>
-      <p>{description}</p>
+    <Grid container style={{ maxWidth: '80%', margin: 'auto' }} spacing={4}>
+      <Grid item xs={12}>
+        <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
+          <Typography variant="h1" style={{ paddingTop: '10px', marginBottom: '10px' }}>
+            {title.toUpperCase()}
+          </Typography>
+        </div>
+        <Typography variant="body1" style={{ marginBottom: '40px', fontSize: '18px', lineHeight: '2.5', textIndent: '30px' }}>
+          {description}
+        </Typography>
+      </Grid>
 
       {lessonSections &&
         lessonSections.map((section) => (
-          <div key={section.id}>
-            <h2>{section.title}</h2>
-            <p>{section.body}</p>
-          </div>
-        ))
-      }
+          <Grid item key={section.id} xs={12} style={{ marginBottom: '40px', fontSize: '18px' }}>
+            <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
+              <Typography variant="h2" style={{marginBottom: '10px', fontWeight: 'bold'}}>
+                {section.title}
+              </Typography>
+            </div>
+            <Typography variant="body1" style={{ lineHeight: '2.5', fontSize: '18px', textIndent: '30px' }}>
+              {section.body}
+            </Typography>
+          </Grid>
+        ))}
 
-      {lessonPracticeQuestions &&
-        lessonPracticeQuestions.map((question) => (
-          <div key={question.id}>
-            <h2>{question.question}</h2>
-            <p>{question.option_a}</p>
-            <p>{question.option_b}</p>
-            <p>{question.option_c}</p>
-            <p>{question.option_d}</p>
-            <p>{question.answer}</p>
-          </div>
-        ))
-      }
-    </div>
+      <Grid item xs={12} style={{ marginBottom: '40px', fontSize: '18px' }}>
+        <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
+          <Typography variant="h2" style={{marginBottom: '10px', fontWeight: 'bold'}}>
+            Practice Questions
+          </Typography>
+        </div>
+        {lessonPracticeQuestions &&
+          lessonPracticeQuestions.map((question) => (
+            <PracticeQuestion key={question.id} question={question} />
+          ))
+        }
+      </Grid>
+    </Grid>
   );
 };
 

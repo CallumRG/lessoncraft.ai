@@ -94,8 +94,12 @@ const insertLessonComponents = async (user, completeLesson, lessonTitle, topics,
         console.log(questionList)
         const questionPromises = questionList.map(async (question) => {
             const newQuestionRequest = makeNewPracticeQuestionRequest(question, lessonId);
-            const questionResponse = await axios.request(newQuestionRequest);
-            console.log(`insert practice question response:`, questionResponse.data.status);
+            try{
+                const questionResponse = await axios.request(newQuestionRequest);
+                console.log(`insert practice question response:`, questionResponse.data.status);
+            } catch(e) {
+                console.log(e)
+            }
         });
         await Promise.all(questionPromises);
 
