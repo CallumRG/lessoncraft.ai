@@ -51,7 +51,7 @@ const SB = (props) => {
   };
 
   return (
-      <Sidebar collapsed={props.isCollapsed} backgroundColor={colors.primary[100]}>
+      <Sidebar collapsed={props.isCollapsed} backgroundColor={colors.primary[100]} style={{position: 'fixed', height: '100%', overflowY: 'auto'}}>
         <Menu iconShape="square" menuItemStyles={MenuItemStyles}>
 
             {/* EXPAND/COLLAPSE ICON AND NAME*/}
