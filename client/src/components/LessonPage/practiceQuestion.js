@@ -15,15 +15,17 @@ const PracticeQuestion = ({ question }) => {
     };
 
     const handleRevealAnswer = () => {
-        setRevealAnswer(true);
+        if(selectedOption){
+            setRevealAnswer(true);
+        }
     };
 
     return (
-        <Grid item xs={12} style={{ marginBottom: '30px', borderBottom: `1px solid ${colors.blueAccent[100]}`, paddingBottom: 30 }}>
-            <Typography variant="h3" style={{marginBottom: 20}}>{question.question}</Typography>
+        <Grid item xs={12} style={{ marginBottom: '40px', borderBottom: `1px solid ${colors.blueAccent[100]}`, paddingBottom: 30 }}>
+            <Typography variant="h3" style={{marginBottom: 40}}>{question.question}</Typography>
 
             {['option_a', 'option_b', 'option_c', 'option_d'].map((option) => (
-                <div key={option} style={{ display: 'block', marginBottom: '10px' }}>
+                <div key={option} style={{ display: 'block', marginBottom: '15px' }}>
                     <Button
                         key={option}
                         variant={revealAnswer ? (question.answer === option.split('_')[1] ? 'contained' : 'outlined') : (selectedOption === option ? 'contained' : 'outlined')}
@@ -32,7 +34,7 @@ const PracticeQuestion = ({ question }) => {
                         size='large'
                         style={{
                             marginRight: '10px',
-                            marginBottom: '10px',
+                            marginBottom: '20px',
                             borderRadius: 25,
                             borderColor: colors.blueAccent[100],
                             color: revealAnswer
@@ -40,8 +42,10 @@ const PracticeQuestion = ({ question }) => {
                                 ? '#8FDB8F'
                                 : selectedOption === option
                                     ? 'red'
-                                    : 'white'
-                            : 'white',
+                                    : colors.primary[900]
+                            : colors.primary[900],
+                            textTransform: 'lowercase',
+                            fontSize: '15px'
                         }}
                         disabled={revealAnswer}
                     >
@@ -50,7 +54,7 @@ const PracticeQuestion = ({ question }) => {
                 </div>
             ))}
 
-            <Button variant="contained" size='medium' color='secondary' onClick={handleRevealAnswer} style={{color: 'white', borderRadius: 25}}disabled={revealAnswer}>
+            <Button variant="contained" size='medium' color='secondary' onClick={handleRevealAnswer} style={{color: 'white', borderRadius: 25, marginTop: 20}}disabled={revealAnswer}>
                 Reveal Answer
             </Button>
 
