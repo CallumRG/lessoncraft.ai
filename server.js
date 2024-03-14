@@ -84,6 +84,34 @@ app.post('/createLessonPracticeQuestion', async (req, res) => {
     });
 });
 
+// Endpoint to increment views for a lesson
+app.post('/lessons/:lessonId/view', (req, res) => {
+    const lessonId = req.body.lesson_id;
+    const viewerId = req.body.viewer_id;
+  
+    // Increment view count for the lesson
+    db.query('UPDATE lessons SET view_count = view_count + 1 WHERE id = ?', [lessonId], (error, results) => {
+        if (error) {
+            console.error('Error updating view count:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    
+        // Insert view record if logged in
+        if(viewerId !== ""){
+            db.query('INSERT INTO views (lesson_id, viewer_id) VALUES (?, ?)', [lessonId, viewerId], (error, results) => {
+                if (error) {
+                console.error('Error recording view:', error);
+                return res.status(500).json({ message: 'Internal server error' });
+                }
+                res.status(200).json({ message: 'View recorded successfully' });
+            });
+        }
+        else{
+            res.status(200).json({ message: 'View recorded successfully' });
+        }
+    });
+});
+
 // Get a lesson
 app.post('/lesson', async (req, res) => {
     let lesson_id = req.body.lesson_id;
@@ -174,6 +202,29 @@ app.get('/getUserDetails', async (req, res) => {
     try {
         const query = `SELECT * FROM users WHERE firebase_uid = ?`;
         db.query(query, [firebaseId], (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            if (result.length > 0) {
+                const userDetails = result[0];
+                res.json(userDetails);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/getDBUserDetails', async (req, res) => {
+    const userId = req.query.id;
+
+    try {
+        const query = `SELECT * FROM users WHERE id = ?`;
+        db.query(query, [userId], (err, result) => {
             if (err) {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });

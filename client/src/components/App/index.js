@@ -113,7 +113,7 @@ const App = () => {
                     <Route path={constants.CREATE} element={<CreatePage />} />
                     <Route path={constants.NEWCOURSE} element={<NewCourse />} />
                     <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
-                    <Route path={constants.LESSON} element={<LessonPage user={user}/>} />
+                    <Route path={constants.LESSON} element={<LessonPage user={user} isCollapsed={isCollapsed}/>} />
                     <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                     <Route path={constants.COURSE} element={<CoursePage />} />
                     <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
