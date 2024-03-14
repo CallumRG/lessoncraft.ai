@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import {Typography, Button, Grid, TextField,
-} from "@mui/material";
+import { TextField, Button, IconButton, Typography, Grid, useTheme, Input, Box } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import Firebase from "../Firebase/firebase";
 import { API_URL } from "../../config";
+import { tokens } from "../../theme";
 
 const NewCourse = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const firebase = new Firebase();
 
@@ -72,69 +74,80 @@ const NewCourse = () => {
   };
 
   return (
-    <Grid container spacing={3} alignItems="center" justifyContent="center" padding={12}>
-      <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
-          Create New Course:
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          {/* course name input */}
-          <TextField
-            label="Course Name"
-            name="courseName"
-            value={formData.courseName}
-            onChange={(e) => handleChange("courseName", e.target.value)}
-            fullWidth
-            required
-            margin="normal"
-          />
+    <Box
+        height="94%"
+        width="85%"
+        borderRadius="50px"
+        border={`3px solid ${colors.blueAccent[100]}`}
+        margin="auto"
+    >
+      <Grid container spacing={3} alignItems="center" justifyContent="center" padding={12}>
+        <Grid item xs={12}>
+          <Typography variant="h4" gutterBottom>
+            Create New Course:
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            {/* course name input */}
+            <TextField
+              label="Course Name"
+              name="courseName"
+              value={formData.courseName}
+              onChange={(e) => handleChange("courseName", e.target.value)}
+              fullWidth
+              required
+              margin="normal"
+              variant="standard"
+            />
 
-          {/* subjects input */}
-          <TextField
-            label="Subjects (Comma-separated)"
-            name="subjects"
-            value={formData.subjects}
-            onChange={(e) => handleChange("subjects", e.target.value)}
-            fullWidth
-            required
-            margin="normal"
-          />
+            {/* subjects input */}
+            <TextField
+              label="Subjects (Comma-separated)"
+              name="subjects"
+              value={formData.subjects}
+              onChange={(e) => handleChange("subjects", e.target.value)}
+              fullWidth
+              required
+              margin="normal"
+              variant="standard"
+            />
 
-          {/* max users input */}
-          <TextField
-            label="Maximum Users"
-            type="number"
-            name="maxUsers"
-            value={formData.maxUsers}
-            onChange={(e) => handleChange("maxUsers", e.target.value)}
-            fullWidth
-            required
-            margin="normal"
-          />
+            {/* max users input */}
+            <TextField
+              label="Maximum Users"
+              type="number"
+              name="maxUsers"
+              value={formData.maxUsers}
+              onChange={(e) => handleChange("maxUsers", e.target.value)}
+              fullWidth
+              required
+              margin="normal"
+              variant="standard"
+            />
 
-          <br></br>
+            <br></br>
 
-          {/* turn off or on public setting of the course */}
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                name="isPublic"
-                checked={formData.isPublic}
-                onChange={(e) => handleChange("isPublic", e.target.checked)}
-              />
-              Public Course
-            </label>
-          </div>
-          <br></br>
+            {/* turn off or on public setting of the course */}
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isPublic"
+                  checked={formData.isPublic}
+                  onChange={(e) => handleChange("isPublic", e.target.checked)}
+                />
+                Public Course
+              </label>
+            </div>
+            <br></br>
 
-          {/* submit button */}
-          <Button type="submit" variant="contained" color="primary">
-            Submit
-          </Button>
-        </form>
+            {/* submit button */}
+            <Button type="submit" variant="contained" color="secondary">
+              Submit
+            </Button>
+          </form>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 };
 
