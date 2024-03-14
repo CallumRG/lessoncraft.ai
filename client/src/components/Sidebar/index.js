@@ -118,13 +118,13 @@ const SB = (props) => {
                         <MenuItem icon={<PeopleOutlinedIcon/>}>
                             Shared With Me
                         </MenuItem>
-                        <MenuItem icon={<GradeIcon/>}>
+                        <MenuItem icon={<GradeIcon/>} onClick={() => navigate('/lessondash/liked')}>
                             Starred
                         </MenuItem>
                         <MenuItem icon={<RemoveRedEyeIcon/>}>
                             Recently Viewed
                         </MenuItem>
-                        <MenuItem icon={<CreateIcon/>}>
+                        <MenuItem icon={<CreateIcon/>} onClick={() => navigate('/lessondash/byme')}>
                             By Me
                         </MenuItem>
                     </SubMenu>
