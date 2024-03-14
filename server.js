@@ -172,6 +172,93 @@ app.post('/lessonPracticeQuestions', async (req, res) => {
     });
 });
 
+// LESSON LIKES---------------------------------------------------------------------------------------------
+
+// like actions for a lesson
+app.post('/like', (req, res) => {
+    const { action, user_id, lesson_id } = req.body;
+  
+    if (action === 'add') {
+      // Add a like
+      db.query('INSERT INTO likes (user_id, lesson_id) VALUES (?, ?)', [user_id, lesson_id], (error, results) => {
+        if (error) {
+          console.error('Error adding like:', error);
+          return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json({ message: 'Like added successfully' });
+      });
+    } else if (action === 'remove') {
+      // Remove a like
+      db.query('DELETE FROM likes WHERE user_id = ? AND lesson_id = ?', [user_id, lesson_id], (error, results) => {
+        if (error) {
+          console.error('Error removing like:', error);
+          return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json({ message: 'Like removed successfully' });
+      });
+    } else if (action === 'check') {
+      // Check if a like exists
+      db.query('SELECT * FROM likes WHERE user_id = ? AND lesson_id = ?', [user_id, lesson_id], (error, results) => {
+        if (error) {
+          console.error('Error checking like:', error);
+          return res.status(500).json({ message: 'Internal server error' });
+        }
+  
+        if (results.length > 0) {
+          res.status(200).json({ liked: true });
+        } else {
+          res.status(200).json({ liked: false });
+        }
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid action' });
+    }
+});
+
+// Endpoint to fetch the number of likes on a lesson
+app.post('/lessonlikes', (req, res) => {
+    const { lesson_id } = req.body;
+
+    db.query('SELECT COUNT(*) AS like_count FROM likes WHERE lesson_id = ?', [lesson_id], (error, results) => {
+      if (error) {
+        console.error('Error fetching like count:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      res.status(200).json({ like_count: results[0].like_count });
+    });
+});
+
+// ------------------------------------------------------------------------------------------------------------
+
+// USERS LESSON DASH----------------------------------------------------------------------------
+
+// fetch lessons created by a user
+app.post('/lessons/byme', (req, res) => {
+    const { user_id } = req.body;
+  
+    db.query('SELECT * FROM lessons WHERE user_id = ? ORDER BY id ASC', [user_id], (error, results) => {
+      if (error) {
+        console.error('Error fetching lessons:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      res.status(200).json(results);
+    });
+});
+
+// fetch all liked lessons for a user
+app.post('/lessons/liked', (req, res) => {
+    const { user_id } = req.body;
+
+    const query = 'SELECT lessons.* FROM lessons INNER JOIN likes ON lessons.id = likes.lesson_id WHERE likes.user_id = ?';
+    db.query(query, [user_id], (error, results) => {
+        if (error) {
+            console.error('Error fetching liked lessons:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json(results);
+    });
+});
+
 // ------------------------------------------------------------------------------------------------------------
 
 // USERS--------------------------------------------------------------------------------------------------

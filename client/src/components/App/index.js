@@ -24,6 +24,8 @@ import CoursePage from "../CoursePage";
 import CourseAdmin from "../CourseAdmin";
 import NewLesson from '../NewLesson';
 import LessonPage from '../LessonPage';
+import LessonDash from '../LessonDash';
+import Loading from '../Loading';
 
 import * as constants from '../../constants/routes'
 
@@ -31,6 +33,7 @@ const App = () => {
   const firebase = new Firebase();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -70,6 +73,7 @@ const App = () => {
         };
         console.log('curruser:', currUser);
         setUser(currUser);
+        setLoading(false);
     })
     .catch((error) => {
         console.log(error);
@@ -102,24 +106,31 @@ const App = () => {
             <main className="content" style={{marginLeft: isCollapsed ? "80px" : "250px", transition: "margin-left 0.3s ease",}}>
                 <Topbar user={user} isCollapsed={isCollapsed}/>
                 <div style={{marginTop: 80}}>
-                  <Routes>
-                    <Route path={constants.LANDING} element={<LandingPage />} />
-                    <Route path={constants.SIGN_UP} element={<SignUpPage/>} />
-                    <Route path={constants.SIGN_IN} element={<SignInPage/>} />
-                    <Route path={constants.EXPLORE} element={<ExplorePage />} />
-                    <Route path={constants.ACCOUNT} element={<AccountPage />} />
-                    <Route path={constants.ADMIN} element={<AdminPage />} />
-                    <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
-                    <Route path={constants.CREATE} element={<CreatePage />} />
-                    <Route path={constants.NEWCOURSE} element={<NewCourse />} />
-                    <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
-                    <Route path={constants.LESSON} element={<LessonPage user={user} isCollapsed={isCollapsed}/>} />
-                    <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
-                    <Route path={constants.COURSE} element={<CoursePage />} />
-                    <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
-                    {/* Default Route */}
-                    <Route path="*" element={<LandingPage />} />
-                  </Routes>
+                {loading ? 
+                  (
+                    <Loading/>
+                  ) 
+                  : 
+                  (
+                      <Routes>
+                        <Route path={constants.LANDING} element={<LandingPage />} />
+                        <Route path={constants.SIGN_UP} element={<SignUpPage/>} />
+                        <Route path={constants.SIGN_IN} element={<SignInPage/>} />
+                        <Route path={constants.EXPLORE} element={<ExplorePage />} />
+                        <Route path={constants.CREATE} element={<CreatePage />} />
+                        <Route path={constants.NEWCOURSE} element={<NewCourse />} />
+                        <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
+                        <Route path={constants.LESSON} element={<LessonPage user={user} isCollapsed={isCollapsed}/>} />
+                        <Route path={constants.LESSONSBYME} element={<LessonDash user={user}/>} />
+                        <Route path={constants.LIKEDLESSONS} element={<LessonDash user={user}/>} />
+                        <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
+                        <Route path={constants.COURSE} element={<CoursePage />} />
+                        <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
+                        {/* Default Route */}
+                        <Route path="*" element={<LandingPage />} />
+                      </Routes>
+                  )
+                }
                 </div>
             </main>
           </div>

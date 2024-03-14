@@ -12,3 +12,5 @@ export const COURSE ="/course/:course_id";
 export const COURSE_ADMIN="/course/:course_id/admin";
 export const NEWLESSON ="/newlesson";
 export const LESSON = "/lesson/:lesson_id";
+export const LESSONSBYME = "/lessondash/byme";
+export const LIKEDLESSONS = "/lessondash/liked";

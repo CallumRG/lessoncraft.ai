@@ -6,6 +6,7 @@ import axios from "axios";
 import {API_URL} from '../../config';
 import PracticeQuestion from "./practiceQuestion";
 import MiddleBar from "./middleBar";
+import ThirdBar from "./thirdBar";
 
 const LessonPage = (props) => {
   const theme = useTheme();
@@ -93,7 +94,6 @@ const LessonPage = (props) => {
     const practiceQuestionsReq = makeLessonReq(`${API_URL}/lessonPracticeQuestions`);
     axios.request(practiceQuestionsReq)
     .then((response) => {
-      console.log(response.data.lesson);
       setLessonPracticeQuestions(response.data.lesson);
     })
     .catch((error) => {
@@ -131,11 +131,12 @@ const LessonPage = (props) => {
 
   return (
     <>
-      <MiddleBar isCollapsed={props.isCollapsed} views={views} author={author} date={date} citation={citation} isPublic={isPublic}/>
+      <MiddleBar isCollapsed={props.isCollapsed} author={author} date={date} isPublic={isPublic} citation={citation}/>
+      <ThirdBar user={props.user} lessonId={lesson_id} views={views}/>
       <Grid container style={{ maxWidth: '80%', margin: 'auto' }} spacing={4}>
         <Grid item xs={12}>
-          <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
-            <Typography variant="h1" style={{ paddingTop: '10px', marginBottom: '10px' }}>
+          <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px', marginTop: -40}}>
+            <Typography variant="h1" style={{ marginBottom: '10px' }}>
               {title.toUpperCase()}
             </Typography>
           </div>
