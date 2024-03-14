@@ -2,17 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { API_URL } from "../../config";
 import Firebase from '../Firebase/firebase';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
+import { tokens } from "../../theme";
+import { TextField, Button, IconButton, Typography, Grid, useTheme, Input, Box } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const CourseAdmin = () => {
-
     //set states and stuff
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
     const firebase = new Firebase();
     const navigate = useNavigate();
     const { course_id } = useParams();
     const [administrators, setAdministrators] = useState([]);
     const [newAdminEmail, setNewAdminEmail] = useState('');
-    const [adminsNotFound, setAdminsNotFound] = useState(false)
+    const [adminsNotFound, setAdminsNotFound] = useState(false);
 
     useEffect(() => {
         // fetch administrators from the server when the component mounts
@@ -25,7 +29,7 @@ const CourseAdmin = () => {
             const response = await fetch(`${API_URL}/courseFetchAdmin`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ course_id }),
             });
@@ -42,10 +46,10 @@ const CourseAdmin = () => {
                 console.error('Error fetching course admins:', response.statusText);
                 toast.error('Error fetching course admins');
             }
-            } catch (error) {
+        } catch (error) {
             console.error('Error fetching course admins:', error);
             toast.error('Error fetching course admins');
-            }
+        }
     };
 
     //add new admin
@@ -54,18 +58,18 @@ const CourseAdmin = () => {
             const response = await fetch(`${API_URL}/courseAddAdmin`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     course_id,
                     newAdminEmail,
-                    current_id : firebase.auth.currentUser.uid
+                    current_id: firebase.auth.currentUser.uid
                 }),
             });
 
             if (response.ok) {
                 setNewAdminEmail('');
-                fetchAdministrators()
+                fetchAdministrators();
             } else if (response.status === 404) {
                 toast.error('Admin does not exist');
             } else if (response.status === 403) {
@@ -76,10 +80,10 @@ const CourseAdmin = () => {
                 console.error('Error adding course admins:', response.statusText);
                 toast.error('Error adding course admin');
             }
-            } catch (error) {
+        } catch (error) {
             console.error('Error adding course admins:', error);
             toast.error('Error adding course admins');
-            }
+        }
     };
 
     //delete admin
@@ -89,70 +93,96 @@ const CourseAdmin = () => {
 
         if (!confirmDelete) {
             return; // User canceled deletion
-    }
+        }
 
         try {
             const response = await fetch(`${API_URL}/courseDeleteAdmin`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     course_id,
                     admin_id,
-                    current_id : firebase.auth.currentUser.uid
+                    current_id: firebase.auth.currentUser.uid
                 }),
             });
 
             if (response.ok) {
-                fetchAdministrators()
+                fetchAdministrators();
             } else if (response.status === 403) {
                 toast.error('Current User Not Course Owner');
             } else {
                 console.error('Error deleting course admins:', response.statusText);
                 toast.error('Error deleting course admin');
             }
-            } catch (error) {
+        } catch (error) {
             console.error('Error deleting course admins:', error);
             toast.error('Error deleting course admins');
-            }
+        }
     };
 
     return (
-        <div>
-            <Link to={`/course/${course_id}`}>
-                <button>Return to Course</button>
-            </Link>
-
-            <h1>Edit Administrators - Course ID: {course_id}</h1>
+        <Grid container
+            spacing={1}
+            alignItems="center"
+            justifyContent="center"
+            style={{ height: "30vh", width: "90%", margin: "auto" }}>
+            <Grid item xs={12}>
+                <Link to={`/course/${course_id}`}>
+                    <Button startIcon={<ArrowBackIcon />}  variant="contained">Return to Course</Button>
+                </Link>
+            </Grid>
+            <Grid item xs={12}>
+                <hr></hr>
+            </Grid>
+            <Grid item xs={12} >
+                <Typography variant="h4" align ="center"> Edit Administrators (Course ID #{course_id})</Typography>
+            </Grid>
             {/* add admins */}
-            <div>
-                <input
-                type="email"
-                placeholder="Enter User Email"
-                value={newAdminEmail}
-                onChange={(e) => setNewAdminEmail(e.target.value)}
+            <Grid item xs={6} align ="right">
+                <TextField
+                    type="email"
+                    placeholder="Enter User Email"
+                    value={newAdminEmail}
+                    onChange={(e) => setNewAdminEmail(e.target.value)}
                 />
-                <button onClick={handleAddAdministrator}>Add Administrator</button>
-            </div>
+            </Grid>
+            <Grid item xs={6} align ="left">
+                <Button variant="contained" color = "secondary" onClick={handleAddAdministrator}>Add Administrator</Button>
+            </Grid>
 
             {/* display admins */}
-            <div>
-                {adminsNotFound ? (
-                    <p>No admins in course ({course_id}).</p>
-                ) : (
-                    // Render your administrators list here
-                    <ul>
-                        {administrators.map((admin) => (
-                            <li key={admin.admin_id}>
-                                {admin.email}
-                                <button onClick={() => handleDeleteAdministrator(admin.admin_id)}>Delete</button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
-        </div>
+            <Grid item xs={12} align = 'center'>
+            {adminsNotFound ? (
+                <Typography variant="body1" align="center">
+                No admins in course ({course_id}).
+                </Typography>
+            ) : (
+                // render table
+                <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '50%' }}>
+                <thead>
+                    <tr>
+                    <th style={{ padding: '8px', border: '1px solid black' }}>Email</th>
+                    <th style={{ padding: '8px', border: '1px solid black' }}>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {administrators.map((admin) => (
+                    <tr key={admin.admin_id} align = 'center'>
+                        <td style={{ padding: '8px', border: '1px solid black' }}>{admin.email}</td>
+                        <td style={{ padding: '8px', border: '1px solid black' }}>
+                        <Button variant="contained" onClick={() => handleDeleteAdministrator(admin.admin_id)}>
+                            Delete
+                        </Button>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
+            )}
+            </Grid>
+        </Grid>
     );
 };
 
