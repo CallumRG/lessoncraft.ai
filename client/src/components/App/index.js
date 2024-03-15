@@ -76,6 +76,7 @@ const App = () => {
         setLoading(false);
     })
     .catch((error) => {
+        setLoading(false);
         console.log(error);
     });
   };
@@ -87,6 +88,7 @@ const App = () => {
         fetchUserDetails(authUser);
       } else {
         setUser(null);
+        setLoading(false);
       }
     });
 

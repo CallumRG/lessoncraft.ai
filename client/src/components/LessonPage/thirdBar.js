@@ -10,6 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import GradeIcon from '@mui/icons-material/Grade';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
+import PublicIcon from '@mui/icons-material/Public';
 
 const ThirdBar = (props) => {
     const theme = useTheme();
@@ -94,6 +95,8 @@ const ThirdBar = (props) => {
             }}
         >
             <Box ml="25px" alignItems="center" display='flex'>
+                <PublicIcon style={{marginRight: 8, color: colors.primary[900]}}/>
+                <Typography variant="h6" style={{ lineHeight: '1', marginRight: 20 }}>{props.isPublic ? 'Public' : 'Private'}</Typography>
                 <GradeIcon style={{marginRight: 8, color: colors.primary[900]}}/>
                 <Typography variant="h6" style={{ lineHeight: '1', marginRight: 20 }}>{likeCount}</Typography>
                 <VisibilityIcon style={{marginRight: 8, color: colors.primary[900]}}/>

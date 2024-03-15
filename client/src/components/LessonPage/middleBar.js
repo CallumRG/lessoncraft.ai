@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 // Icons
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import PublicIcon from '@mui/icons-material/Public';
 
 const MiddleBar = (props) => {
     const theme = useTheme();
@@ -35,7 +34,6 @@ const MiddleBar = (props) => {
             <Box ml="25px" alignItems="center" display='flex'>
                 <Typography variant="h6" style={{marginRight: 50}}>Author: {props.author.first_name} {props.author.last_name}</Typography>
                 <Typography variant="h6" style={{marginRight: 50}}><ScheduleIcon style={{marginBottom: -5, marginRight: 3}}/>Published {formatDate(props.date)}</Typography>
-                <Typography variant="h6" ><PublicIcon style={{marginBottom: -5, marginRight: 3}}/>{props.isPublic ? 'Public' : 'Private'}</Typography>
             </Box>
 
             <Box display="flex" justifyContent="space-between" mr="50px">
