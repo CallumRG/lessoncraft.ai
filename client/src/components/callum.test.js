@@ -45,7 +45,7 @@ describe('CourseAdmin', () => {
     render(<CourseAdmin />);
 
     expect(screen.getByText('Return to Course')).toBeInTheDocument();
-    expect(screen.getByText('Edit Administrators - Course ID: mocked-course-id')).toBeInTheDocument();
+    expect(screen.getByText('Edit Administrators (Course ID #mocked-course-id)')).toBeInTheDocument();
     expect(screen.getByText('Add Administrator')).toBeInTheDocument();
     await screen.findByText('No admins in course (mocked-course-id).');
   });
@@ -74,7 +74,7 @@ describe('CourseAdmin', () => {
   
     // check for admin rendered and delete button
     expect(screen.getByText('Return to Course')).toBeInTheDocument();
-    expect(screen.getByText('Edit Administrators - Course ID: mocked-course-id')).toBeInTheDocument();
+    expect(screen.getByText('Edit Administrators (Course ID #mocked-course-id)')).toBeInTheDocument();
     expect(screen.getByText('Add Administrator')).toBeInTheDocument();
     await screen.findByText('admin@example.com'); 
     await screen.findByText('Delete'); 
