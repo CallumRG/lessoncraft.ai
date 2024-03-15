@@ -1,5 +1,5 @@
 import {React, useState} from "react";
-import { Typography, TextField, Button, Grid, useTheme } from "@mui/material";
+import { Typography, TextField, Button, Grid, useTheme, Link as MuiLink } from "@mui/material";
 import { tokens, ColorModeContext } from "../../theme";
 import { Link, useNavigate } from "react-router-dom";
 import Firebase from '../Firebase/firebase';
@@ -45,6 +45,21 @@ const SignInPage = () => {
       setLoading(false);
       console.error("Error signing in:", error.message);
       setError(true);
+    }
+  };
+
+  const handleReset = async () => {
+    if (!email) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    try {
+      await firebase.doPasswordReset(email);
+      toast.success("Password reset email sent. Check your inbox.");
+    } catch (error) {
+      console.error("Error sending password reset email:", error.message);
+      toast.error("Failed to send password reset email.");
     }
   };
 
@@ -126,18 +141,28 @@ const SignInPage = () => {
                       <Typography color="red" style={{alignItems: "center"}}>Invalid Credentials. Try again.</Typography>
                     }
                   </Grid>
+
+      
                 </Grid>
               </form>
             </Grid>
       
             <Grid item xs={12} align="center">
+              {/* Forget Password */}
+              <Typography>
+                  Forget your password?{" "}
+                    <Link to="/passwordforget" style={{cursor: "pointer", color: colors.blueAccent[100]}}>
+                      Reset Password
+                    </Link>
+              </Typography>
+
               <Typography>
                 Don't have an account?{" "}
                 <Link to="/signup" style={{cursor: "pointer", color: colors.blueAccent[100]}}>
                   Sign Up
                 </Link>
-              </Typography>
-            </Grid>
+              </Typography>  
+            </Grid> 
           </Grid>
         )
         :

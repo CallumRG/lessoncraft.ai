@@ -1,18 +1,27 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Box, Button, TextField, Typography } from "@mui/material";
+import React, { useState, useEffect, useContext, useStyles } from 'react';
+import { Box, Button, TextField, Typography, Grid, useTheme, Avatar, Stack} from "@mui/material";
 import Firebase from "../Firebase/firebase";
+import { updatePassword, getAuth } from "firebase/auth";
 import axios from "axios";
 import {API_URL} from '../../config';
+import { ColorModeContext, tokens } from "../../theme";
+import { toast } from 'react-toastify';
+import Loading from "../Loading";
 
 const ProfilePage = (props) => {
     const firebase = new Firebase();
     const [userInfo, setUserInfo] = useState({ firstName: '', lastName: '' });
-    const [passwordOne, setPasswordOne] = useState('');
-    const [passwordTwo, setPasswordTwo] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [error, setError] = useState(null);
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
+    const [loading, setLoading] = useState(false);
+    const auth = getAuth();
 
     const makeUserFetchRequest = (firebaseId) => {
-    
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
@@ -24,7 +33,6 @@ const ProfilePage = (props) => {
                 firebase_uid: firebaseId
             }
         };
-
         return config;
     };
 
@@ -48,69 +56,130 @@ const ProfilePage = (props) => {
         fetchUserDetails();
     }, []);
 
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
     
-    const onSubmit = (event) => {
-        if(passwordOne !== passwordTwo) {
-            setError("Passwords do not match");
-            return;
+        if (newPassword !== confirmNewPassword) {
+          toast.error("Passwords do not match.");
+          setLoading(false);
+          return;
         }
 
-        // firebase context provides a method to change password
-        firebase
-            .doPasswordUpdate(passwordOne)
-            .then(() => {
-                setPasswordOne('');
-                setPasswordTwo('');
-                setError(null);
-                // Handle successful password change
-            })
-            .catch(error => {
-                setError(error.message);
-            });
-
-        event.preventDefault();
+        try {
+            await updatePassword(auth.currentUser, newPassword);
+            toast.success("Password has been updated successfully.");
+            // setCurrentPassword("");
+            setNewPassword("");
+            setConfirmNewPassword("");
+          } catch (error) {
+            console.error("Error updating password:", error.message);
+            toast.error("Failed to update password.");
+          } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h3">
-                Profile Details
-            </Typography>
-
-            <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
-                <Typography variant="body1">
-                    <strong>First Name:</strong> {userInfo.firstName}
-                </Typography>
-                <Typography variant="body1">
-                    <strong>Last Name:</strong> {userInfo.lastName}
-                </Typography>
-            </Box>
- 
-            <Typography variant="h5" component="h5" sx={{ marginLeft: "40px", marginTop: '20px' }}>
-                Manage Account
-            </Typography>
+        <>
+        {!loading ? (
+            <Grid 
+                container 
+                spacing={2} 
+                alignItems="center"
+                sx={{ paddingTop: 2, paddingLeft: 3 }}
+            >
+                <Grid item>
+                <Avatar
+                        sx={{width: 120, height: 120, mb: 2,}}
+                        src="/broken-image.jpg" // your avatar image path
+                    />
+                </Grid>
+                <Grid item xs={12} sm container>
+                    <Grid item xs container direction="column" spacing={2}>
+                        <Grid item xs>
+                            <Typography gutterBottom variant="h2" sx={{fontWeight:'bold'}}>
+                                {userInfo.firstName} {userInfo.lastName}
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Button variant="outlined" color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
+                                Chat
+                            </Button>
+                            <Button variant="outlined" color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
+                                Follow
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
             
-            <form onSubmit={onSubmit}>
-                <TextField
-                    name="passwordOne"
-                    value={passwordOne}
-                    onChange={e => setPasswordOne(e.target.value)}
-                    type="password"
-                    placeholder="New Password"
-                />
-                <TextField
-                    name="passwordTwo"
-                    value={passwordTwo}
-                    onChange={e => setPasswordTwo(e.target.value)}
-                    type="password"
-                    placeholder="Confirm New Password"
-                />
-                <Button type="submit">Change My Password</Button>
+            <Grid item xs={12}>
+                <form 
+                    style={{ width: "100%" }}
+                    onSubmit={handleSubmit}
+                >
+                    <Box sx={{ mt: 4 }}>
+                        <Typography variant="h5" gutterBottom sx={{fontWeight:'bold'}}>Details</Typography>
+                        <Typography variant="body1"><strong>First Name:</strong> {userInfo.firstName}</Typography>
+                        <Typography variant="body1"><strong>Last Name:</strong> {userInfo.lastName}</Typography>
 
-                {error && <p>{error}</p>}
+                        <Typography variant="h5" gutterBottom sx={{ mt: 3, fontWeight:'bold'}}>Manage Account</Typography>
+                        {/* <TextField
+                            label="Current Password"
+                            color="secondary"
+                            type="password"
+                            fullWidth
+                            variant="outlined"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            sx={{ mb: 2 }}
+                        /> */}
+                        <Grid container direction="column" spacing={2}>
+                            <Grid item>
+                                <TextField
+                                    required
+                                    label="New Password"
+                                    type="password"
+                                    fullWidth
+                                    variant="outlined"
+                                    color="secondary"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    sx={{ width: 300, '& label.Mui-focused': { color: colors.blueAccent[100] } }}
+                                />
+                            </Grid>
+                            <Grid item>
+                            <TextField
+                                label="Confirm New Password"
+                                type="password"
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                                value={confirmNewPassword}
+                                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                sx={{ width: 300, '& label.Mui-focused': { color: colors.blueAccent[100] } }}
+                            />
+                            </Grid>
+                            <Grid item>
+                                <Button 
+                                    variant="contained" 
+                                    color="secondary" 
+                                    type="submit"
+                                >
+                                        Update Password
+                                </Button>
+                                {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
+                            </Grid>
+                        </Grid>
+                    </Box>
             </form>
-        </Box>
+            </Grid>
+            </Grid>
+
+             ) : (
+                <Loading />
+            )}
+        </>
     );
 };
 
