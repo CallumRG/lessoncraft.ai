@@ -1,8 +1,8 @@
 ## Mar 8, 2024
 Callum:
-- What did I do yesterday: 
-- What was in my way: 
-- What will I do today: 
+- What did I do yesterday: I Finished Searching functionality with SearchPage, CourseSearch, and Lesson Search, plus additional courses UI Changes
+- What was in my way: Errors with usage of components within courses
+- What will I do today: Finish Tests and report
 
 Kaitlyn:
 - What did I do yesterday: 
