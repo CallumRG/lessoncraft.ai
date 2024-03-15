@@ -172,6 +172,33 @@ app.post('/lessonPracticeQuestions', async (req, res) => {
     });
 });
 
+//search and return lessons
+app.post('/searchLessons', (req, res) => {
+    const { title, description, citation, name } = req.body;
+  
+    // grab data
+    const sql = `
+        SELECT lessons.id, lessons.title, lessons.description, lessons.created_at, lessons.updated_at, lessons.citation, lessons.view_count, CONCAT(users.first_name, ' ', users.last_name) AS name
+        FROM lessons
+        INNER JOIN users ON lessons.user_id = users.id
+        WHERE lessons.is_public = 1
+        AND lessons.title LIKE CONCAT('%', ?, '%')
+        AND lessons.description LIKE CONCAT('%', ?, '%')
+        AND lessons.citation LIKE CONCAT('%', ?, '%')
+        AND CONCAT(users.first_name, ' ', users.last_name) LIKE CONCAT('%', ?, '%');
+    `;
+
+    db.query(sql, [title, description, citation, name], (err, results) => {
+      if (err) {
+        console.error('Error fetching lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching lessons' });
+        return;
+      }
+  
+      res.json({ lessons: results });
+    });
+  });
+
 // LESSON LIKES---------------------------------------------------------------------------------------------
 
 // like actions for a lesson
