@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { API_URL } from "../../config";
 import { toast } from 'react-toastify'
-import LessonPage from '../LessonPage';
-import DiscussionPage from '../DiscussionPage';
-import ClassListPage from '../ClassListPage';
 import { TextField, Button, IconButton, Typography, Grid, useTheme, Input, Box } from '@mui/material';
 import { tokens } from "../../theme";
+
+//other component imports
+import CourseLessons from '../CourseLessons';
+import CourseDiscussion from '../CourseDiscussion';
+import CourseClasslist from '../CourseClasslist';
+
+//icons
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SchoolIcon from '@mui/icons-material/School';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
@@ -94,7 +98,10 @@ const CoursePage = () => {
               <Button startIcon={<AdminPanelSettingsIcon />} variant="contained" color="primary">Admin Settings</Button>
             </Link>
           </Grid>
-
+          
+          <Grid item xs={12}>
+            <Typography align="left">{`Description: ${courseInfo.description}`}</Typography>
+          </Grid>
           {/* navigation buttons */}
           <Grid item xs={12}>
             <hr></hr>
@@ -118,9 +125,9 @@ const CoursePage = () => {
 
           {/* render selection*/}
           <Grid item xs={12}>
-            {activeSection === 'lesson' && <LessonPage />}
-            {activeSection === 'discussion' && <DiscussionPage />}
-            {activeSection === 'classlist' && <ClassListPage />}
+            {activeSection === 'lesson' && <CourseLessons />}
+            {activeSection === 'discussion' && <CourseDiscussion />}
+            {activeSection === 'classlist' && <CourseClasslist />}
           </Grid>
         </>
       ) : (
