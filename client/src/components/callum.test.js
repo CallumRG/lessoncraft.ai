@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
   useNavigate: jest.fn(),
-  Link: ({ children }) => children, // Mocking Link component
+  Link: ({ children }) => children, 
 }));
 
 // Mocking Firebase class and its methods
