@@ -1,125 +1,68 @@
 import React from 'react';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-//import ProfilePage from './ProfilePage';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Firebase from "./Firebase/firebase";
-import userEvent from '@testing-library/user-event';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import axios from 'axios';
+import SearchPage from './SearchPage';
+import CourseSearch from './CourseSearch';
+import ModuleSearch from './ModuleSearch';
+import LessonSearch from './LessonSearch'; 
+import { useParams } from 'react-router-dom';
 
-
-
-
-// Mocking Firebase
-jest.mock("./Firebase/firebase", () => ({
-  __esModule: true,
-  default: jest.fn().mockImplementation(() => ({
-    doPasswordUpdate: jest.fn().mockResolvedValue('Password updated successfully'),
-  })),
+// Mocking react-router-dom's useNavigate
+jest.mock('react-router-dom', () => ({
+  useParams: jest.fn(),
+  useNavigate: jest.fn(),
+  Link: ({ children }) => children, // Mocking Link component
 }));
 
-// Mock Firebase class
-const mockUpdatePassword = jest.fn();
-Firebase.mockImplementation(() => {
-  return {
-    auth: {
-      currentUser: {
-        updatePassword: mockUpdatePassword,
-      },
-    },
-  };
-});
 
-describe('ProfilePage Component', () => {
-  it('updates the password successfully when new passwords match', async () => {
-    render(
-      <Router>
-        <ProfilePage />
-      </Router>
-    );
-    
-    // Simulate user typing into the new password and confirm password fields
-    userEvent.type(screen.getByLabelText(/New Password/i), 'newPassword123');
-    userEvent.type(screen.getByLabelText(/Confirm New Password/i), 'newPassword123');
-    userEvent.click(screen.getByRole('button', { name: /Update Password/i }));
-    
-    // Wait for the mock function to be called
-    await waitFor(() => {
-      expect(mockUpdatePassword).toHaveBeenCalledWith('newPassword123');
+// Mocking fetch for API calls
+global.fetch = jest.fn();
+
+//mock the components rendered within search component
+jest.mock('./CourseSearch');
+jest.mock('./ModuleSearch');
+jest.mock('./LessonSearch');
+
+
+
+describe('SearchPage', () => {
+
+  it('renders proper text and buttons in SearchPage component', () => {
+    render(<SearchPage />);
+    expect(screen.getByText('Search')).toBeInTheDocument();
+
+    const lessonSearchButton = screen.getByText('Lesson Search');
+    expect(lessonSearchButton).toBeInTheDocument();
+
+    const moduleSearchButton = screen.getByText('Module Search');
+    expect(moduleSearchButton).toBeInTheDocument();
+
+    const courseSearchButton = screen.getByText('Course Search');
+    expect(courseSearchButton).toBeInTheDocument();
+  });
+
+  it('it renders  the Lesson Search section by default', () => {
+    render(<SearchPage />);
+    expect(LessonSearch).toHaveBeenCalled();
+  });
+
+  it('switches active selection to be Course Search on button click', () => {
+    render(<SearchPage />);
+    const moduleSearchButton = screen.getByText('Module Search');
+    expect(moduleSearchButton).toBeInTheDocument();
+    act(() => {
+      moduleSearchButton.click();
     });
+    expect(ModuleSearch).toHaveBeenCalled();
   });
-});
 
-// __tests__/PasswordForget.test.js
-describe('PasswordForget Component', () => {
-  it('sends a password reset email when the form is submitted', async () => {
-    const mockSendPasswordResetEmail = jest.fn();
-    Firebase.mockImplementation(() => {
-      return {
-        auth: {
-          sendPasswordResetEmail: mockSendPasswordResetEmail,
-        },
-      };
+  it('switches active selection to be Course Search on button click', () => {
+    render(<SearchPage />);
+    const courseSearchButton = screen.getByText('Course Search');
+    expect(courseSearchButton).toBeInTheDocument();
+    act(() => {
+      courseSearchButton.click();
     });
-
-    render(
-      <Router>
-        <PasswordForget />
-      </Router>
-    );
-    
-    userEvent.type(screen.getByLabelText(/Email/i), 'test@example.com');
-    userEvent.click(screen.getByRole('button', { name: /Reset Password/i }));
-    
-    await waitFor(() => {
-      expect(mockSendPasswordResetEmail).toHaveBeenCalledWith('test@example.com');
-    });
+    expect(CourseSearch).toHaveBeenCalled();
   });
 });
-
-// __tests__/LandingPage.test.js
-describe('LandingPage Component', () => {
-  it('navigates to the explore page when the explore button is clicked', async () => {
-    const mockNavigate = jest.fn();
-    render(
-      <Router>
-        <LandingPage />
-      </Router>
-    );
-    
-    userEvent.click(screen.getByRole('button', { name: /Explore/i }));
-    expect(mockNavigate).toHaveBeenCalledWith('/explore');
-  });
-});
-
-//two extra
-describe('ProfilePage Component', () => {
-  it('shows an error message when the new passwords do not match', async () => {
-    render(
-      <Router>
-        <ProfilePage />
-      </Router>
-    );
-
-    userEvent.type(screen.getByLabelText(/New Password/i), 'newPassword123');
-    userEvent.type(screen.getByLabelText(/Confirm New Password/i), 'differentPassword123');
-    userEvent.click(screen.getByRole('button', { name: /Update Password/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
-    });
-  });
-
-  it('shows a loading indicator while the password update is in progress', async () => {
-    // Mock the loading state to be true
-    render(
-      <Router>
-        <ProfilePage />
-      </Router>
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /Update Password/i }));
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
-  });
-});
-
