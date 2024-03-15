@@ -34,7 +34,7 @@ const Topbar = (props) => {
                 paddingBottom: "10px", 
                 paddingRight: "75px",
                 borderBottom: `1px solid ${colors.primary[300]}`,
-                backgroundColor: theme.palette.mode === "dark" ? colors.primary[200] : colors.primary[100],
+                backgroundColor: theme.palette.mode === "dark" ? colors.primary[200] : colors.primary[200],
                 opacity: 0.9
             }}
     >
