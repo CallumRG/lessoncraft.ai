@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { API_URL } from "../../config";
 import { TextField, Button, IconButton, Typography, Grid, useTheme, Input, Box } from '@mui/material';
 import { tokens } from "../../theme";
 
+//component for searching for courses and rendering the results
 const CourseSearch = () => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
+  //states
+  const [courses, setCourses] = useState([]);
   const [courseID, setCourseID] = useState('');
   const [searchCriteria, setSearchCriteria] = useState({
     course: '',
     description: '',
-    subjects: '',
+    subject: '',
     instructor: ''
   });
 
-  const [lessons, setLessons] = useState([]);
-
+  
+  {/* functions */}
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setSearchCriteria(prevState => ({
@@ -29,6 +32,7 @@ const CourseSearch = () => {
     }));
   };
 
+  //fetches the courses, filtering by inputted criteria
   const fetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/searchCourses`, {
@@ -41,7 +45,7 @@ const CourseSearch = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setLessons(data.lessons);
+        setCourses(data.courses);
       } else {
         console.error('Failed to fetch courses');
       }
@@ -50,6 +54,7 @@ const CourseSearch = () => {
     }
   };
 
+    //when using direct to course checks to see if correct format and naviagates
   const handleRedirect = () => {
     const courseIDInt = parseInt(courseID);
     if (Number.isInteger(courseIDInt) && courseIDInt > 0) {
@@ -59,7 +64,7 @@ const CourseSearch = () => {
     }
   };
 
-  //grab data whenever
+  //grab new data whenever changes are made to criteria
   useEffect(() => {
     fetchData();
   }, [searchCriteria]);
@@ -71,9 +76,12 @@ const CourseSearch = () => {
         container 
         spacing={2} 
         alignItems="center">
+
+        {/* direct course input */}
         <Grid item xs={12}>
           <Typography variant="h4">Go To Course (Course ID)</Typography>
         </Grid>
+
         <Grid item xs={6}>
           <TextField
             fullWidth
@@ -91,13 +99,14 @@ const CourseSearch = () => {
         <Grid item xs={12}>
           <Typography variant="h4">Course Search</Typography>
         </Grid>
-          
+        
+        {/* criteria input fields */}
         <Grid item xs={6}>
           <TextField
             fullWidth
-            label="Title"
-            name="title"
-            value={searchCriteria.title}
+            label="Course Name"
+            name="course"
+            value={searchCriteria.course}
             onChange={handleInputChange}
           />
         </Grid>
@@ -115,9 +124,9 @@ const CourseSearch = () => {
         <Grid item xs={6}>
           <TextField
             fullWidth
-            label="Citation"
-            name="citation"
-            value={searchCriteria.citation}
+            label="Subject"
+            name="subject"
+            value={searchCriteria.subject}
             onChange={handleInputChange}
           />
         </Grid>
@@ -125,30 +134,38 @@ const CourseSearch = () => {
         <Grid item xs={6}>
           <TextField
             fullWidth
-            label="Creator"
-            name="name"
-            value={searchCriteria.name}
+            label="Instructor"
+            name="instructor"
+            value={searchCriteria.instructor}
             onChange={handleInputChange}
           />
         </Grid>
 
       </Grid>
+
+      {/* renders the courses as boxes clickable to redirect to pages*/}
       <Box mt={2}>
-        {lessons.map((lesson) => (
-          <Link to={`/lesson/${lesson.id}`} key={lesson.id} style={{ textDecoration: 'none', color: 'inherit', }}>
+        {courses.length > 0 ? (courses.map((course) => (
+          <Link to={`/course/${course.id}`} key={course.id} style={{ textDecoration: 'none', color: 'inherit', }}>
               <Box border={1} p={2} borderRadius={4} mb={2}>
-                <Typography variant="h3" sx={{textDecoration: 'underline'}}>{lesson.title}</Typography>
-                <Typography variant="h6" display="inline">Lesson Creator: </Typography>
-                <Typography variant="caption" display="inline">{lesson.name}</Typography>
+                <Typography variant="h3" sx={{textDecoration: 'underline'}}>{course.course_name}</Typography>
+                <Typography variant="h6" display="inline">Course Instructor: </Typography>
+                <Typography variant="caption" display="inline">{course.instructor}</Typography>
                 <br></br>
-                <Typography variant="h6" display="inline">Citation: </Typography>
-                <Typography variant="caption" display="inline">{lesson.citation}</Typography>
+                <Typography variant="h6" display="inline">Subjects: </Typography>
+                <Typography variant="caption" display="inline">{course.subjects}</Typography>
                 <hr></hr>
-                <Typography paragraph={true} variant="body1">{lesson.description}</Typography>
+                <Typography paragraph={true} variant="body1">{course.description}</Typography>
               </Box>
           </Link>
-        ))}
+        ))
+        ) : (
+          <Typography variant="body1">No courses found with given criteria.</Typography>
+        )
+        }
       </Box>
+
+      
     </div>
   );
 };

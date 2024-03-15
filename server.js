@@ -176,7 +176,7 @@ app.post('/lessonPracticeQuestions', async (req, res) => {
 app.post('/searchLessons', (req, res) => {
     const { title, description, citation, name } = req.body;
   
-    // grab data
+    //data and filter by inputted fields
     const sql = `
         SELECT lessons.id, lessons.title, lessons.description, lessons.created_at, lessons.updated_at, lessons.citation, lessons.view_count, CONCAT(users.first_name, ' ', users.last_name) AS name
         FROM lessons
@@ -582,6 +582,36 @@ app.post('/courseAddAdmin', async (req, res) => {
         });
     });
 });
+
+//search and return courses
+app.post('/searchCourses', (req, res) => {
+    const { course, description, subject, instructor } = req.body;
+  
+    // grab data and filter by inputted fields
+    const sql = `
+    SELECT courses.id, courses.course_name, courses.description, GROUP_CONCAT(course_subjects.subject_name SEPARATOR ', ') AS subjects, CONCAT(users.first_name, ' ', users.last_name) AS instructor
+    FROM courses
+    INNER JOIN users ON courses.user_id = users.firebase_uid
+    LEFT JOIN course_subjects ON course_subjects.course_id = courses.id
+    WHERE courses.is_public = 1
+    AND courses.course_name LIKE CONCAT('%', ?, '%')
+    AND courses.description LIKE CONCAT('%', ?, '%')
+    AND CONCAT(users.first_name, ' ', users.last_name) LIKE CONCAT('%', ?, '%')
+    GROUP BY courses.id, courses.course_name, courses.description, CONCAT(users.first_name, ' ', users.last_name)
+    HAVING GROUP_CONCAT(course_subjects.subject_name) LIKE CONCAT('%', ?, '%');
+    `;
+
+    db.query(sql, [course, description, instructor, subject], (err, results) => {
+      if (err) {
+        console.error('Error fetching courses:', err);
+        res.status(500).json({ error: 'An error occurred while fetching courses' });
+        return;
+      }
+  
+      res.json({ courses: results });
+    });
+  });
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 

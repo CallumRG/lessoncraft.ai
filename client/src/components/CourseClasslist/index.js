@@ -1,6 +1,6 @@
 import React from "react";
 
-const ClassListPage = () => {
+const CourseClasslist = () => {
   return (
     <div>
       <h1>Class List Page</h1>
@@ -9,4 +9,4 @@ const ClassListPage = () => {
   );
 };
 
-export default ClassListPage;
+export default CourseClasslist;

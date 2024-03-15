@@ -5,8 +5,8 @@ import LessonSearch from "../LessonSearch";
 import CourseSearch from "../CourseSearch";
 import ModuleSearch from "../ModuleSearch";
 import ArticleIcon from '@mui/icons-material/Article';
-import CreateIcon from '@mui/icons-material/Create';
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import SchoolIcon from '@mui/icons-material/School';
 
 const SearchPage = () => {
     const theme = useTheme();
@@ -35,11 +35,11 @@ const SearchPage = () => {
             </Grid>
 
             <Grid item xs={4} container justifyContent="center">
-                <Button startIcon={<CreateIcon />} variant="contained" color="secondary" onClick={() => setActiveSection('module')}>Module Search</Button>
+                <Button startIcon={<ViewModuleIcon />} variant="contained" color="secondary" onClick={() => setActiveSection('module')}>Module Search</Button>
             </Grid>
 
             <Grid item xs={4} container justifyContent="left">
-                <Button startIcon={<HistoryEduIcon />} variant="contained" color="secondary" onClick={() => setActiveSection('course')}>Course Search</Button>
+                <Button startIcon={<SchoolIcon />} variant="contained" color="secondary" onClick={() => setActiveSection('course')}>Course Search</Button>
             </Grid>
             
             <Grid item xs={12}>
