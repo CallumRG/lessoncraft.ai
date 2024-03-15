@@ -1,12 +1,18 @@
-// __tests__/ProfilePage.test.js
 import React from 'react';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import ProfilePage from '../ProfilePage';
+import ProfilePage from './ProfilePage';
 import { BrowserRouter as Router } from 'react-router-dom';
-import Firebase from "../Firebase/firebase";
+import Firebase from "./Firebase/firebase";
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+import axios from 'axios';
 
-jest.mock('../Firebase/firebase');
+
+global.TextEncoder = require('util').TextEncoder;
+global.TextDecoder = require('util').TextDecoder;
+
+
+jest.mock('./Firebase/firebase');
 
 // Mock Firebase class
 const mockUpdatePassword = jest.fn();
