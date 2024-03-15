@@ -5,9 +5,9 @@ Callum:
 - What will I do today: Finish Tests and report
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: Explore around landing page template
+- What was in my way: not knowing enough of idea for landing page 
+- What will I do today: continue to code landing page 
 
 Michael:
 - What did I do yesterday: Made UI for a new lesson form, worked on openAi API request code for after user clicks generate lesson
