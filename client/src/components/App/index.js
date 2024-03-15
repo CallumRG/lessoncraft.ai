@@ -88,6 +88,7 @@ const App = () => {
         fetchUserDetails(authUser);
       } else {
         setUser(null);
+        setLoading(false);
       }
     });
 
@@ -127,7 +128,8 @@ const App = () => {
                         <Route path={constants.LIKEDLESSONS} element={<LessonDash user={user}/>} />
                         <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                         <Route path={constants.COURSE} element={<CoursePage />} />
-                        <Route path= {constants.COURSE_ADMIN} element={<CourseAdmin />} />
+                        <Route path={constants.COURSE_ADMIN} element={<CourseAdmin />} />
+                        <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
                         {/* Default Route */}
                         <Route path="*" element={<LandingPage />} />
                       </Routes>

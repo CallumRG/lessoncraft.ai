@@ -1,31 +1,44 @@
-// import { sendPasswordResetEmail } from "firebase/auth";
-// import React from "react";
-// import { getAuth, 
-//     createUserWithEmailAndPassword, 
-//     signInWithEmailAndPassword, 
-//     signOut, 
-//     sendPasswordResetEmail, 
-//     updatePassword, 
-//     getIdToken, 
-//     getUserByEmail } from 'firebase/auth';
+import React, { useState } from "react";
+import { sendPasswordResetEmail, getAuth } from "firebase/auth";
+import { toast } from 'react-toastify';
 
-// function PasswordForget(){
-//     const handleSubmit = async(e)=>{
-//         const emailVal = e.target.email.vale;
-//         sendPasswordResetEmail(sendPasswordResetEmail, emailVal).then(data =>
-//             alert("Check your email"))
-//     }
+function PasswordForget() {
+  const [email, setEmail] = useState('');
 
-//     return(
-//         <div className = "App">
-//             <h1>ForgetPassword</h1>
-//             <form onSubmit ={ (e)=> handleSubmit(e)}>
-//                 <input name= "email">
-//                     <button>Reset</button>
-//                 </input>
-//             </form>
-//         </div>
-//     );
-// }
+  const auth = getAuth();
 
-// export default PasswordForget;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (email === "") {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent. Check your inbox.");
+    } catch (error) {
+      console.error("Error sending password reset email:", error.message);
+      toast.error("Failed to send password reset email.");
+    }
+  };
+
+  return (
+    <div className="App">
+      <h1>Forget Password</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Email:
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
+        <button type="submit">Reset Password</button>
+      </form>
+    </div>
+  );
+}
+
+export default PasswordForget;

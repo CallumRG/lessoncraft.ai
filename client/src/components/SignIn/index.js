@@ -151,7 +151,7 @@ const SignInPage = () => {
               {/* Forget Password */}
               <Typography>
                   Forget your password?{" "}
-                    <Link to="/passwordForget" style={{cursor: "pointer", color: colors.blueAccent[100]}}>
+                    <Link to="/passwordforget" style={{cursor: "pointer", color: colors.blueAccent[100]}}>
                       Reset Password
                     </Link>
               </Typography>
