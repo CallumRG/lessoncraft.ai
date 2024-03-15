@@ -78,6 +78,7 @@ const App = () => {
     })
     .catch((error) => {
         console.log(error);
+        setLoading(false);
     });
   };
 
