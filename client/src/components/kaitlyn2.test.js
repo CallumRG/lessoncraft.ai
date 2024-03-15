@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import ProfilePage from './ProfilePage';
+//import ProfilePage from './ProfilePage';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Firebase from "./Firebase/firebase";
 import userEvent from '@testing-library/user-event';
@@ -8,11 +8,15 @@ import '@testing-library/jest-dom';
 import axios from 'axios';
 
 
-global.TextEncoder = require('util').TextEncoder;
-global.TextDecoder = require('util').TextDecoder;
 
 
-jest.mock('./Firebase/firebase');
+// Mocking Firebase
+jest.mock("./Firebase/firebase", () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(() => ({
+    doPasswordUpdate: jest.fn().mockResolvedValue('Password updated successfully'),
+  })),
+}));
 
 // Mock Firebase class
 const mockUpdatePassword = jest.fn();
