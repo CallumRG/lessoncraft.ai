@@ -131,9 +131,9 @@ const LessonPage = (props) => {
 
   return (
     <>
-      <MiddleBar isCollapsed={props.isCollapsed} author={author} date={date} isPublic={isPublic} citation={citation}/>
-      <ThirdBar user={props.user} lessonId={lesson_id} views={views}/>
-      <Grid container style={{ maxWidth: '80%', margin: 'auto' }} spacing={4}>
+      <MiddleBar isCollapsed={props.isCollapsed} author={author} date={date} citation={citation}/>
+      <ThirdBar user={props.user} lessonId={lesson_id} views={views} isPublic={isPublic}/>
+      <Grid container style={{ marginTop: 45, maxWidth: '80%', margin: 'auto' }} spacing={4}>
         <Grid item xs={12}>
           <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px', marginTop: -40}}>
             <Typography variant="h1" style={{ marginBottom: '10px' }}>
