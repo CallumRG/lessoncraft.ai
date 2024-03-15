@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { API_URL } from "../../config";
 import { TextField, Button, IconButton, Typography, Grid, useTheme, Input, Box } from '@mui/material';
 import { tokens } from "../../theme";
 
+//component for searching for lessons and rendering the results
 const LessonSearch = () => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
+  //states
   const [lessonID, setLessonID] = useState('');
+  const [lessons, setLessons] = useState([]);
   const [searchCriteria, setSearchCriteria] = useState({
     title: '',
     description: '',
@@ -19,8 +22,8 @@ const LessonSearch = () => {
     name: ''
   });
 
-  const [lessons, setLessons] = useState([]);
-
+  
+  {/* functions */}
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setSearchCriteria(prevState => ({
@@ -29,6 +32,7 @@ const LessonSearch = () => {
     }));
   };
 
+  //fetches the lessons, filtering by inputted criteria
   const fetchData = async () => {
     try {
       const response = await fetch(`${API_URL}/searchLessons`, {
@@ -50,6 +54,7 @@ const LessonSearch = () => {
     }
   };
 
+  //when using direct to lesson checks to see if correct format and naviagates
   const handleRedirect = () => {
     const lessonIDInt = parseInt(lessonID);
     if (Number.isInteger(lessonIDInt) && lessonIDInt > 0) {
@@ -59,7 +64,7 @@ const LessonSearch = () => {
     }
   };
 
-  //grab data whenever
+  //grab new data whenever changes are made to criteria
   useEffect(() => {
     fetchData();
   }, [searchCriteria]);
@@ -71,9 +76,12 @@ const LessonSearch = () => {
         container 
         spacing={2} 
         alignItems="center">
+
+        {/* direct lesson input */}
         <Grid item xs={12}>
           <Typography variant="h4">Go To Lesson (Lesson ID)</Typography>
         </Grid>
+
         <Grid item xs={6}>
           <TextField
             fullWidth
@@ -88,14 +96,17 @@ const LessonSearch = () => {
           <Button variant="contained" color="secondary" onClick={handleRedirect}>Go</Button>
         </Grid>
 
+
+
         <Grid item xs={12}>
           <Typography variant="h4">Lesson Search</Typography>
         </Grid>
-          
+
+        {/* criteria input fields */}
         <Grid item xs={6}>
           <TextField
             fullWidth
-            label="Title"
+            label="Lesson Name"
             name="title"
             value={searchCriteria.title}
             onChange={handleInputChange}
@@ -133,8 +144,10 @@ const LessonSearch = () => {
         </Grid>
 
       </Grid>
+
+      {/* renders the lessons as boxes clickable to redirect to pages*/}
       <Box mt={2}>
-        {lessons.map((lesson) => (
+        {lessons.length > 0 ? (lessons.map((lesson) => (
           <Link to={`/lesson/${lesson.id}`} key={lesson.id} style={{ textDecoration: 'none', color: 'inherit', }}>
               <Box border={1} p={2} borderRadius={4} mb={2}>
                 <Typography variant="h3" sx={{textDecoration: 'underline'}}>{lesson.title}</Typography>
@@ -147,7 +160,11 @@ const LessonSearch = () => {
                 <Typography paragraph={true} variant="body1">{lesson.description}</Typography>
               </Box>
           </Link>
-        ))}
+        ))
+        ) : (
+          <Typography variant="body1">No lessons found with given criteria.</Typography>
+        )
+      }
       </Box>
     </div>
   );
