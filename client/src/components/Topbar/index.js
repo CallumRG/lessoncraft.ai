@@ -32,7 +32,7 @@ const Topbar = (props) => {
                 paddingTop: "15px", 
                 zIndex: 1000, 
                 paddingBottom: "10px", 
-                paddingRight: "75px",
+                paddingRight: "100px",
                 borderBottom: `1px solid ${colors.primary[300]}`,
                 backgroundColor: theme.palette.mode === "dark" ? colors.primary[200] : colors.primary[200],
                 opacity: 0.9
@@ -45,7 +45,7 @@ const Topbar = (props) => {
         
         
         {/* Icons */}
-        <Box display="flex" justifyContent="space-between" mr="15px">
+        <Box display="flex" justifyContent="space-between" mr="30px">
 
             {props.user ? (
                     <>
@@ -60,9 +60,9 @@ const Topbar = (props) => {
                         </IconButton>
                   
 
-                        <IconButton size="large" color="secondary">
+                        {/* <IconButton size="large" color="secondary">
                             <SettingsOutlinedIcon/>
-                        </IconButton>
+                        </IconButton> */}
 
                         <IconButton size="large" color="secondary">
                             <NotificationsOutlinedIcon/>
