@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import ProfilePage from './ProfilePage';
 import { BrowserRouter as Router } from 'react-router-dom'; // Import Link
 import Topbar from './Topbar';
 import { EXPLORE, LANDING } from '../constants/routes';

@@ -52,7 +52,7 @@ describe('Topbar component', () => {
                 <Topbar />
             </Router>
         );
-        const websiteName = screen.getByText(/Lessoncraft/i);
+        const websiteName = screen.getByText(/L E S S O N C R A F T/i);
         expect(websiteName).toBeInTheDocument();
     });
 

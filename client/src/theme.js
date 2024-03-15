@@ -18,8 +18,8 @@ export const tokens = (mode) => ({
           900: "#141414",
         },
         primary: {
-            100: "#181818 ",
-            200: "#262626",
+            100: "#181818", // this one is side bar background
+            200: "#262626", // this one is default background
             300: "#4A4A4A",
             400: "#5D5D5D",
             500: "#6E6E6E",
@@ -29,7 +29,7 @@ export const tokens = (mode) => ({
             900: "#B3B3B3",
         },
         blueAccent: {
-            100: "#4DBFFF",
+            100: "#7B6F98",
             200: "#178CE4",
             300: "#072A40"
           },
@@ -37,6 +37,7 @@ export const tokens = (mode) => ({
             100: "#F3D849",
         }
       }
+      // light theme 
     : {
         grey: {
           100: "#141414",
@@ -50,8 +51,8 @@ export const tokens = (mode) => ({
           900: "#e0e0e0",
         },
         primary: {
-          100: "#FFFFFF",
-          200: "#F1F1F1",
+          100: "#FFFFFE",
+          200: "#FFFFFD", // background colour 
           300: "#DEDEDE",
           400: "#CECECE",
           500: "#BFBFBF",
@@ -61,7 +62,7 @@ export const tokens = (mode) => ({
           900: "#767676",
         },
         blueAccent: {
-          100: "#4DBFFF",
+          100: "#A680FE",
           200: "#178CE4",
           300: "#072A40"
         },
@@ -117,27 +118,27 @@ export const themeSettings = (mode) => {
         fontFamily: ["Quicksand", "sans-serif"].join(","),
         fontSize: 12,
         h1: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 40,
         },
         h2: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 32,
         },
         h3: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 24,
         },
         h4: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 20,
         },
         h5: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 16,
         },
         h6: {
-          fontFamily: ["Forum", "sans-serif"].join(","),
+          fontFamily: ["Quicksand", "sans-serif"].join(","),
           fontSize: 14,
         },
     },

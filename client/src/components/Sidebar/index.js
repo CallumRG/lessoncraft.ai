@@ -9,6 +9,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import SchoolIcon from '@mui/icons-material/School';
 import ExploreIcon from '@mui/icons-material/Explore';
+import SearchIcon from '@mui/icons-material/Search';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import GradeIcon from '@mui/icons-material/Grade';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
@@ -51,7 +52,7 @@ const SB = (props) => {
   };
 
   return (
-      <Sidebar collapsed={props.isCollapsed} backgroundColor={colors.primary[100]}>
+      <Sidebar collapsed={props.isCollapsed} backgroundColor={colors.primary[100]} style={{position: 'fixed', height: '100%', overflowY: 'auto'}}>
         <Menu iconShape="square" menuItemStyles={MenuItemStyles}>
 
             {/* EXPAND/COLLAPSE ICON AND NAME*/}
@@ -86,6 +87,9 @@ const SB = (props) => {
 
             {/* EXPLORE */}
             <MenuItem icon={<ExploreIcon/>} onClick={() => navigate('/explore')}>Explore</MenuItem>
+            
+            {/* SEARCH */}
+            <MenuItem icon={<SearchIcon/>} onClick={() => navigate('/search')}>Search</MenuItem>
 
             {props.user ? (
                     // CREATE
@@ -100,6 +104,7 @@ const SB = (props) => {
                     </>
                 )
             }
+
 
             {/* LEARNING */}
             {props.user &&
@@ -118,13 +123,13 @@ const SB = (props) => {
                         <MenuItem icon={<PeopleOutlinedIcon/>}>
                             Shared With Me
                         </MenuItem>
-                        <MenuItem icon={<GradeIcon/>}>
+                        <MenuItem icon={<GradeIcon/>} onClick={() => navigate('/lessondash/liked')}>
                             Starred
                         </MenuItem>
                         <MenuItem icon={<RemoveRedEyeIcon/>}>
                             Recently Viewed
                         </MenuItem>
-                        <MenuItem icon={<CreateIcon/>}>
+                        <MenuItem icon={<CreateIcon/>} onClick={() => navigate('/lessondash/byme')}>
                             By Me
                         </MenuItem>
                     </SubMenu>

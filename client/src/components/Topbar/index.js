@@ -22,31 +22,35 @@ const Topbar = (props) => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ display: "flex", 
+    <div style={{ 
+                position: 'fixed',
+                display: "flex", 
+                width: props.isCollapsed ? '96%' : '90%',
+                transition: "width 0.3s ease",
                 justifyContent: "space-between", 
-                alignItems: 'center', position: "sticky",
+                alignItems: 'center',
                 paddingTop: "15px", 
                 zIndex: 1000, 
-                marginBottom:"15px", 
                 paddingBottom: "10px", 
-                paddingRight: "75px",
+                paddingRight: "100px",
                 borderBottom: `1px solid ${colors.primary[300]}`,
-                backgroundColor: theme.palette.mode === "dark" ? colors.primary[200] : colors.primary[100]
+                backgroundColor: theme.palette.mode === "dark" ? colors.primary[200] : colors.primary[100],
+                opacity: 0.9
             }}
     >
         {/* Website Name */}
         <Box ml="30px">
-            <Typography variant="h1">Lessoncraft</Typography>
+            <Typography variant="h2">L E S S O N C R A F T</Typography>
         </Box>
         
         
         {/* Icons */}
-        <Box display="flex" justifyContent="space-between" mr="15px">
+        <Box display="flex" justifyContent="space-between" mr="30px">
 
             {props.user ? (
                     <>
 
-                        <Button component={Link} to="/create" variant="contained" startIcon={<AddCircleOutlineIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none'}}>
+                        <Button component={Link} to="/create" variant="outlined" startIcon={<AddCircleOutlineIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
                             Create
                         </Button>
                        
@@ -56,9 +60,9 @@ const Topbar = (props) => {
                         </IconButton>
                   
 
-                        <IconButton size="large" color="secondary">
+                        {/* <IconButton size="large" color="secondary">
                             <SettingsOutlinedIcon/>
-                        </IconButton>
+                        </IconButton> */}
 
                         <IconButton size="large" color="secondary">
                             <NotificationsOutlinedIcon/>
@@ -68,10 +72,10 @@ const Topbar = (props) => {
                 :
                 (
                     <>
-                        <Button component={Link} to="/signin" variant="contained" startIcon={<LoginIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none',}}>
+                        <Button component={Link} to="/signin" variant="outlined" startIcon={<LoginIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none',}}>
                             Sign in
                         </Button>
-                        <Button component={Link} to="/signup" variant="contained" startIcon={<LockOpenIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.grey[100], boxShadow: 'none'}}>
+                        <Button component={Link} to="/signup" variant="outlined" startIcon={<LockOpenIcon />} color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
                             Register
                         </Button>
                     </>

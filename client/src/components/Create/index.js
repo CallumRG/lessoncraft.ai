@@ -30,9 +30,10 @@ const CreatePage = () => {
                     <Button
                         variant="contained"
                         size="large"
-                        style={{ width: '200px', height: '200px', margin: '20px',color: colors.grey[100], boxShadow: 'none' }}
+                        style={{ width: '200px', height: '200px', margin: '20px',color: 'white', boxShadow: 'none' }}
                         startIcon={<ArticleIcon />}
                         color="secondary"
+                        component={Link} to="/newlesson"
                     >
                         New Lesson
                     </Button>
@@ -40,7 +41,7 @@ const CreatePage = () => {
                     <Button
                         variant="contained"
                         size="large"
-                        style={{ width: '200px', height: '200px', margin: '20px',color: colors.grey[100], boxShadow: 'none' }}
+                        style={{ width: '200px', height: '200px', margin: '20px',color: 'white', boxShadow: 'none' }}
                         startIcon={<ViewModuleIcon />}
                         color="secondary"
                     >
@@ -50,7 +51,7 @@ const CreatePage = () => {
                     <Button
                         variant="contained"
                         size="large"
-                        style={{ width: '200px', height: '200px', margin: '20px',color: colors.grey[100], boxShadow: 'none' }}
+                        style={{ width: '200px', height: '200px', margin: '20px',color: 'white', boxShadow: 'none' }}
                         startIcon={<SchoolIcon />}
                         color="secondary"
                         component={Link} to="/newcourse"

@@ -1,14 +1,16 @@
 describe('landing page', () => {
   beforeEach(() => {
+    
     cy.visit('/');
+    
   });
 
   it('should render the landing page normal', () => {
 
     //check words
-    cy.contains('h1', 'Lessoncraft');
-    cy.contains('h2', 'Welcome to Lessoncraft');
-    cy.contains('p', 'Not Signed');
+    cy.contains('h2', 'L E S S O N C R A F T');
+    cy.contains('h2', 'Generate lessons with AI!');
+    cy.contains('p', 'Not Signed in');
     cy.contains('h5', 'Home');
     cy.contains('span', 'Explore');
     cy.contains('span', 'Sign In');
@@ -24,8 +26,8 @@ describe('landing page', () => {
     cy.contains('p', 'Not Signed').click();
 
     //top text still same
-    cy.contains('h1', 'Lessoncraft');
-    cy.contains('h2', 'Welcome to Lessoncraft');
+    cy.contains('h2', 'L E S S O N C R A F T');
+    cy.contains('h2', 'Generate lessons with AI!');
 
     //words on left side not visble to user
     cy.contains('h5', 'Home').should('not.exist');
@@ -38,8 +40,8 @@ describe('landing page', () => {
     cy.contains('p', 'Not Signed').click();
     cy.get('[data-testid="KeyboardDoubleArrowRightIcon"]').click();
 
-    cy.contains('h1', 'Lessoncraft');
-    cy.contains('h2', 'Welcome to Lessoncraft');
+    cy.contains('h2', 'L E S S O N C R A F T');
+    cy.contains('h2', 'Generate lessons with AI!');
     cy.contains('p', 'Not Signed');
     cy.contains('h5', 'Home');
     cy.contains('span', 'Explore');
@@ -118,6 +120,7 @@ describe('landing page', () => {
   
     // Check if the user's name is displayed at the top left
     cy.contains('test@test.test');
+    cy.contains('span', 'Sign Out').click();
   });
   
   
