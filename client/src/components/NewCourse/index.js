@@ -14,6 +14,7 @@ const NewCourse = () => {
 
   const [formData, setFormData] = useState({
     courseName: "",
+    description: "",
     subjects: "",
     isPublic: true,
     maxUsers: 100,
@@ -46,6 +47,7 @@ const NewCourse = () => {
           },
           body: JSON.stringify({
             courseName: formData.courseName,
+            description: formData.description,
             subjects: formData.subjects,
             isPublic: formData.isPublic,
             maxUsers: formData.maxUsers,
@@ -93,6 +95,17 @@ const NewCourse = () => {
               name="courseName"
               value={formData.courseName}
               onChange={(e) => handleChange("courseName", e.target.value)}
+              fullWidth
+              required
+              margin="normal"
+              variant="standard"
+            />
+            {/* description input */}
+            <TextField
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
               fullWidth
               required
               margin="normal"

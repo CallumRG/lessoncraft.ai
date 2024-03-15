@@ -365,11 +365,11 @@ app.get('/getDBUserDetails', async (req, res) => {
 app.post('/createCourse', async (req, res) => {
     try {
 
-        const { courseName, subjects, isPublic, maxUsers, user_id } = req.body;
+        const { courseName, description, subjects, isPublic, maxUsers, user_id } = req.body;
 
         // Insert data into the courses table
-        const courseQuery = 'INSERT INTO courses (course_name, is_public, max_users, user_id) VALUES (?, ?, ?, ?)';
-        db.query(courseQuery, [courseName, isPublic, maxUsers, user_id], (courseError, courseResult) => {
+        const courseQuery = 'INSERT INTO courses (course_name, description, is_public, max_users, user_id) VALUES (?, ?, ?, ?, ?)';
+        db.query(courseQuery, [courseName, description, isPublic, maxUsers, user_id], (courseError, courseResult) => {
             if (courseError) {
                 console.error('Error inserting course:', courseError.message);
                 res.status(500).json({ error: 'Internal Server Error' });
@@ -404,7 +404,7 @@ app.post('/courseInfo', async (req, res) => {
     let course_id = req.body.course_id;
 
     const query = `
-        SELECT courses.id, courses.course_name, courses.is_public, courses.max_users, courses.user_id, users.first_name, users.last_name, users.email, users.firebase_uid
+        SELECT courses.id, courses.course_name, courses.description, courses.is_public, courses.max_users, courses.user_id, users.first_name, users.last_name, users.email, users.firebase_uid
         FROM courses
         JOIN users ON courses.user_id = users.firebase_uid
         WHERE courses.id = ?;

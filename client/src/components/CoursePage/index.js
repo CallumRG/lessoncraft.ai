@@ -94,7 +94,10 @@ const CoursePage = () => {
               <Button startIcon={<AdminPanelSettingsIcon />} variant="contained" color="primary">Admin Settings</Button>
             </Link>
           </Grid>
-
+          
+          <Grid item xs={12}>
+            <Typography align="left">{`Description: ${courseInfo.description}`}</Typography>
+          </Grid>
           {/* navigation buttons */}
           <Grid item xs={12}>
             <hr></hr>

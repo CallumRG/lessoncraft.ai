@@ -11,12 +11,12 @@ const CourseSearch = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
-  const [lessonID, setLessonID] = useState('');
+  const [courseID, setCourseID] = useState('');
   const [searchCriteria, setSearchCriteria] = useState({
-    title: '',
+    course: '',
     description: '',
-    citation: '',
-    name: ''
+    subjects: '',
+    instructor: ''
   });
 
   const [lessons, setLessons] = useState([]);
@@ -31,7 +31,7 @@ const CourseSearch = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${API_URL}/searchLessons`, {
+      const response = await fetch(`${API_URL}/searchCourses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -43,19 +43,19 @@ const CourseSearch = () => {
         const data = await response.json();
         setLessons(data.lessons);
       } else {
-        console.error('Failed to fetch lessons');
+        console.error('Failed to fetch courses');
       }
     } catch (error) {
-      console.error('Error fetching lessons:', error);
+      console.error('Error fetching courses:', error);
     }
   };
 
   const handleRedirect = () => {
-    const lessonIDInt = parseInt(lessonID);
-    if (Number.isInteger(lessonIDInt) && lessonIDInt > 0) {
-      navigate(`/lesson/${lessonIDInt}`);
+    const courseIDInt = parseInt(courseID);
+    if (Number.isInteger(courseIDInt) && courseIDInt > 0) {
+      navigate(`/course/${courseIDInt}`);
     } else {
-      toast.error("Lesson ID must be positive integer.");
+      toast.error("Course ID must be positive integer.");
     }
   };
 
@@ -72,15 +72,15 @@ const CourseSearch = () => {
         spacing={2} 
         alignItems="center">
         <Grid item xs={12}>
-          <Typography variant="h4">Go To Lesson (Lesson ID)</Typography>
+          <Typography variant="h4">Go To Course (Course ID)</Typography>
         </Grid>
         <Grid item xs={6}>
           <TextField
             fullWidth
-            label="Lesson ID"
-            name="lessonid"
-            value={lessonID}
-            onChange={(e) => {setLessonID(e.target.value)}}
+            label="Course ID"
+            name="courseID"
+            value={courseID}
+            onChange={(e) => {setCourseID(e.target.value)}}
           />
         </Grid>
 
@@ -89,7 +89,7 @@ const CourseSearch = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <Typography variant="h4">Lesson Search</Typography>
+          <Typography variant="h4">Course Search</Typography>
         </Grid>
           
         <Grid item xs={6}>
