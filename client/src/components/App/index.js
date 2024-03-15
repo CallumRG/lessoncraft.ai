@@ -13,6 +13,7 @@ import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import ExplorePage from '../Explore';
+import SearchPage from '../SearchPage';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import PasswordForgetPage from '../PasswordForget';
@@ -119,6 +120,7 @@ const App = () => {
                         <Route path={constants.SIGN_UP} element={<SignUpPage/>} />
                         <Route path={constants.SIGN_IN} element={<SignInPage/>} />
                         <Route path={constants.EXPLORE} element={<ExplorePage />} />
+                        <Route path={constants.SEARCH} element={<SearchPage />} />
                         <Route path={constants.CREATE} element={<CreatePage />} />
                         <Route path={constants.NEWCOURSE} element={<NewCourse />} />
                         <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
