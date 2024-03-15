@@ -16,6 +16,7 @@ REACT_APP_FB_STORAGEBUCKET=lessoncraft-9a4e1.appspot.com
 REACT_APP_FB_MESSAGINGSENDERID=335959693872  
 REACT_APP_FB_APPID=1:335959693872:web:8b2c491be6fdaf34f16bf5  
 REACT_APP_FB_MEASUREMENTID=G-EQVNRY4EEJ  
+REACT_APP_OPENAI_API_KEY=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
 
 3. Make another '.env' file in the root directory
 4. Paste the following into it:
