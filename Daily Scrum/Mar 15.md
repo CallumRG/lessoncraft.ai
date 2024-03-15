@@ -1,8 +1,8 @@
 ## Mar 15, 2024
 Callum:
-- What did I do yesterday: 
-- What was in my way: 
-- What will I do today: 
+- What did I do yesterday: Finished search implementation and UI changes
+- What was in my way: n/a
+- What will I do today: Finish Test cases and report
 
 Kaitlyn:
 - What did I do yesterday: Code update on profile chaging password
