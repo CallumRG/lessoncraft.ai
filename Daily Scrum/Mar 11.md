@@ -1,8 +1,8 @@
 ## Mar 11, 2024
 Callum:
-- What did I do yesterday: 
-- What was in my way: 
-- What will I do today: 
+- What did I do yesterday: Tested different UI changes for courses and related
+- What was in my way: Incomplete functionality for lessons, discussions, and class list
+- What will I do today: Start looking into search functions
 
 Kaitlyn:
 - What did I do yesterday: Research on how to update on changing password
