@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext, useStyles } from 'react';
-import { Box, Button, TextField, Typography, Grid, useTheme, Avatar, Stack} from "@mui/material";
+import { Box, Button, TextField, Typography, Grid, Paper, useTheme, Avatar, Stack} from "@mui/material";
 import Firebase from "../Firebase/firebase";
 import axios from "axios";
 import {API_URL} from '../../config';
-import { tokens } from "../../theme";
+import { ColorModeContext, tokens } from "../../theme";
 
 
 const ProfilePage = (props) => {
@@ -14,7 +14,8 @@ const ProfilePage = (props) => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [error, setError] = useState(null);
     const theme = useTheme();
-
+    const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
 
     const makeUserFetchRequest = (firebaseId) => {
         let config = {
@@ -65,86 +66,77 @@ const ProfilePage = (props) => {
             setError(error.message);
             // Handle password update failure
         }
-        
-        // if(passwordOne !== passwordTwo) {
-        //     setError("Passwords do not match");
-        //     return;
-        // }
-        // // firebase context provides a method to change password
-        // firebase
-        //     .doPasswordUpdate(passwordOne)
-        //     .then(() => {
-        //         setPasswordOne('');
-        //         setPasswordTwo('');
-        //         setError(null);
-        //         // Handle successful password change
-        //     })
-        //     .catch(error => {
-        //         setError(error.message);
-        //     });
-        // event.preventDefault();
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-                p: 3,
-                height: 'auto',
-                maxWidth: 600,
-                margin: 'auto',
-                marginTop: theme.spacing(8),
-            }}
-        >
-        <Avatar
-            sx={{
-                width: 120,
-                height: 120,
-                mb: 2,
-            }}
-            src="/broken-image.jpg" // your avatar image path
-        />
+        <Paper elevation={3} sx={{ p: 4, margin: 'auto', maxWidth: 900, flexGrow: 1, backgroundColor: theme.palette.mode === "dark" ? colors.primary[200] : colors.primary[100]}}>
+            <Grid container spacing={2} alignItems="center">
+                <Grid item>
+                <Avatar
+                        sx={{width: 120, height: 120, mb: 2,}}
+                        src="/broken-image.jpg" // your avatar image path
+                    />
+                </Grid>
+                <Grid item xs={12} sm container>
+                    <Grid item xs container direction="column" spacing={2}>
+                        <Grid item xs>
+                            <Typography gutterBottom variant="h2">
+                                {userInfo.firstName} {userInfo.lastName}
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Button variant="outlined" color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
+                                Chat
+                            </Button>
+                            <Button variant="outlined" color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
+                                Follow
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
 
-        <Typography variant="h6">Profile Details</Typography>
-            
-            <Box sx={{ mt: 2 }}>
+            {/* Section for Details and Manage Account */}
+            <Box sx={{ mt: 4 }}>
+                <Typography variant="h6" gutterBottom>Details</Typography>
                 <Typography variant="body1"><strong>First Name:</strong> {userInfo.firstName}</Typography>
                 <Typography variant="body1"><strong>Last Name:</strong> {userInfo.lastName}</Typography>
+
+                <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>Manage Account</Typography>
+                <TextField
+                    label="Current Password"
+                    color="secondary"
+                    type="password"
+                    fullWidth
+                    variant="outlined"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    label="New Password"
+                    type="password"
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    label="Confirm New Password"
+                    type="password"
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <Button variant="contained" color="secondary" onClick={updatePassword}>Update Password</Button>
+                {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
             </Box>
-
-            <Typography variant="h6" sx={{ mt: 4 }}>Manage Account</Typography>
-            <TextField
-                label="Current Password"
-                type="password"
-                variant="outlined"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                sx={{ mb: 2 }}
-            />
-            <TextField
-                label="New Password"
-                type="password"
-                variant="outlined"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                sx={{ mb: 2 }}
-            />
-            <TextField
-                label="Confirm New Password"
-                type="password"
-                variant="outlined"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                sx={{ mb: 2 }}
-            />
-            <Button onClick={updatePassword}>Change My Password</Button>
-            {error && <Typography color="error">{error}</Typography>}
-
-    
-    </Box>
+        </Paper>
     );
 };
 
