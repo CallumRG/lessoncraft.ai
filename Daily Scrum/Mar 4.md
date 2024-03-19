@@ -1,13 +1,13 @@
 ## Mar 4, 2024
 Callum:
-- What did I do yesterday: 
-- What was in my way: 
-- What will I do today: 
+- What did I do yesterday: Research of potential future functionality (storage of images in databases)
+- What was in my way: Waiting for lesson functionality to be able to pull for searching and course page.
+- What will I do today: Discuss the functionality of Michaels's generated lessons in relation to the course, and sorting.
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: N/A
+- What was in my way: N/A
+- What will I do today: Code landing page
 
 Michael:
 - What did I do yesterday: Made an openAI assistant and adjusted instructions in openAI playground to find the best way to implement

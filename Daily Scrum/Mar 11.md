@@ -5,9 +5,9 @@ Callum:
 - What will I do today: Start looking into search functions
 
 Kaitlyn:
-- What did I do yesterday: Research on how to update on changing password
+- What did I do yesterday: Finish coding landing page 
 - What was in my way: N/A
-- What will I do today: Code update on profile chaging password
+- What will I do today: Research on how to update on changing password 
 
 Michael:
 - What did I do yesterday: Finish backend logic for creating lessons, started UI to view lessons
