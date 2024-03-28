@@ -263,7 +263,12 @@ app.post('/lessonlikes', (req, res) => {
 app.post('/lessons/byme', (req, res) => {
     const { user_id } = req.body;
   
-    db.query('SELECT * FROM lessons WHERE user_id = ? ORDER BY id ASC', [user_id], (error, results) => {
+    db.query(`SELECT lessons.*, CONCAT(users.first_name, ' ', users.last_name) AS name
+    FROM lessons
+    LEFT JOIN users ON lessons.user_id = users.id
+    WHERE user_id = ?
+    GROUP BY lessons.id
+    ORDER BY lessons.id DESC`, [user_id], (error, results) => {
       if (error) {
         console.error('Error fetching lessons:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -276,7 +281,12 @@ app.post('/lessons/byme', (req, res) => {
 app.post('/lessons/liked', (req, res) => {
     const { user_id } = req.body;
 
-    const query = 'SELECT lessons.* FROM lessons INNER JOIN likes ON lessons.id = likes.lesson_id WHERE likes.user_id = ?';
+    const query = `SELECT lessons.*, CONCAT(users.first_name, ' ', users.last_name) AS name
+     FROM lessons 
+     INNER JOIN likes ON lessons.id = likes.lesson_id 
+     LEFT JOIN users ON lessons.user_id = users.id
+     WHERE likes.user_id = ?
+     GROUP BY lessons.id`;
     db.query(query, [user_id], (error, results) => {
         if (error) {
             console.error('Error fetching liked lessons:', error);
@@ -615,5 +625,54 @@ app.post('/searchCourses', (req, res) => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// EXPLORE QUERIES----------------------------------------------------------
+
+// Most liked lessons
+app.post('/most-liked-lessons', (req, res) => {
+    const sql = `
+      SELECT lessons.*, COUNT(likes.lesson_id) AS like_count, CONCAT(users.first_name, ' ', users.last_name) AS author
+      FROM lessons
+      LEFT JOIN likes ON lessons.id = likes.lesson_id
+      LEFT JOIN users ON lessons.user_id = users.id
+      GROUP BY lessons.id
+      ORDER BY like_count DESC
+      LIMIT 6
+    `;
+  
+    db.query(sql, (err, results) => {
+      if (err) {
+        console.error('Error fetching most liked lessons: ' + err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+  
+      res.json(results);
+    });
+});
+
+// Most viewed lessons
+app.post('/most-viewed-lessons', (req, res) => {
+    const sql = `
+        SELECT lessons.*, COUNT(likes.lesson_id) AS like_count, CONCAT(users.first_name, ' ', users.last_name) AS author
+        FROM lessons
+        LEFT JOIN likes ON lessons.id = likes.lesson_id
+        LEFT JOIN users ON lessons.user_id = users.id
+        GROUP BY lessons.id
+        ORDER BY view_count DESC
+        LIMIT 6
+    `;
+  
+    db.query(sql, (err, results) => {
+      if (err) {
+        console.error('Error fetching most viewed lessons: ' + err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+  
+      res.json(results);
+    });
+});
+
+// ----------------------------------------------------------------------
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
