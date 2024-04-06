@@ -675,4 +675,58 @@ app.post('/most-viewed-lessons', (req, res) => {
 
 // ----------------------------------------------------------------------
 
+// LESSON EDITING-----------------------------------------------------
+
+// Update lesson details
+app.put('/lessons/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, description, is_public } = req.body;
+  
+      // Update lesson in the database
+      const query = `UPDATE lessons SET title = ?, description = ?, is_public = ? WHERE id = ?`;
+      db.query(query, [title, description, is_public, id], (err, result) => {
+        return res.status(200).json({ message: 'Lesson updated successfully' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Update lesson section
+app.put('/lesson-sections/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, body } = req.body;
+  
+      // Update lesson section in the database
+      const query = `UPDATE lesson_sections SET title = ?, body = ? WHERE id = ?`;
+      db.query(query, [title, body, id], (err, result) => {
+        res.status(200).send({ message: 'Lesson section updated successfully' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Internal server error' });
+    }
+});
+
+// Update lesson practice question
+app.put('/lesson-practice-questions/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { question, option_a, option_b, option_c, option_d, answer } = req.body;
+  
+      // Update lesson practice question in the database
+      const query = `UPDATE lesson_practice_questions SET question = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, answer = ? WHERE id = ?`;
+      db.query(query, [question, option_a, option_b, option_c, option_d, answer, id], (err, result) => {
+        res.status(200).send({ message: 'Lesson practice question updated successfully' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Internal server error' });
+    }
+});
+
+// -------------------------------------------------------------------------
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version

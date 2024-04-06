@@ -110,7 +110,7 @@ const ThirdBar = (props) => {
                 <IconButton size="large" color={isLiked ? 'secondary' : colors.grey[900]} onClick={() => changeLike()} style={{marginRight: 10}}>
                     <GradeIcon/>
                 </IconButton>
-                <IconButton size="large" color="secondary" onClick={() => {}}>
+                <IconButton size="large" color="secondary" onClick={() => props.toggleEditModal()}>
                     <EditIcon/>
                 </IconButton>
             </Box>
