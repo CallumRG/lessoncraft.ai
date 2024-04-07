@@ -75,6 +75,8 @@ const CourseLessons = () => {
           setLesson_id(0)
           fetchCourseLessons()
 
+        } else if (response.status === 403) {
+                toast.error('Current user is not the owner or an administrator of the course.');
         } else {
           console.error('Error adding course lesson:', response.statusText);
           toast.error('Error adding course lesson');
@@ -112,6 +114,8 @@ const CourseLessons = () => {
           setLesson_id(0)
           fetchCourseLessons()
 
+        } else if (response.status === 403) {
+          toast.error('Current user is not the owner or an administrator of the course.');
         } else {
           console.error('Error deleting course lesson:', response.statusText);
           toast.error('Error deleting course lesson');

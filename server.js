@@ -568,6 +568,97 @@ app.post('/deleteCourseLesson', async (req, res) => {
 });
 
 
+app.post('/courseFetchClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+
+    const query = `
+        SELECT course_users.user_id, CONCAT(users.first_name, ' ', users.last_name) AS name, users.email
+        FROM course_users
+        INNER JOIN users ON course_users.user_id = users.firebase_uid
+        WHERE course_id = ?
+        ORDER BY name DESC;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching course lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+        return;
+      }
+  
+      res.json({ classlist: results });
+    });
+});
+
+app.post('/joinClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+    let current_id = req.body.current_id;
+
+    // check if the current_id matches the firebase_uid of the course owner
+    const query1 = `
+        SELECT user_id
+        FROM courses
+        WHERE id = ?;
+    `;
+
+    const query2 = `
+        INSERT INTO course_users (course_id, user_id) VALUES (?, ?)
+    `;
+
+
+    db.query(query1, [course_id], (err, results) => {
+        if (err) {
+            console.error('error checking course owner:', err);
+            return res.status(500).json({ error: 'internal server error' });
+        }
+
+        if (results.length === 0) {
+            console.error('course not found');
+            return res.status(404).json({ error: 'course not found' });
+        }
+
+        const courseOwnerUid = results[0].user_id;
+
+        if (current_id === courseOwnerUid) {
+            console.error('joining user cannot be course owner');
+            return res.status(403).json({ error: 'forbidden:  user cannot be course owner' });
+        }
+
+        db.query(query2, [course_id, current_id], (err, results) => {
+            if (err) {
+                console.error('error adding course user:', err);
+                return res.status(500).json({ error: 'internal server error' });
+            }
+
+            return res.status(200).json({ success: true });
+        });
+
+
+    
+    });
+});
+
+app.post('/leaveClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+    let current_id = req.body.current_id;
+
+    const query = `
+        DELETE FROM course_users 
+        WHERE course_id = ? AND user_id = ?;
+    `;
+
+    db.query(query, [course_id, current_id], (err, results) => {
+        if (err) {
+            console.error('error adding course user:', err);
+            return res.status(500).json({ error: 'internal server error' });
+        }
+
+        return res.status(200).json({ success: true });
+    });
+});
+
+
+
 app.post('/courseFetchAdmin', async (req, res) => {
     let course_id = req.body.course_id;
 
