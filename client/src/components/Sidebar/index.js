@@ -120,13 +120,13 @@ const SB = (props) => {
 
                     {/* LESSONS */}
                     <SubMenu label="Lessons" icon={<ArticleIcon />}>
-                        <MenuItem icon={<PeopleOutlinedIcon/>}>
+                        <MenuItem icon={<PeopleOutlinedIcon/>} onClick={() => navigate('/lessondash/sharedwithme')}>
                             Shared With Me
                         </MenuItem>
                         <MenuItem icon={<GradeIcon/>} onClick={() => navigate('/lessondash/liked')}>
                             Starred
                         </MenuItem>
-                        <MenuItem icon={<RemoveRedEyeIcon/>}>
+                        <MenuItem icon={<RemoveRedEyeIcon/>} onClick={() => navigate('/lessondash/recentlyviewed')}>
                             Recently Viewed
                         </MenuItem>
                         <MenuItem icon={<CreateIcon/>} onClick={() => navigate('/lessondash/byme')}>

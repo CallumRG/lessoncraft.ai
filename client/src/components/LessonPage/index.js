@@ -6,6 +6,7 @@ import PracticeQuestion from "./practiceQuestion";
 import MiddleBar from "./middleBar";
 import ThirdBar from "./thirdBar";
 import EditLessonModal from "./editLessonModal";
+import SharingModal from "./shareLessonModal";
 import axios from "axios";
 import {API_URL} from '../../config';
 
@@ -23,11 +24,18 @@ const LessonPage = (props) => {
   const [lessonSections, setLessonSections] = useState(null);
   const [lessonPracticeQuestions, setLessonPracticeQuestions] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const toggleEditModal = () => {
     if(!loading){
       setIsEditModalOpen(!isEditModalOpen);
+    }
+  };
+
+  const toggleShareModal = () => {
+    if(!loading){
+      setIsShareModalOpen(!isShareModalOpen);
     }
   };
 
@@ -157,13 +165,19 @@ const LessonPage = (props) => {
       {!loading &&
         <>
           <MiddleBar isCollapsed={props.isCollapsed} author={author} date={date} citation={citation}/>
-          <ThirdBar user={props.user} lessonId={lesson_id} views={views} isPublic={isPublic} toggleEditModal={toggleEditModal}/>
+          <ThirdBar user={props.user} lessonId={lesson_id} views={views} isPublic={isPublic} toggleEditModal={toggleEditModal} toggleShareModal={toggleShareModal}/>
           <EditLessonModal 
             open={isEditModalOpen} 
             onClose={toggleEditModal} 
             lesson={{ lesson_id, title, description, lessonSections, lessonPracticeQuestions, citation, isPublic }} 
             isLessonLoaded={!loading}
             onLessonSubmit={fetchLessonData}
+          />
+          <SharingModal 
+            open={isShareModalOpen} 
+            onClose={toggleShareModal} 
+            lessonId={lesson_id}
+            user={props.user}
           />
 
           <Grid container style={{ marginTop: 45, maxWidth: '80%', margin: 'auto' }} spacing={4}>

@@ -6,7 +6,7 @@ import axios from "axios";
 import {API_URL} from '../../config';
 
 const EditLessonModal = ({ open, onClose, lesson, isLessonLoaded, onLessonSubmit }) => {
-const theme = useTheme();
+  const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [editedLesson, setEditedLesson] = useState(lesson);
 
@@ -128,7 +128,7 @@ const theme = useTheme();
 
   return (
     <Modal open={open} onClose={onClose}>
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: colors.primary[100], padding: "20px", width: "80vw", maxWidth: "1200px", maxHeight: "80vh", overflowY: "auto" }}>
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: colors.primary[100], padding: "20px", width: "80vw", maxWidth: "1200px", maxHeight: "80vh", overflowY: "auto", border: `5px solid ${colors.blueAccent[100]}`}}>
             <Typography variant="h3" align="center" gutterBottom color={colors.blueAccent[100]}>
                 Edit Lesson
             </Typography>
@@ -145,6 +145,7 @@ const theme = useTheme();
             fullWidth
             margin="normal"
             variant="standard"
+            InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
             />
             <TextField
             name="description"
@@ -154,6 +155,7 @@ const theme = useTheme();
             fullWidth
             margin="normal"
             multiline
+            InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
             />
             {/* Dropdown menu for selecting public/private status */}
             <FormControl fullWidth margin="normal">
@@ -186,6 +188,7 @@ const theme = useTheme();
                     onChange={(e) => handleSectionChange(e, index)}
                     fullWidth
                     margin="normal"
+                    InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
                 />
                 <TextField
                     name={`body`}
@@ -195,6 +198,7 @@ const theme = useTheme();
                     fullWidth
                     margin="normal"
                     multiline
+                    InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
                 />
                 </div>
             ))
@@ -223,6 +227,7 @@ const theme = useTheme();
                     onChange={(e) => handleQuestionChange(e, index)}
                     fullWidth
                     margin="normal"
+                    InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
                 />
                 <TextField
                     name={`option_b`}
@@ -231,6 +236,7 @@ const theme = useTheme();
                     onChange={(e) => handleQuestionChange(e, index)}
                     fullWidth
                     margin="normal"
+                    InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
                 />
                 <TextField
                     name={`option_c`}
@@ -239,6 +245,7 @@ const theme = useTheme();
                     onChange={(e) => handleQuestionChange(e, index)}
                     fullWidth
                     margin="normal"
+                    InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
                 />
                 <TextField
                     name={`option_d`}
@@ -247,6 +254,7 @@ const theme = useTheme();
                     onChange={(e) => handleQuestionChange(e, index)}
                     fullWidth
                     margin="normal"
+                    InputLabelProps={{ sx: { color: colors.blueAccent[100] } }}
                 />
                 <FormControl fullWidth margin="normal">
                     <InputLabel htmlFor={`answer-${index}`}>Answer</InputLabel>
