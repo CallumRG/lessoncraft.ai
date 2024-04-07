@@ -3,14 +3,13 @@ import axios from 'axios';
 import { tokens } from "../../theme";
 import { Grid, Typography, Box, useTheme } from '@mui/material';
 import { API_URL } from '../../config';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 function LessonDash(props) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [lessons, setLessons] = useState([]);
     const [title, setTitle] = useState('');
-    const navigate = useNavigate();
     const location = useLocation();
 
     const fetchMyLessons = async () => {
@@ -30,6 +29,10 @@ function LessonDash(props) {
                     setTitle('Shared with Me');
                     endpoint = '/lessons/sharedwithme';
                     response = await axios.post(`${API_URL}${endpoint}`, { email: props.user.email });
+                } else if(location.pathname === '/lessondash/recentlyviewed'){
+                    setTitle('Recently Viewed Lessons');
+                    endpoint = '/lessons/recentlyviewed';
+                    response = await axios.post(`${API_URL}${endpoint}`, { user_id: props.user.id });
                 }
                 console.log(response)
                 setLessons(response.data);

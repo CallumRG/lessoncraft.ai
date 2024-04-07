@@ -296,19 +296,56 @@ app.post('/lessons/liked', (req, res) => {
     });
 });
 
+// Lesson shared with a user
 app.post('/lessons/sharedwithme', (req, res) => {
     const { email } = req.body;
 
     const query = `SELECT lessons.id, lessons.title, lessons.description, lessons.user_id, lessons.created_at, lessons.updated_at, lessons.is_public, lessons.citation, CONCAT(users.first_name, ' ', users.last_name) AS name, users.email AS sender_email
     FROM lessons 
     INNER JOIN shares ON lessons.id = shares.lesson_id 
-    LEFT JOIN users ON shares.sender_id = users.id
+    LEFT JOIN users ON lessons.user_id = users.id
     WHERE shares.recipient_email = ?
     GROUP BY lessons.id, lessons.title, lessons.description, lessons.user_id, lessons.created_at, lessons.updated_at, lessons.is_public, lessons.citation, name, sender_email;
     `;
     db.query(query, [email], (error, results) => {
         if (error) {
             console.error('Error fetching shared lessons:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Fetch a users most recently viewed lessons
+app.post('/lessons/recentlyviewed', (req, res) => {
+    const { user_id } = req.body;
+
+    const query = `
+        SELECT 
+        DISTINCT recent_views.*, 
+        CONCAT(users.first_name, ' ', users.last_name) AS name
+        FROM (
+            SELECT 
+                lessons.id, 
+                lessons.title, 
+                lessons.description, 
+                lessons.user_id, 
+                lessons.created_at, 
+                lessons.updated_at, 
+                lessons.is_public, 
+                lessons.citation
+            FROM lessons 
+            INNER JOIN views ON lessons.id = views.lesson_id 
+            WHERE views.viewer_id = ?
+            ORDER BY views.view_timestamp DESC
+            LIMIT 10
+        ) AS recent_views
+        LEFT JOIN users ON recent_views.user_id = users.id;
+    `;
+    
+    db.query(query, [user_id], (error, results) => {
+        if (error) {
+            console.error('Error fetching recently viewed lessons:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
         res.status(200).json(results);
