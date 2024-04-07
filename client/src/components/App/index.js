@@ -27,6 +27,7 @@ import NewLesson from '../NewLesson';
 import LessonPage from '../LessonPage';
 import LessonDash from '../LessonDash';
 import Loading from '../Loading';
+import Setting from '../Setting';
 
 import * as constants from '../../constants/routes'
 
@@ -128,10 +129,12 @@ const App = () => {
                         <Route path={constants.LESSON} element={<LessonPage user={user} isCollapsed={isCollapsed}/>} />
                         <Route path={constants.LESSONSBYME} element={<LessonDash user={user}/>} />
                         <Route path={constants.LIKEDLESSONS} element={<LessonDash user={user}/>} />
-                        <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
+                        {/* <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} /> */}
                         <Route path={constants.COURSE} element={<CoursePage />} />
                         <Route path={constants.COURSE_ADMIN} element={<CourseAdmin />} />
                         <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />
+                        <Route path={constants.SETTING} element={<Setting />} />
+                        <Route path="/profile/:username" element={<ProfilePage />} />
                         {/* Default Route */}
                         <Route path="*" element={<LandingPage />} />
                       </Routes>
