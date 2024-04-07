@@ -286,6 +286,35 @@ app.post('/lessons/liked', (req, res) => {
     });
 });
 
+/* // USERS COURSE DASH----------------------------------------------------------------------------
+
+// fetch courses created by a user
+app.post('/courses/byme', (req, res) => {
+    const { user_id } = req.body;
+  
+    db.query('SELECT * FROM lessons WHERE user_id = ? ORDER BY id ASC', [user_id], (error, results) => {
+      if (error) {
+        console.error('Error fetching lessons:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      res.status(200).json(results);
+    });
+});
+
+// fetch all liked lessons for a user
+app.post('/courses/liked', (req, res) => {
+    const { user_id } = req.body;
+
+    const query = 'SELECT lessons.* FROM lessons INNER JOIN likes ON lessons.id = likes.lesson_id WHERE likes.user_id = ?';
+    db.query(query, [user_id], (error, results) => {
+        if (error) {
+            console.error('Error fetching liked lessons:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json(results);
+    });
+}); */
+
 // ------------------------------------------------------------------------------------------------------------
 
 // USERS--------------------------------------------------------------------------------------------------
@@ -428,6 +457,116 @@ app.post('/courseInfo', async (req, res) => {
         }
     });
 });
+
+app.post('/courseFetchLessons', async (req, res) => {
+    let course_id = req.body.course_id;
+
+    const query = `
+        SELECT lessons.id, lessons.title, lessons.description, lessons.created_at, lessons.updated_at, lessons.citation, lessons.view_count, CONCAT(users.first_name, ' ', users.last_name) AS name, course_lessons.date_added
+        FROM lessons
+        INNER JOIN users ON lessons.user_id = users.id
+        INNER JOIN course_lessons ON lessons.id = course_lessons.lesson_id
+        WHERE course_lessons.course_id = ?
+        ORDER BY course_lessons.date_added DESC;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching course lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+        return;
+      }
+  
+      res.json({ courses: results });
+    });
+});
+
+app.post('/addNewCourseLesson', async (req, res) => {
+    let course_id = req.body.course_id;
+    let lesson_id = req.body.lesson_id;
+    let current_id = req.body.current_id;
+
+    const query1 = `
+        SELECT * 
+        FROM courses
+        LEFT JOIN course_administrators ON courses.id = course_administrators.course_id
+        WHERE (courses.user_id = ? OR course_administrators.admin_id = ?) AND courses.id = ?
+    `;
+
+    db.query(query1, [current_id, current_id, course_id], (err, results) => {
+        if (err) {
+        console.error('Error while checking course permissions:', err);
+        res.status(500).json({ error: 'Error while checking course permissions.' });
+        return;
+        }
+
+        if (results.length === 0) {
+        res.status(403).json({ error: 'Current user is not the owner or an administrator of the course.' });
+        return;
+        }
+
+        const query2 = `
+        INSERT INTO course_lessons (course_id, lesson_id) VALUES (?, ?)
+        `;
+        
+        db.query(query2, [course_id, lesson_id], (err, insertResult) => {
+            if (err) {
+                console.error('Error while adding new lesson:', err);
+                res.status(500).json({ error: 'Error while adding new lesson.' });
+                return;
+            }
+
+            res.status(200).json({success: true});
+        });
+    });
+});
+
+app.post('/deleteCourseLesson', async (req, res) => {
+    let course_id = req.body.course_id;
+    let lesson_id = req.body.lesson_id;
+    let current_id = req.body.current_id;
+
+    const query1 = `
+        SELECT * 
+        FROM courses
+        LEFT JOIN course_administrators ON courses.id = course_administrators.course_id
+        WHERE (courses.user_id = ? OR course_administrators.admin_id = ?) AND courses.id = ?
+    `;
+
+    db.query(query1, [current_id, current_id, course_id], (err, results) => {
+        if (err) {
+            console.error('Error while checking course permissions:', err);
+            res.status(500).json({ error: 'Error while checking course permissions.' });
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(403).json({ error: 'Current user is not the owner or an administrator of the course.' });
+            return;
+        }
+
+        const query2 = `
+            DELETE FROM course_lessons
+            WHERE course_id = ? AND lesson_id = ?
+        `;
+
+        db.query(query2, [course_id, lesson_id], (err, deleteResult) => {
+            if (err) {
+                console.error('Error while deleting lesson:', err);
+                res.status(500).json({ error: 'Error while deleting lesson.' });
+                return;
+            }
+
+            if (deleteResult.affectedRows === 0) {
+                res.status(404).json({ error: 'Lesson not found for deletion.' });
+                return;
+            }
+
+            res.status(200).json({ success: true });
+        });
+    });
+});
+
 
 app.post('/courseFetchAdmin', async (req, res) => {
     let course_id = req.body.course_id;
