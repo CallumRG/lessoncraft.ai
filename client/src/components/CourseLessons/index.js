@@ -128,19 +128,40 @@ const CourseLessons = () => {
     return (
       <div>
         {/* text field for inputting lesson_id and buttons for deleting and adding */}
-        <TextField
-          label="Lesson ID"
-          variant="outlined"
-          value={lesson_id}
-          onChange={(e) => setLesson_id(e.target.value)}
-        />
-        <Button variant="contained" onClick={addNewCourseLesson}>
-          Add
-        </Button>
+        <Grid 
+        container 
+        spacing={2} 
+        alignItems="center">
+          <Grid item xs={12}>
+            <Typography align="center">Add/Remove Course Lessons (Course Owner/Admins Only)</Typography>
+          </Grid>
 
-        <Button variant="contained" onClick={deleteCourseLesson}>
-          Delete
-        </Button>
+          <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <TextField
+              label="Lesson ID"
+              variant="outlined"
+              value={lesson_id}
+              onChange={(e) => setLesson_id(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <Button variant="contained" onClick={addNewCourseLesson}>
+              Add
+            </Button>
+          </Grid>
+
+          <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <Button variant="contained" onClick={deleteCourseLesson}>
+              Delete
+            </Button>
+          </Grid>
+
+          <Grid item xs={12}>
+            <hr></hr>
+          </Grid>
+
+        </Grid>
 
           {/* renders the lessons as boxes clickable to redirect to pages*/}
         <Box mt={2}>
