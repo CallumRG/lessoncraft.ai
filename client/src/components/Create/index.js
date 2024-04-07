@@ -15,7 +15,7 @@ const CreatePage = () => {
         <div style={{display: "flex", flex: 1, alignItems: "center", justifyContent:"center", height: "80vh"}}>
             <Box
                 height="400px"
-                width="900px"
+                width="600px"
                 borderRadius="50px"
                 border={`2px solid ${colors.blueAccent[100]}`}
                 margin="auto"
@@ -36,16 +36,6 @@ const CreatePage = () => {
                         component={Link} to="/newlesson"
                     >
                         New Lesson
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        size="large"
-                        style={{ width: '200px', height: '200px', margin: '20px',color: 'white', boxShadow: 'none' }}
-                        startIcon={<ViewModuleIcon />}
-                        color="secondary"
-                    >
-                        New Module
                     </Button>
 
                     <Button

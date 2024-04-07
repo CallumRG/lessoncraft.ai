@@ -134,22 +134,6 @@ const SB = (props) => {
                         </MenuItem>
                     </SubMenu>
 
-                    {/* MODULES */}
-                    <SubMenu label="Modules" icon={<ViewModuleIcon />}>
-                        <MenuItem icon={<PeopleOutlinedIcon/>}>
-                            Shared With Me
-                        </MenuItem>
-                        <MenuItem icon={<GradeIcon/>}>
-                            Starred
-                        </MenuItem>
-                        <MenuItem icon={<RemoveRedEyeIcon/>}>
-                            Recently Viewed
-                        </MenuItem>
-                        <MenuItem icon={<CreateIcon/>}>
-                            By Me
-                        </MenuItem>
-                    </SubMenu>
-
                     {/* COURSES */}
                     <SubMenu label="Courses" icon={<SchoolIcon />}>
                         <MenuItem icon={<HistoryEduIcon/>}>
