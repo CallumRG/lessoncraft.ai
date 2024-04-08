@@ -35,7 +35,7 @@ const SearchPage = () => {
             </Grid>
 
             <Grid item xs={4} container justifyContent="center">
-                <Button startIcon={<ViewModuleIcon />} variant="contained" color="secondary" onClick={() => setActiveSection('module')}>Module Search</Button>
+                {/* <Button startIcon={<ViewModuleIcon />} variant="contained" color="secondary" onClick={() => setActiveSection('module')}>Module Search</Button>*/}   
             </Grid>
 
             <Grid item xs={4} container justifyContent="left">
