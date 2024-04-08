@@ -1,8 +1,8 @@
 ## Mar 20, 2024
 Callum:
-- What did I do yesterday:
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: Research course components and potential backend changes needed to be made
+- What was in my way: course_admin table may be redundant or could be added into the course_users
+- What will I do today: started writing sql queries for creating tables, and fetch requests
 
 Kaitlyn:
 - What did I do yesterday: 

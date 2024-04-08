@@ -1,8 +1,8 @@
 ## Mar 25, 2024
 Callum:
-- What did I do yesterday:
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: developed database interactions with course_lessons, course_messages and course_classlist
+- What was in my way: verification of user identity as owner, admin or user within tables for course features
+- What will I do today: Continue working on course component features like course lessons, and course_classlist
 
 Kaitlyn:
 - What did I do yesterday: 

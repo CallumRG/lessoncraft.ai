@@ -1,8 +1,8 @@
 ## Apr 3, 2024
 Callum:
-- What did I do yesterday:
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: started further functionality related to courses and the dashboard
+- What was in my way: N/A
+- What will I do today: continue work and start working on fixing and completing test cases for both component and e2e
 
 Kaitlyn:
 - What did I do yesterday: 
