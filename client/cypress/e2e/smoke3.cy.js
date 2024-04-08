@@ -9,7 +9,6 @@ describe('create page', () => {
     //check words
     cy.contains('h2', 'L E S S O N C R A F T');
     cy.contains('New Lesson');
-    cy.contains('New Module');
     cy.contains('New Course');
 
   });

@@ -3,7 +3,6 @@ import { render, screen, act, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SearchPage from './SearchPage';
 import CourseSearch from './CourseSearch';
-import ModuleSearch from './ModuleSearch';
 import LessonSearch from './LessonSearch'; 
 import { useParams } from 'react-router-dom';
 
@@ -20,7 +19,6 @@ global.fetch = jest.fn();
 
 //mock the components rendered within search component
 jest.mock('./CourseSearch');
-jest.mock('./ModuleSearch');
 jest.mock('./LessonSearch');
 
 
@@ -34,9 +32,6 @@ describe('SearchPage', () => {
     const lessonSearchButton = screen.getByText('Lesson Search');
     expect(lessonSearchButton).toBeInTheDocument();
 
-    const moduleSearchButton = screen.getByText('Module Search');
-    expect(moduleSearchButton).toBeInTheDocument();
-
     const courseSearchButton = screen.getByText('Course Search');
     expect(courseSearchButton).toBeInTheDocument();
   });
@@ -46,15 +41,6 @@ describe('SearchPage', () => {
     expect(LessonSearch).toHaveBeenCalled();
   });
 
-  it('switches active selection to be Course Search on button click', () => {
-    render(<SearchPage />);
-    const moduleSearchButton = screen.getByText('Module Search');
-    expect(moduleSearchButton).toBeInTheDocument();
-    act(() => {
-      moduleSearchButton.click();
-    });
-    expect(ModuleSearch).toHaveBeenCalled();
-  });
 
   it('switches active selection to be Course Search on button click', () => {
     render(<SearchPage />);

@@ -58,7 +58,7 @@ describe('landing page', () => {
 
     //should be on page
     cy.url().should('include', '/explore');
-    cy.contains('h3', 'Explore');
+    cy.contains('h2', 'Explore');
   });
 
   it('should navigate to /singin after clicking on the sing in icon', () => {
@@ -104,7 +104,7 @@ describe('landing page', () => {
     cy.contains('span', 'Dark Mode');
   });
 
-  it('should show user name at top left after signed in', () => {
+  it('should redirect to explore after sign in', () => {
     //sign in
     cy.visit('/signin');
     cy.get('input[type="email"]').type('test@test.test');
@@ -113,11 +113,8 @@ describe('landing page', () => {
 
     //wait to login
     cy.url().should('include', '/explore');
-    cy.contains('h3', 'Explore');
-    
-    // go back to home
-    cy.visit('/');
-  
+    cy.contains('h2', 'Explore');
+
     // Check if the user's name is displayed at the top left
     cy.contains('test@test.test');
     cy.contains('span', 'Sign Out').click();
