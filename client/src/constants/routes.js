@@ -15,4 +15,6 @@ export const NEWLESSON ="/newlesson";
 export const LESSON = "/lesson/:lesson_id";
 export const LESSONSBYME = "/lessondash/byme";
 export const LIKEDLESSONS = "/lessondash/liked";
+export const COURSESBYME = "/coursedash/byme";
+export const JOINEDCOURSES = "/coursedash/enrolled";
 export const SETTING = "/setting"

@@ -152,16 +152,18 @@ const SB = (props) => {
 
                     {/* COURSES */}
                     <SubMenu label="Courses" icon={<SchoolIcon />}>
-                        <MenuItem icon={<HistoryEduIcon/>}>
+                        <MenuItem icon={<HistoryEduIcon/>} onClick={() => navigate('/coursedash/enrolled')}>
                             Enrolled
                         </MenuItem>
+                        {/*
                         <MenuItem icon={<GradeIcon/>}>
                             Starred
                         </MenuItem>
                         <MenuItem icon={<RemoveRedEyeIcon/>}>
                             Recently Viewed
-                        </MenuItem>
-                        <MenuItem icon={<CreateIcon/>}>
+                        </MenuItem> 
+                        */}
+                        <MenuItem icon={<CreateIcon/>} onClick={() => navigate('/coursedash/byme')}>
                             By Me
                         </MenuItem>
                     </SubMenu>
