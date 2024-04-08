@@ -14,6 +14,7 @@ function CourseDash(props) {
     const location = useLocation();
     const firebase = new Firebase();
 
+    //grabs courses based on which path was chosen
     const fetchMyCourses = async () => {
         try {
             if (props.user?.id) {
@@ -36,12 +37,15 @@ function CourseDash(props) {
         }
     };
 
+    //re fetches with location change
     useEffect(() => {
         fetchMyCourses();
     }, [location]);
 
     return (
+        
         <div style={{ width: "80%", margin: "0 auto", marginTop: "50px" }}>
+        {/* renders fetched courses to be seen by user*/}
           <Typography variant="h2" style={{ textAlign: 'left', marginTop: 100, marginBottom: '50px', borderBottom: `1px solid ${colors.blueAccent[100]}`, paddingBottom: 10}}>{title}</Typography>
           <Grid container spacing={2} alignItems="center" style={{width: "100%", margin: "auto", }}>
             {courses.map((course) => (

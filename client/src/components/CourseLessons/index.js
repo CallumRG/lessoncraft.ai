@@ -23,7 +23,7 @@ const CourseLessons = () => {
         fetchCourseLessons();
     }, [course_id]);
 
-    //grabs administrators
+    //grabs lessons
     const fetchCourseLessons = async () => {
         try {
             const response = await fetch(`${API_URL}/courseFetchLessons`, {
@@ -50,6 +50,7 @@ const CourseLessons = () => {
         }
     };
 
+    //function for course owners/admins to add lesson
     const addNewCourseLesson = async () => {
       try {
         const lesson_idINT = parseInt(lesson_id);
@@ -89,6 +90,7 @@ const CourseLessons = () => {
       }
     };
 
+    //function for course owners/admins to delete lessons
     const deleteCourseLesson = async () => {
       try {
         const lesson_idINT = parseInt(lesson_id);
@@ -131,11 +133,13 @@ const CourseLessons = () => {
     
     return (
       <div>
-        {/* text field for inputting lesson_id and buttons for deleting and adding */}
+        
         <Grid 
         container 
         spacing={2} 
         alignItems="center">
+
+          {/* text field for inputting lesson_id and buttons for deleting and adding */}
           <Grid item xs={12}>
             <Typography align="center">Add/Remove Course Lessons (Course Owner/Admins Only)</Typography>
           </Grid>

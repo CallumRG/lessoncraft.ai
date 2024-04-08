@@ -19,7 +19,7 @@ const CourseAdmin = () => {
 
 
   useEffect(() => {
-      // fetch administrators from the server when the component mounts
+      // fetch messages from the server when the component mounts
       FetchMessages();
   }, [course_id]);
 
@@ -49,6 +49,7 @@ const CourseAdmin = () => {
       }
   };
 
+  //function for user of course to send message to discussion log
   const AddMessage = async () => {
     try {
         const response = await fetch(`${API_URL}/courseAddMessage`, {
@@ -90,7 +91,7 @@ const CourseAdmin = () => {
       justifyContent="center"
       alignItems="center"
       >
-
+      {/* textfield and button for sending button as user*/}
       <Grid item xs={12}>
         <TextField
           fullWidth
@@ -112,6 +113,7 @@ const CourseAdmin = () => {
         </Button>
       </Grid>
 
+       {/* rendering of all prior messages within courses*/}
       {messages.length > 0 ? (
         messages.map((message, index) => (
           <Grid item xs={12} key={index}>

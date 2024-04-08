@@ -20,11 +20,11 @@ const CourseClasslist = () => {
 
 
     useEffect(() => {
-        // fetch administrators from the server when the component mounts
+        // fetch classlist from the server when the component mounts
         fetchCourseClasslist();
     }, [course_id, firebase.auth.currentUser.uid]);
 
-    //grabs administrators
+    //grabs classlist
     const fetchCourseClasslist = async () => {
         try {
             const response = await fetch(`${API_URL}/courseFetchClasslist`, {
@@ -39,8 +39,6 @@ const CourseClasslist = () => {
                 const data = await response.json();
                 setUserlist(data.classlist)
                 setInCourse(data.classlist.some(user => user.user_id == firebase.auth.currentUser.uid));
-                //console.log(inCourse)
-                //console.log(data.classlist)
 
             } else {
                 console.error('Error fetching course userlist:', response.statusText);
@@ -53,6 +51,7 @@ const CourseClasslist = () => {
         }
     };
 
+    //user wants to join classlist
     const JoinClasslist = async () => {
       try {
         const response = await fetch(`${API_URL}/joinClasslist`, {
@@ -82,6 +81,7 @@ const CourseClasslist = () => {
     };
 
     
+    //users want to leave classlist
     const LeaveClasslist = async () => {
       try {
         const response = await fetch(`${API_URL}/leaveClasslist`, {
@@ -111,6 +111,7 @@ const CourseClasslist = () => {
     };
 
     
+    //admin or owner deletes user function
     const handleDeleteUser = async (user_id) => {
       const confirmDelete = window.confirm("Are you sure you want to delete this user?");
 
@@ -150,67 +151,65 @@ const CourseClasslist = () => {
   
 
     
-    return (
-      <div>
-        {/* text field for inputting lesson_id and buttons for deleting and adding */}
-        <Grid 
-        container 
-        spacing={2} 
-        alignItems="center">
+  return (
+    <div>
+      {/* text field for inputting lesson_id and buttons for deleting and adding */}
+      <Grid 
+      container 
+      spacing={2} 
+      alignItems="center">
 
+      {/* button changes depended on if user has joined */}  
+        <Grid item xs={12} style={{ textAlign: 'center' }}>
+          {!inCourse ? (
+            <Button variant="contained" onClick={JoinClasslist}>
+              Join
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={LeaveClasslist}>
+              Leave
+            </Button>
+          )}
+        </Grid>
 
-          <Grid item xs={12} style={{ textAlign: 'center' }}>
-            {!inCourse ? (
-              <Button variant="contained" onClick={JoinClasslist}>
-                Join
-              </Button>
-            ) : (
-              <Button variant="contained" onClick={LeaveClasslist}>
-                Leave
-              </Button>
-            )}
-          </Grid>
+        <Grid item xs={12}>
+          <hr></hr>
+        </Grid>
 
-          <Grid item xs={12}>
-            <hr></hr>
-          </Grid>
+      
 
-        
-
-          {/* renders the lessons as boxes clickable to redirect to pages*/}
-          <Grid item xs={12} align = 'center'>
-            {userlist.length <= 0 ? (
-                <Typography variant="body1" align="center">
-                No users in course ({course_id}).
-                </Typography>
-            ) : (
-                // render table
-                <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '50%' }}>
-                <thead>
-                    <tr>
-                    <th style={{ padding: '8px', border: '1px solid black' }}>Name</th>
-                    <th style={{ padding: '8px', border: '1px solid black' }}>Email</th>
+        {/* renders the lessons as boxes clickable to redirect to pages*/}
+        <Grid item xs={12} align = 'center'>
+          {userlist.length <= 0 ? (
+              <Typography variant="body1" align="center">No users found within classroom.</Typography>
+          ) : (
+              // render table
+              <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '50%' }}>
+              <thead>
+                  <tr>
+                  <th style={{ padding: '8px', border: '1px solid black' }}>Name</th>
+                  <th style={{ padding: '8px', border: '1px solid black' }}>Email</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {userlist.map((user) => (
+                    <tr key={user.user_id} align = 'center'>
+                        <td style={{ padding: '8px', border: '1px solid black' }}>{user.name}</td>
+                        <td style={{ padding: '8px', border: '1px solid black' }}>{user.email}</td>
+                        <td style={{ padding: '8px', border: '1px solid black' }}>
+                          <Button variant="contained" onClick={() => handleDeleteUser(user.user_id)}>
+                              Delete
+                          </Button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {userlist.map((user) => (
-                      <tr key={user.user_id} align = 'center'>
-                          <td style={{ padding: '8px', border: '1px solid black' }}>{user.name}</td>
-                          <td style={{ padding: '8px', border: '1px solid black' }}>{user.email}</td>
-                          <td style={{ padding: '8px', border: '1px solid black' }}>
-                            <Button variant="contained" onClick={() => handleDeleteUser(user.user_id)}>
-                                Delete
-                            </Button>
-                          </td>
-                      </tr>
-                    ))}
-                </tbody>
-                </table>
-            )}
-            </Grid>
+                  ))}
+              </tbody>
+              </table>
+          )}
           </Grid>
-      </div>
-    );
+        </Grid>
+    </div>
+  );
 };
 export default CourseClasslist;
 

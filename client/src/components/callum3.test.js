@@ -35,6 +35,8 @@ describe('CourseLessons', () => {
   });
 
   it('renders proper text, textfield and buttons in CourseLessons component', async () => {
+
+    //mock returned lesson
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -65,6 +67,8 @@ describe('CourseLessons', () => {
   });
 
   it('renders statement if no lessons or fetched', async () => {
+
+    //mock returned empty list
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -83,6 +87,8 @@ describe('CourseLessons', () => {
   });
 
   it('renders lesson pulled from fetched', async () => {
+
+    //mock returned lesson
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -143,3 +149,104 @@ describe('CourseLessons', () => {
   })
 });
 
+describe('CourseClasslist', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders proper text and buttons in CourseClasslist component when empty', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        classlist: [],
+      }),
+    });
+    act( () => {
+      render(<CourseClasslist />);
+    });
+
+    //buttons
+    await expect(screen.getByText('Join')).toBeInTheDocument();
+
+    //text
+    expect(screen.getByText('No users found within classroom.')).toBeInTheDocument();
+    
+
+  });
+  
+  /* it('renders proper text and buttons in CourseClasslist with 1 user', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        classlist: [
+          {
+            name: "Test Tester",
+            email: "test@test.test",
+            user_id: "Test ID"
+          },
+        ],
+      }),
+    });
+    render(<CourseClasslist />);
+
+
+    //buttons
+    await expect(screen.getByText('Leave')).toBeInTheDocument();
+    
+    //user elements
+    await expect(screen.getByText('Name')).toBeInTheDocument();
+    await expect(screen.getByText('Email')).toBeInTheDocument();
+    await expect(screen.getByText('Test Tester')).toBeInTheDocument();
+    await expect(screen.getByText('test@test.test')).toBeInTheDocument();
+    await expect(screen.getByText('Delete')).toBeInTheDocument();
+  });
+ */
+
+
+  
+});
+
+describe('CourseDiscussion', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders proper textfield and buttons in CourseDiscussion component', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        messages: [
+        ],
+      }),
+    });
+    act( () => {
+      render(<CourseDiscussion />);
+    });
+    
+    //textfields
+    expect(screen.getByLabelText('Enter your message')).toBeInTheDocument();
+
+    //buttons
+    expect(screen.getByText('Submit')).toBeInTheDocument();
+
+  });
+
+  it('renders statement if no messages or fetched', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        courses: [],
+      }),
+    });
+    act( () => {
+      render(<CourseDiscussion />);
+
+      
+    });
+
+    //should give message
+    await expect(screen.getByText('No messages found within classroom.')).toBeInTheDocument();
+
+  });
+
+});
