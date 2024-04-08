@@ -657,7 +657,70 @@ app.post('/leaveClasslist', async (req, res) => {
     });
 });
 
+app.post('/courseFetchMessage', async (req, res) => {
+    let course_id = req.body.course_id;
 
+    const query = `
+        SELECT course_messages.message_id, course_messages.user_id, course_messages.timestamp, course_messages.message_content, CONCAT(users.first_name, ' ', users.last_name) AS name
+        FROM course_messages
+        JOIN users on users.firebase_uid = course_messages.user_id
+        WHERE course_messages.course_id = ?
+        ORDER BY course_messages.timestamp DESC;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching course lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+        return;
+      }
+  
+      res.json({ messages: results });
+    });
+});
+
+app.post('/courseAddMessage', async (req, res) => {
+    let course_id = req.body.course_id;
+    let user_id = req.body.user_id;
+    let message_content = req.body.message_content;
+
+    if (message_content == ''){
+        console.error('No message content');
+        res.status(400).json({ error: 'No message content.' });
+        return;
+    }
+    const query1 = `
+        SELECT * FROM course_users
+        WHERE course_id = ? AND user_id = ?
+    `
+
+    db.query(query1, [course_id, user_id, message_content], (err, results) => {
+        if (err) {
+            console.error('Error fetching course lessons:', err);
+            res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+            return;
+        } 
+
+        if (results.length <= 0){
+            console.error('User not in course');
+            res.status(401).json({ error: 'User not in course.' });
+            return;
+        }
+
+        const query2 = 'INSERT INTO course_messages (course_id, user_id, message_content) VALUES (?, ?, ?);';
+
+
+        db.query(query2, [course_id, user_id, message_content], (err, results) => {
+            if (err) {
+                console.error('Error fetching course lessons:', err);
+                res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+                return;
+            }
+        
+            res.json({ success: true });
+        });
+    });    
+});
 
 app.post('/courseFetchAdmin', async (req, res) => {
     let course_id = req.body.course_id;
