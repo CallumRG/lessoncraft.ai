@@ -1,7 +1,7 @@
 import mysql from 'mysql';
 import config from './config.js';
 import fetch from 'node-fetch';
-import express from 'express';
+import express, { query } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
@@ -286,15 +286,21 @@ app.post('/lessons/liked', (req, res) => {
     });
 });
 
-/* // USERS COURSE DASH----------------------------------------------------------------------------
+ // USERS COURSE DASH----------------------------------------------------------------------------
 
 // fetch courses created by a user
-app.post('/courses/byme', (req, res) => {
+app.post('/coursedash/byme', (req, res) => {
     const { user_id } = req.body;
-  
-    db.query('SELECT * FROM lessons WHERE user_id = ? ORDER BY id ASC', [user_id], (error, results) => {
+    let query = `SELECT courses.id, courses.course_name, courses.description, GROUP_CONCAT(course_subjects.subject_name SEPARATOR ', ') AS subjects, CONCAT(users.first_name, ' ', users.last_name) AS instructor
+        FROM courses
+        INNER JOIN users ON courses.user_id = users.firebase_uid
+        LEFT JOIN course_subjects ON course_subjects.course_id = courses.id
+        WHERE users.firebase_uid = ?
+        GROUP BY courses.id, courses.course_name, courses.description, CONCAT(users.first_name, ' ', users.last_name);`
+
+    db.query(query, [user_id], (error, results) => {
       if (error) {
-        console.error('Error fetching lessons:', error);
+        console.error('Error fetching users own courses:', error);
         return res.status(500).json({ message: 'Internal server error' });
       }
       res.status(200).json(results);
@@ -302,18 +308,26 @@ app.post('/courses/byme', (req, res) => {
 });
 
 // fetch all liked lessons for a user
-app.post('/courses/liked', (req, res) => {
+app.post('/coursedash/enrolled', (req, res) => {
     const { user_id } = req.body;
 
-    const query = 'SELECT lessons.* FROM lessons INNER JOIN likes ON lessons.id = likes.lesson_id WHERE likes.user_id = ?';
+    const query = `
+        SELECT courses.id, courses.course_name, courses.description, GROUP_CONCAT(course_subjects.subject_name SEPARATOR ', ') AS subjects, CONCAT(users.first_name, ' ', users.last_name) AS instructor
+        FROM courses
+        INNER JOIN users ON courses.user_id = users.firebase_uid
+        LEFT JOIN course_subjects ON course_subjects.course_id = courses.id
+        LEFT JOIN course_users on course_users.course_id = courses.id
+        WHERE course_users.user_id = ?
+        GROUP BY courses.id, courses.course_name, courses.description, CONCAT(users.first_name, ' ', users.last_name);`;
+    
     db.query(query, [user_id], (error, results) => {
         if (error) {
-            console.error('Error fetching liked lessons:', error);
+            console.error('Error fetching enrolled courses:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
         res.status(200).json(results);
     });
-}); */
+}); 
 
 // ------------------------------------------------------------------------------------------------------------
 

@@ -29,6 +29,7 @@ import LessonDash from '../LessonDash';
 import Loading from '../Loading';
 
 import * as constants from '../../constants/routes'
+import CourseDash from '../CourseDash';
 
 const App = () => {
   const firebase = new Firebase();
@@ -124,6 +125,8 @@ const App = () => {
                         <Route path={constants.SEARCH} element={<SearchPage />} />
                         <Route path={constants.CREATE} element={<CreatePage />} />
                         <Route path={constants.NEWCOURSE} element={<NewCourse />} />
+                        <Route path={constants.COURSESBYME} element={<CourseDash user={user}/>} />
+                        <Route path={constants.JOINEDCOURSES} element={<CourseDash user={user}/>} />
                         <Route path={constants.NEWLESSON} element={<NewLesson user={user}/>} />
                         <Route path={constants.LESSON} element={<LessonPage user={user} isCollapsed={isCollapsed}/>} />
                         <Route path={constants.LESSONSBYME} element={<LessonDash user={user}/>} />
