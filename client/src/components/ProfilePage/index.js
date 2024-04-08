@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useStyles } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Grid, useTheme, Avatar, Stack} from "@mui/material";
 import Firebase from "../Firebase/firebase";
 import { updatePassword, getAuth } from "firebase/auth";
@@ -20,6 +21,7 @@ const ProfilePage = (props) => {
     const colorMode = useContext(ColorModeContext);
     const [loading, setLoading] = useState(false);
     const auth = getAuth();
+    const { username } = useParams(); 
 
     const makeUserFetchRequest = (firebaseId) => {
         let config = {
@@ -54,7 +56,7 @@ const ProfilePage = (props) => {
 
     useEffect(() => {
         fetchUserDetails();
-    }, []);
+    }, [username]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -80,9 +82,11 @@ const ProfilePage = (props) => {
         }
     };
 
+
     return (
         <>
         {!loading ? (
+            
             <Grid 
                 container 
                 spacing={2} 
@@ -123,54 +127,7 @@ const ProfilePage = (props) => {
                         <Typography variant="body1"><strong>First Name:</strong> {userInfo.firstName}</Typography>
                         <Typography variant="body1"><strong>Last Name:</strong> {userInfo.lastName}</Typography>
 
-                        <Typography variant="h5" gutterBottom sx={{ mt: 3, fontWeight:'bold'}}>Manage Account</Typography>
-                        {/* <TextField
-                            label="Current Password"
-                            color="secondary"
-                            type="password"
-                            fullWidth
-                            variant="outlined"
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                            sx={{ mb: 2 }}
-                        /> */}
-                        <Grid container direction="column" spacing={2}>
-                            <Grid item>
-                                <TextField
-                                    required
-                                    label="New Password"
-                                    type="password"
-                                    fullWidth
-                                    variant="outlined"
-                                    color="secondary"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    sx={{ width: 300, '& label.Mui-focused': { color: colors.blueAccent[100] } }}
-                                />
-                            </Grid>
-                            <Grid item>
-                            <TextField
-                                label="Confirm New Password"
-                                type="password"
-                                fullWidth
-                                variant="outlined"
-                                color="secondary"
-                                value={confirmNewPassword}
-                                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                                sx={{ width: 300, '& label.Mui-focused': { color: colors.blueAccent[100] } }}
-                            />
-                            </Grid>
-                            <Grid item>
-                                <Button 
-                                    variant="contained" 
-                                    color="secondary" 
-                                    type="submit"
-                                >
-                                        Update Password
-                                </Button>
-                                {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
-                            </Grid>
-                        </Grid>
+
                     </Box>
             </form>
             </Grid>
@@ -184,3 +141,4 @@ const ProfilePage = (props) => {
 };
 
 export default ProfilePage;
+

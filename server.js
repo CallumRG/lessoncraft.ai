@@ -366,6 +366,23 @@ app.get('/getDBUserDetails', async (req, res) => {
     }
 });
 
+// Endpoint to update user profile picture
+app.post('/updateUserProfilePic', async (req, res) => {
+    const { firebase_uid, profile_pic_url } = req.body;
+    console.log(firebase_uid, profile_pic_url)
+    
+    const query = 'UPDATE users SET profile_pic_url = ? WHERE firebase_uid = ?';
+    db.query(query, [profile_pic_url, firebase_uid], (err, results) => {
+        if (err) {
+            console.error('Error updating profile picture:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json({ success: "Profile picture updated successfully", status: 200 });
+    });
+});
+
+
 // ----------------------------------------------------------------------------------------------------------
 
 
