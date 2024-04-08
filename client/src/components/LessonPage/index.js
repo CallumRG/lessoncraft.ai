@@ -32,7 +32,6 @@ const LessonPage = (props) => {
       setIsEditModalOpen(!isEditModalOpen);
     }
   };
-
   const toggleShareModal = () => {
     if(!loading){
       setIsShareModalOpen(!isShareModalOpen);

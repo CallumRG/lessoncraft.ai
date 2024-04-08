@@ -1,7 +1,7 @@
 import mysql from 'mysql';
 import config from './config.js';
 import fetch from 'node-fetch';
-import express from 'express';
+import express, { query } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
@@ -352,6 +352,50 @@ app.post('/lessons/recentlyviewed', (req, res) => {
     });
 });
 
+// -----------------------------------------------------------------------------------
+
+// USERS COURSE DASH----------------------------------------------------------------------------
+
+// fetch courses created by a user
+app.post('/coursedash/byme', (req, res) => {
+    const { user_id } = req.body;
+    let query = `SELECT courses.id, courses.course_name, courses.description, GROUP_CONCAT(course_subjects.subject_name SEPARATOR ', ') AS subjects, CONCAT(users.first_name, ' ', users.last_name) AS instructor
+        FROM courses
+        INNER JOIN users ON courses.user_id = users.firebase_uid
+        LEFT JOIN course_subjects ON course_subjects.course_id = courses.id
+        WHERE users.firebase_uid = ?
+        GROUP BY courses.id, courses.course_name, courses.description, CONCAT(users.first_name, ' ', users.last_name);`
+
+    db.query(query, [user_id], (error, results) => {
+      if (error) {
+        console.error('Error fetching users own courses:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      res.status(200).json(results);
+    });
+});
+
+// fetch all liked lessons for a user
+app.post('/coursedash/enrolled', (req, res) => {
+    const { user_id } = req.body;
+
+    const query = `
+        SELECT courses.id, courses.course_name, courses.description, GROUP_CONCAT(course_subjects.subject_name SEPARATOR ', ') AS subjects, CONCAT(users.first_name, ' ', users.last_name) AS instructor
+        FROM courses
+        INNER JOIN users ON courses.user_id = users.firebase_uid
+        LEFT JOIN course_subjects ON course_subjects.course_id = courses.id
+        LEFT JOIN course_users on course_users.course_id = courses.id
+        WHERE course_users.user_id = ?
+        GROUP BY courses.id, courses.course_name, courses.description, CONCAT(users.first_name, ' ', users.last_name);`;
+    
+    db.query(query, [user_id], (error, results) => {
+        if (error) {
+            console.error('Error fetching enrolled courses:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json(results);
+    });
+});
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -422,6 +466,23 @@ app.get('/getDBUserDetails', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+// Endpoint to update user profile picture
+app.post('/updateUserProfilePic', async (req, res) => {
+    const { firebase_uid, profile_pic_url } = req.body;
+    console.log(firebase_uid, profile_pic_url)
+    
+    const query = 'UPDATE users SET profile_pic_url = ? WHERE firebase_uid = ?';
+    db.query(query, [profile_pic_url, firebase_uid], (err, results) => {
+        if (err) {
+            console.error('Error updating profile picture:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json({ success: "Profile picture updated successfully", status: 200 });
+    });
+});
+
 
 // ----------------------------------------------------------------------------------------------------------
 
@@ -494,6 +555,310 @@ app.post('/courseInfo', async (req, res) => {
             return res.status(404).json({ error: 'Course not found' });
         }
     });
+});
+
+app.post('/courseFetchLessons', async (req, res) => {
+    let course_id = req.body.course_id;
+
+    const query = `
+        SELECT lessons.id, lessons.title, lessons.description, lessons.created_at, lessons.updated_at, lessons.citation, lessons.view_count, CONCAT(users.first_name, ' ', users.last_name) AS name, course_lessons.date_added
+        FROM lessons
+        INNER JOIN users ON lessons.user_id = users.id
+        INNER JOIN course_lessons ON lessons.id = course_lessons.lesson_id
+        WHERE course_lessons.course_id = ?
+        ORDER BY course_lessons.date_added DESC;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching course lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+        return;
+      }
+  
+      res.json({ courses: results });
+    });
+});
+
+app.post('/addNewCourseLesson', async (req, res) => {
+    let course_id = req.body.course_id;
+    let lesson_id = req.body.lesson_id;
+    let current_id = req.body.current_id;
+
+    const query1 = `
+        SELECT * 
+        FROM courses
+        LEFT JOIN course_administrators ON courses.id = course_administrators.course_id
+        WHERE (courses.user_id = ? OR course_administrators.admin_id = ?) AND courses.id = ?
+    `;
+
+    db.query(query1, [current_id, current_id, course_id], (err, results) => {
+        if (err) {
+        console.error('Error while checking course permissions:', err);
+        res.status(500).json({ error: 'Error while checking course permissions.' });
+        return;
+        }
+
+        if (results.length === 0) {
+        res.status(403).json({ error: 'Current user is not the owner or an administrator of the course.' });
+        return;
+        }
+
+        const query2 = `
+        INSERT INTO course_lessons (course_id, lesson_id) VALUES (?, ?)
+        `;
+        
+        db.query(query2, [course_id, lesson_id], (err, insertResult) => {
+            if (err) {
+                console.error('Error while adding new lesson:', err);
+                res.status(500).json({ error: 'Error while adding new lesson.' });
+                return;
+            }
+
+            res.status(200).json({success: true});
+        });
+    });
+});
+
+app.post('/deleteCourseLesson', async (req, res) => {
+    let course_id = req.body.course_id;
+    let lesson_id = req.body.lesson_id;
+    let current_id = req.body.current_id;
+
+    const query1 = `
+        SELECT * 
+        FROM courses
+        LEFT JOIN course_administrators ON courses.id = course_administrators.course_id
+        WHERE (courses.user_id = ? OR course_administrators.admin_id = ?) AND courses.id = ?
+    `;
+
+    db.query(query1, [current_id, current_id, course_id], (err, results) => {
+        if (err) {
+            console.error('Error while checking course permissions:', err);
+            res.status(500).json({ error: 'Error while checking course permissions.' });
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(403).json({ error: 'Current user is not the owner or an administrator of the course.' });
+            return;
+        }
+
+        const query2 = `
+            DELETE FROM course_lessons
+            WHERE course_id = ? AND lesson_id = ?
+        `;
+
+        db.query(query2, [course_id, lesson_id], (err, deleteResult) => {
+            if (err) {
+                console.error('Error while deleting lesson:', err);
+                res.status(500).json({ error: 'Error while deleting lesson.' });
+                return;
+            }
+
+            if (deleteResult.affectedRows === 0) {
+                res.status(404).json({ error: 'Lesson not found for deletion.' });
+                return;
+            }
+
+            res.status(200).json({ success: true });
+        });
+    });
+});
+
+
+app.post('/courseFetchClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+
+    const query = `
+        SELECT course_users.user_id, CONCAT(users.first_name, ' ', users.last_name) AS name, users.email
+        FROM course_users
+        INNER JOIN users ON course_users.user_id = users.firebase_uid
+        WHERE course_id = ?
+        ORDER BY name DESC;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching course lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+        return;
+      }
+  
+      res.json({ classlist: results });
+    });
+});
+
+app.post('/joinClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+    let current_id = req.body.current_id;
+
+    // check if the current_id matches the firebase_uid of the course owner
+    const query1 = `
+        SELECT user_id
+        FROM courses
+        WHERE id = ?;
+    `;
+
+    const query2 = `
+        INSERT INTO course_users (course_id, user_id) VALUES (?, ?)
+    `;
+
+
+    db.query(query1, [course_id], (err, results) => {
+        if (err) {
+            console.error('error checking course owner:', err);
+            return res.status(500).json({ error: 'internal server error' });
+        }
+
+        if (results.length === 0) {
+            console.error('course not found');
+            return res.status(404).json({ error: 'course not found' });
+        }
+
+        const courseOwnerUid = results[0].user_id;
+
+        if (current_id === courseOwnerUid) {
+            console.error('joining user cannot be course owner');
+            return res.status(403).json({ error: 'forbidden:  user cannot be course owner' });
+        }
+
+        db.query(query2, [course_id, current_id], (err, results) => {
+            if (err) {
+                console.error('error adding course user:', err);
+                return res.status(500).json({ error: 'internal server error' });
+            }
+
+            return res.status(200).json({ success: true });
+        });
+
+
+    
+    });
+});
+
+app.post('/leaveClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+    let current_id = req.body.current_id;
+
+    const query = `
+        DELETE FROM course_users 
+        WHERE course_id = ? AND user_id = ?;
+    `;
+
+    db.query(query, [course_id, current_id], (err, results) => {
+        if (err) {
+            console.error('error removing course user:', err);
+            return res.status(500).json({ error: 'internal server error' });
+        }
+
+        return res.status(200).json({ success: true });
+    });
+});
+
+app.post('/removeFromClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+    let current_id = req.body.current_id;
+    let user_id = req.body.user_id;
+
+    const query1 = `
+        SELECT * 
+        FROM courses
+        LEFT JOIN course_administrators ON courses.id = course_administrators.course_id
+        WHERE (courses.user_id = ? OR course_administrators.admin_id = ?) AND courses.id = ?
+    `;
+
+    db.query(query1, [current_id, current_id, course_id], (err, results) => {
+        if (err) {
+            console.error('Error while checking course permissions:', err);
+            res.status(500).json({ error: 'Error while checking course permissions.' });
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(403).json({ error: 'Current user is not the owner or an administrator of the course.' });
+            return;
+        }
+
+        const query2 = `
+            DELETE FROM course_users 
+            WHERE course_id = ? AND user_id = ?;
+        `;
+
+        db.query(query2, [course_id, user_id], (err, results) => {
+            if (err) {
+                console.error('error removing course user:', err);
+                return res.status(500).json({ error: 'internal server error' });
+            }
+
+            return res.status(200).json({ success: true });
+        });
+    });
+});
+
+app.post('/courseFetchMessage', async (req, res) => {
+    let course_id = req.body.course_id;
+
+    const query = `
+        SELECT course_messages.message_id, course_messages.user_id, course_messages.timestamp, course_messages.message_content, CONCAT(users.first_name, ' ', users.last_name) AS name
+        FROM course_messages
+        JOIN users on users.firebase_uid = course_messages.user_id
+        WHERE course_messages.course_id = ?
+        ORDER BY course_messages.timestamp DESC;
+    `;
+
+    db.query(query, [course_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching course lessons:', err);
+        res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+        return;
+      }
+  
+      res.json({ messages: results });
+    });
+});
+
+app.post('/courseAddMessage', async (req, res) => {
+    let course_id = req.body.course_id;
+    let user_id = req.body.user_id;
+    let message_content = req.body.message_content;
+
+    if (message_content == ''){
+        console.error('No message content');
+        res.status(400).json({ error: 'No message content.' });
+        return;
+    }
+    const query1 = `
+        SELECT * FROM course_users
+        WHERE course_id = ? AND user_id = ?
+    `
+
+    db.query(query1, [course_id, user_id, message_content], (err, results) => {
+        if (err) {
+            console.error('Error fetching course lessons:', err);
+            res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+            return;
+        } 
+
+        if (results.length <= 0){
+            console.error('User not in course');
+            res.status(401).json({ error: 'User not in course.' });
+            return;
+        }
+
+        const query2 = 'INSERT INTO course_messages (course_id, user_id, message_content) VALUES (?, ?, ?);';
+
+
+        db.query(query2, [course_id, user_id, message_content], (err, results) => {
+            if (err) {
+                console.error('Error fetching course lessons:', err);
+                res.status(500).json({ error: 'An error occurred while fetching course lessons' });
+                return;
+            }
+        
+            res.json({ success: true });
+        });
+    });    
 });
 
 app.post('/courseFetchAdmin', async (req, res) => {
@@ -821,4 +1186,5 @@ app.post('/share', (req, res) => {
 });
 
 // ---------------------------------------------------------------------
+
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
