@@ -104,13 +104,13 @@ const ThirdBar = (props) => {
             </Box>
             <Box mr="50px" alignItems="center" display='flex' padding={0} width="100%" justifyContent="flex-end">
                 <Typography variant="h6" style={{marginRight: 20}}>Lesson Code: {props.lessonId}</Typography>
-                <IconButton size="large" color="secondary" onClick={() => {}} style={{marginRight: 10}}>
+                <IconButton size="large" color="secondary" onClick={() => props.toggleShareModal()} style={{marginRight: 10}}>
                     <ShareIcon/>
                 </IconButton>
                 <IconButton size="large" color={isLiked ? 'secondary' : colors.grey[900]} onClick={() => changeLike()} style={{marginRight: 10}}>
                     <GradeIcon/>
                 </IconButton>
-                <IconButton size="large" color="secondary" onClick={() => {}}>
+                <IconButton size="large" color="secondary" onClick={() => props.toggleEditModal()}>
                     <EditIcon/>
                 </IconButton>
             </Box>

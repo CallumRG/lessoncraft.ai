@@ -15,3 +15,5 @@ export const NEWLESSON ="/newlesson";
 export const LESSON = "/lesson/:lesson_id";
 export const LESSONSBYME = "/lessondash/byme";
 export const LIKEDLESSONS = "/lessondash/liked";
+export const LESSONSSHAREDWITHME = "/lessondash/sharedwithme";
+export const RECENTLYVIEWEDLESSONS = "/lessondash/recentlyviewed";
