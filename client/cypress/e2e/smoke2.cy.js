@@ -4,11 +4,11 @@ describe('Profile Page and functionalities', () => {
         cy.get('input[type="email"]').type('test@test.test');
         cy.get('input[type="password"]').type('Testing123');
         cy.get('button[type="submit"]').click();
-        cy.visit('/profile');
+        cy.visit('/setting');
     });
 
     it('should have user details', () => {
-        cy.contains('h5', 'Details');
+        cy.contains('h2', 'Account Setting');
       });
 
 

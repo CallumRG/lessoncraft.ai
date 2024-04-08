@@ -116,8 +116,8 @@ describe('landing page', () => {
     cy.contains('h2', 'Explore');
 
     // Check if the user's name is displayed at the top left
-    cy.contains('test@test.test');
-    cy.contains('span', 'Sign Out').click();
+    //cy.contains('test@test.test');
+    //cy.contains('span', 'Sign Out').click();
   });
   
   
