@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useStyles } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Grid, useTheme, Avatar, Stack, Card, CardContent} from "@mui/material";
+import { Box, Button, TextField, Typography, Grid, useTheme, Avatar,} from "@mui/material";
 import Firebase from "../Firebase/firebase";
 import { updatePassword, getAuth } from "firebase/auth";
 import axios from "axios";
@@ -8,13 +8,11 @@ import {API_URL} from '../../config';
 import { ColorModeContext, tokens } from "../../theme";
 import { toast } from 'react-toastify';
 import Loading from "../Loading";
+// import LessonCard from '../components/LessonCard';
 
 const ProfilePage = (props) => {
     const firebase = new Firebase();
     const [userInfo, setUserInfo] = useState({ firstName: '', lastName: '' });
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [error, setError] = useState(null);
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -22,6 +20,10 @@ const ProfilePage = (props) => {
     const [loading, setLoading] = useState(false);
     const auth = getAuth();
     const { username } = useParams(); 
+    const [profilePic, setProfilePic] = useState('');
+    const [open, setOpen] = useState(false);
+    const [inputProfilePic, setInputProfilePic] = useState('');
+    const [recentlyViewedLessons, setRecentlyViewedLessons] = useState([]);
 
     const makeUserFetchRequest = (firebaseId) => {
         let config = {
@@ -46,7 +48,7 @@ const ProfilePage = (props) => {
             .then((response) => {
                 console.log("user details response:", JSON.stringify(response.data));
                 setUserInfo({ firstName: response.data.first_name, lastName: response.data.last_name });
-
+                setProfilePic(response.data.profile_pic_url);
             })
             .catch((error) => {
                 console.log(error);
@@ -54,83 +56,98 @@ const ProfilePage = (props) => {
         }
     };
 
-    useEffect(() => {
-        fetchUserDetails();
-    }, [username]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-    
-        if (newPassword !== confirmNewPassword) {
-          toast.error("Passwords do not match.");
-          setLoading(false);
-          return;
-        }
-
+    const fetchRecentlyViewedLessons = async () => {
         try {
-            await updatePassword(auth.currentUser, newPassword);
-            toast.success("Password has been updated successfully.");
-            // setCurrentPassword("");
-            setNewPassword("");
-            setConfirmNewPassword("");
-          } catch (error) {
-            console.error("Error updating password:", error.message);
-            toast.error("Failed to update password.");
-          } finally {
-            setLoading(false);
+            const response = await axios.post(`${API_URL}/lessons/recentlyviewed`, { user_id: props.user.id });
+            setRecentlyViewedLessons(response.data);
+        } catch (error) {
+            console.error('Error fetching recently viewed lessons:', error);
         }
     };
+    
+        const handleProfilePicUpload = async () => {
+            // Retrieve user's Firebase UID
+            const firebaseUID = props.user.uid;
+            console.log(props.user)
+    
+            try {
+                const response = await axios.post(`${API_URL}/updateUserProfilePic`, {
+                    firebase_uid: firebaseUID,
+                    profile_pic_url: inputProfilePic
+                });
+        
+                if (response.data.success) {
+                    toast.success("Profile picture updated successfully.");
+                    setProfilePic(inputProfilePic); 
+                } else {
+                    toast.error(response.data.error || "Failed to update profile picture.");
+                }
+            } catch (error) {
+                toast.error("An error occurred while updating the profile picture.");
+                console.error("Error updating profile picture:", error.response || error.message);
+            }
+            
+        };
+    
 
-    return(
-        <Card sx={{ maxWidth: 345, mx: 'auto', mt: 5, borderRadius: 5 }}>
-        <CardContent>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 2 }}>
-                <Avatar
-                    alt={`${userInfo.firstName} ${userInfo.lastName}`}
-                    src={userInfo.avatar}
-                    sx={{ width: 120, height: 120, mb: 2 }}
-                />
-                <Typography gutterBottom variant="h4" component="div">
-                    {`${userInfo.firstName} ${userInfo.lastName}`}
-                </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                    {userInfo.location}
-                </Typography>
-                <Typography variant="body1" color="text.primary" sx={{ mb: 2 }}>
-                    {userInfo.occupation}
-                </Typography>
-            </Box>
+    useEffect(() => {
+        fetchUserDetails();
+        fetchRecentlyViewedLessons();
+    }, []);
 
-            <Grid container justifyContent="center" alignItems="center">
-                <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                    <Typography variant="h6">{userInfo.friendsCount}</Typography>
-                    <Typography variant="caption">Friends</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                    <Typography variant="h6">{userInfo.photosCount}</Typography>
-                    <Typography variant="caption">Photos</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                    <Typography variant="h6">{userInfo.commentsCount}</Typography>
-                    <Typography variant="caption">Comments</Typography>
-                </Grid>
-            </Grid>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
-                <Button variant="contained" sx={{ borderRadius: 20, mr: 1 }}>
-                    Connect
-                </Button>
-                <Button variant="contained" sx={{ borderRadius: 20, ml: 1 }}>
-                    Message
-                </Button>
-            </Box>
+    return (
+        <Box sx={{ flexGrow: 1, margin: 3 }}>
+            {!loading ? (
+                <Box sx={{ position: 'relative'}}>
+                    <img 
+                        src="https://www.pixground.com/wp-content/uploads/2023/08/Purple-Abstract-Layers-AI-Generated-4K-Wallpaper-1024x576.webp" 
+                        alt="Background"
+                        style={{ width: '100%', height: '250px', objectFit: 'cover' }}
+                    />
+                    <Avatar
+                        src={profilePic}
+                        sx={{ 
+                            width: 220, 
+                            height: 220, 
+                            position: 'absolute', 
+                            top: '105%', 
+                            left: '3%', 
+                            transform: 'translateY(-50%)',
+                            border: '4px solid white',
+                        }}
+                    />
+                    <Box sx={{ position: 'absolute', top: '100%', width: '100%', }}>
+                        <Grid container justifyContent="center" spacing={2}>
+                            <Grid item xs={8} sm={6} md={4} rg={3} sx={{ position: 'relative', right: '11%' }}>
+                            {/* The relative position and left offset will push the item to the right */}
+                            <Typography variant="h1" sx={{ fontWeight: 'bold' }}>
+                                {userInfo.firstName} {userInfo.lastName}
+                            </Typography>
+                            <Button 
+                                variant="contained" 
+                                sx={{ mt: 2, borderRadius: 20, bgcolor: 'secondary.main' }}
+                                onClick={() => toast.success('You had successfully followed the user')}
+                            >
+                                Follow
+                            </Button>
+                            </Grid>
+                        </Grid>
+                    </Box>
 
-            <Button fullWidth variant="contained" sx={{ borderRadius: 20 }}>
-                Show more
-            </Button>
-        </CardContent>
-    </Card>
+                    {/* <Typography variant="h4" sx={{ mt: 4 }}>
+                        Recently Viewed Lessons
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {recentlyViewedLessons.map((lesson) => (
+                            <LessonCard key={lesson.id} lesson={lesson} />
+                        ))}
+                    </Grid> */}
+                </Box>
+            ) : (
+                <Loading />
+            )}
+        </Box>
     );
 };
 
