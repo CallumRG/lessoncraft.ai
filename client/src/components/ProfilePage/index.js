@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useStyles } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Grid, useTheme, Avatar, Stack} from "@mui/material";
+import { Box, Button, TextField, Typography, Grid, useTheme, Avatar, Stack, Card, CardContent} from "@mui/material";
 import Firebase from "../Firebase/firebase";
 import { updatePassword, getAuth } from "firebase/auth";
 import axios from "axios";
@@ -82,61 +82,55 @@ const ProfilePage = (props) => {
         }
     };
 
-
-    return (
-        <>
-        {!loading ? (
-            
-            <Grid 
-                container 
-                spacing={2} 
-                alignItems="center"
-                sx={{ paddingTop: 2, paddingLeft: 3 }}
-            >
-                <Grid item>
+    return(
+        <Card sx={{ maxWidth: 345, mx: 'auto', mt: 5, borderRadius: 5 }}>
+        <CardContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 2 }}>
                 <Avatar
-                        sx={{width: 120, height: 120, mb: 2,}}
-                        src="/broken-image.jpg" // your avatar image path
-                    />
-                </Grid>
-                <Grid item xs={12} sm container>
-                    <Grid item xs container direction="column" spacing={2}>
-                        <Grid item xs>
-                            <Typography gutterBottom variant="h2" sx={{fontWeight:'bold'}}>
-                                {userInfo.firstName} {userInfo.lastName}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Button variant="outlined" color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
-                                Chat
-                            </Button>
-                            <Button variant="outlined" color="secondary" style={{borderRadius: 20, marginRight: "20px", color: colors.blueAccent[100], boxShadow: 'none'}}>
-                                Follow
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            
-            <Grid item xs={12}>
-                <form 
-                    style={{ width: "100%" }}
-                    onSubmit={handleSubmit}
-                >
-                    <Box sx={{ mt: 4 }}>
-                        <Typography variant="h5" gutterBottom sx={{fontWeight:'bold'}}>Details</Typography>
-                        <Typography variant="body1"><strong>First Name:</strong> {userInfo.firstName}</Typography>
-                        <Typography variant="body1"><strong>Last Name:</strong> {userInfo.lastName}</Typography>
+                    alt={`${userInfo.firstName} ${userInfo.lastName}`}
+                    src={userInfo.avatar}
+                    sx={{ width: 120, height: 120, mb: 2 }}
+                />
+                <Typography gutterBottom variant="h4" component="div">
+                    {`${userInfo.firstName} ${userInfo.lastName}`}
+                </Typography>
+                <Typography variant="subtitle1" color="text.secondary">
+                    {userInfo.location}
+                </Typography>
+                <Typography variant="body1" color="text.primary" sx={{ mb: 2 }}>
+                    {userInfo.occupation}
+                </Typography>
+            </Box>
 
-
-                    </Box>
-            </form>
-            </Grid>
+            <Grid container justifyContent="center" alignItems="center">
+                <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                    <Typography variant="h6">{userInfo.friendsCount}</Typography>
+                    <Typography variant="caption">Friends</Typography>
+                </Grid>
+                <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                    <Typography variant="h6">{userInfo.photosCount}</Typography>
+                    <Typography variant="caption">Photos</Typography>
+                </Grid>
+                <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                    <Typography variant="h6">{userInfo.commentsCount}</Typography>
+                    <Typography variant="caption">Comments</Typography>
+                </Grid>
             </Grid>
 
-             ) : (
-                <Loading />
-            )}
-        </>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+                <Button variant="contained" sx={{ borderRadius: 20, mr: 1 }}>
+                    Connect
+                </Button>
+                <Button variant="contained" sx={{ borderRadius: 20, ml: 1 }}>
+                    Message
+                </Button>
+            </Box>
+
+            <Button fullWidth variant="contained" sx={{ borderRadius: 20 }}>
+                Show more
+            </Button>
+        </CardContent>
+    </Card>
     );
 };
 
