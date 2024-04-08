@@ -663,11 +663,51 @@ app.post('/leaveClasslist', async (req, res) => {
 
     db.query(query, [course_id, current_id], (err, results) => {
         if (err) {
-            console.error('error adding course user:', err);
+            console.error('error removing course user:', err);
             return res.status(500).json({ error: 'internal server error' });
         }
 
         return res.status(200).json({ success: true });
+    });
+});
+
+app.post('/removeFromClasslist', async (req, res) => {
+    let course_id = req.body.course_id;
+    let current_id = req.body.current_id;
+    let user_id = req.body.user_id;
+
+    const query1 = `
+        SELECT * 
+        FROM courses
+        LEFT JOIN course_administrators ON courses.id = course_administrators.course_id
+        WHERE (courses.user_id = ? OR course_administrators.admin_id = ?) AND courses.id = ?
+    `;
+
+    db.query(query1, [current_id, current_id, course_id], (err, results) => {
+        if (err) {
+            console.error('Error while checking course permissions:', err);
+            res.status(500).json({ error: 'Error while checking course permissions.' });
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(403).json({ error: 'Current user is not the owner or an administrator of the course.' });
+            return;
+        }
+
+        const query2 = `
+            DELETE FROM course_users 
+            WHERE course_id = ? AND user_id = ?;
+        `;
+
+        db.query(query2, [course_id, user_id], (err, results) => {
+            if (err) {
+                console.error('error removing course user:', err);
+                return res.status(500).json({ error: 'internal server error' });
+            }
+
+            return res.status(200).json({ success: true });
+        });
     });
 });
 

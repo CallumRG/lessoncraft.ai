@@ -110,6 +110,43 @@ const CourseClasslist = () => {
       }
     };
 
+    
+    const handleDeleteUser = async (user_id) => {
+      const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+
+      if (!confirmDelete) {
+          return; // user canceled deletion
+      }
+
+      try {
+          const response = await fetch(`${API_URL}/removeFromClasslist`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  course_id,
+                  current_id: firebase.auth.currentUser.uid,
+                  user_id
+              }),
+          });
+
+          if (response.ok) {
+              fetchCourseClasslist();
+
+          } else if (response.status === 403) {
+              toast.error('Current User Not Course Owner or administrator');
+
+          } else {
+              console.error('Error deleting course user:', response.statusText);
+              toast.error('Error deleting course user');
+          }
+      } catch (error) {
+          console.error('Error deleting course user:', error);
+          toast.error('Error deleting course user');
+      }
+  };
+
   
 
     
@@ -157,10 +194,15 @@ const CourseClasslist = () => {
                 </thead>
                 <tbody>
                     {userlist.map((user) => (
-                    <tr key={user.user_id} align = 'center'>
-                        <td style={{ padding: '8px', border: '1px solid black' }}>{user.name}</td>
-                        <td style={{ padding: '8px', border: '1px solid black' }}>{user.email}</td>
-                    </tr>
+                      <tr key={user.user_id} align = 'center'>
+                          <td style={{ padding: '8px', border: '1px solid black' }}>{user.name}</td>
+                          <td style={{ padding: '8px', border: '1px solid black' }}>{user.email}</td>
+                          <td style={{ padding: '8px', border: '1px solid black' }}>
+                            <Button variant="contained" onClick={() => handleDeleteUser(user.user_id)}>
+                                Delete
+                            </Button>
+                          </td>
+                      </tr>
                     ))}
                 </tbody>
                 </table>

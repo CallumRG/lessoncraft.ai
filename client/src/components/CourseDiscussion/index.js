@@ -89,7 +89,7 @@ const CourseAdmin = () => {
       spacing={2}
       justifyContent="center"
       alignItems="center"
-      style={{ height: "80vh", width: "90%", margin: "auto" }}>
+      >
 
       <Grid item xs={12}>
         <TextField
