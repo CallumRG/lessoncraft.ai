@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Grid, Typography, useTheme } from '@mui/material';
 import { tokens } from "../../theme";
-import axios from "axios";
-import {API_URL} from '../../config';
 import PracticeQuestion from "./practiceQuestion";
 import MiddleBar from "./middleBar";
 import ThirdBar from "./thirdBar";
+import EditLessonModal from "./editLessonModal";
+import axios from "axios";
+import {API_URL} from '../../config';
 
 const LessonPage = (props) => {
   const theme = useTheme();
@@ -21,6 +22,14 @@ const LessonPage = (props) => {
   const [isPublic, setIsPublic] = useState(true);
   const [lessonSections, setLessonSections] = useState(null);
   const [lessonPracticeQuestions, setLessonPracticeQuestions] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const toggleEditModal = () => {
+    if(!loading){
+      setIsEditModalOpen(!isEditModalOpen);
+    }
+  };
 
   const makeLessonReq = (url) => {
     let data = JSON.stringify({
@@ -122,71 +131,97 @@ const LessonPage = (props) => {
     });
   }
 
+  const fetchLessonData = async () => {
+    setLoading(true); // Start loading
+
+    try {
+        await Promise.all([
+            fetchLessonDetails(),
+            fetchLessonSections(),
+            fetchLessonPracticeQuestions()
+        ]);
+    } catch (error) {
+        console.error("Error fetching lesson data:", error);
+    } finally {
+        setLoading(false); // Stop loading
+    }
+};
+
   useEffect(() => {
     recordLessonView();
-    fetchLessonDetails();
-    fetchLessonSections();
-    fetchLessonPracticeQuestions();
+    fetchLessonData();
   }, []);
 
   return (
     <>
-      <MiddleBar isCollapsed={props.isCollapsed} author={author} date={date} citation={citation}/>
-      <ThirdBar user={props.user} lessonId={lesson_id} views={views} isPublic={isPublic}/>
-      <Grid container style={{ marginTop: 45, maxWidth: '80%', margin: 'auto' }} spacing={4}>
-        <Grid item xs={12}>
-          <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px', marginTop: -40}}>
-            <Typography variant="h1" style={{ marginBottom: '10px' }}>
-              {title.toUpperCase()}
-            </Typography>
-          </div>
+      {!loading &&
+        <>
+          <MiddleBar isCollapsed={props.isCollapsed} author={author} date={date} citation={citation}/>
+          <ThirdBar user={props.user} lessonId={lesson_id} views={views} isPublic={isPublic} toggleEditModal={toggleEditModal}/>
+          <EditLessonModal 
+            open={isEditModalOpen} 
+            onClose={toggleEditModal} 
+            lesson={{ lesson_id, title, description, lessonSections, lessonPracticeQuestions, citation, isPublic }} 
+            isLessonLoaded={!loading}
+            onLessonSubmit={fetchLessonData}
+          />
 
-          <Typography variant="h3" style={{marginBottom: '10px', fontWeight: 'bold'}}>
-            Key Concepts:
-          </Typography>
-          <ul style={{ marginBottom: '50px', borderBottom: `1px solid ${colors.blueAccent[100]}`, paddingBottom: 25, listStyleType: 'none' }} >
-              {lessonSections &&
-                lessonSections.map((section, index) => (
-                  <li key={index} style={{ lineHeight: '2', fontSize: '18px', marginBottom: '10px' }}>
-                    <span style={{ color: colors.blueAccent[100], marginRight: '20px', fontWeight: 'bold' }}>•</span>{section.title}
-                  </li>
-                ))
-              }
-          </ul>
-
-          <Typography variant="body1" style={{ marginBottom: '40px', fontSize: '18px', lineHeight: '2.5', textIndent: '30px' }}>
-            {description}
-          </Typography>
-        </Grid>
-
-        {lessonSections &&
-          lessonSections.map((section) => (
-            <Grid item key={section.id} xs={12} style={{ marginBottom: '40px', fontSize: '18px' }}>
-              <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
-                <Typography variant="h2" style={{marginBottom: '10px', fontWeight: 'bold'}}>
-                  {section.title}
+          <Grid container style={{ marginTop: 45, maxWidth: '80%', margin: 'auto' }} spacing={4}>
+            <Grid item xs={12}>
+              <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px', marginTop: -40}}>
+                <Typography variant="h1" style={{ marginBottom: '10px' }}>
+                  {title.toUpperCase()}
                 </Typography>
               </div>
-              <Typography variant="body1" style={{ lineHeight: '2.5', fontSize: '18px', textIndent: '30px' }}>
-                {section.body}
+
+              <Typography variant="h3" style={{marginBottom: '10px', fontWeight: 'bold'}}>
+                Key Concepts:
+              </Typography>
+              <ul style={{ marginBottom: '50px', borderBottom: `1px solid ${colors.blueAccent[100]}`, paddingBottom: 25, listStyleType: 'none' }} >
+                  {lessonSections &&
+                    lessonSections.map((section, index) => (
+                      <li key={index} style={{ lineHeight: '2', fontSize: '18px', marginBottom: '10px' }}>
+                        <span style={{ color: colors.blueAccent[100], marginRight: '20px', fontWeight: 'bold' }}>•</span>{section.title}
+                      </li>
+                    ))
+                  }
+              </ul>
+
+              <Typography variant="body1" style={{ marginBottom: '40px', fontSize: '18px', lineHeight: '2.5', textIndent: '30px' }}>
+                {description}
               </Typography>
             </Grid>
-          ))
-        }
 
-        <Grid item xs={12} style={{ marginBottom: '40px', fontSize: '18px' }}>
-          <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
-            <Typography variant="h2" style={{marginBottom: '10px', fontWeight: 'bold'}}>
-              Practice Questions
-            </Typography>
-          </div>
-          {lessonPracticeQuestions &&
-            lessonPracticeQuestions.map((question) => (
-              <PracticeQuestion key={question.id} question={question} />
-            ))
-          }
-        </Grid>
-      </Grid>
+            {lessonSections &&
+              lessonSections.map((section) => (
+                <Grid item key={section.id} xs={12} style={{ marginBottom: '40px', fontSize: '18px' }}>
+                  <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
+                    <Typography variant="h2" style={{marginBottom: '10px', fontWeight: 'bold'}}>
+                      {section.title}
+                    </Typography>
+                  </div>
+                  <Typography variant="body1" style={{ lineHeight: '2.5', fontSize: '18px', textIndent: '30px' }}>
+                    {section.body}
+                  </Typography>
+                </Grid>
+              ))
+            }
+
+            <Grid item xs={12} style={{ marginBottom: '40px', fontSize: '18px' }}>
+              <div style={{borderBottom: `1px solid ${colors.blueAccent[100]}`, marginBottom: '40px'}}>
+                <Typography variant="h2" style={{marginBottom: '10px', fontWeight: 'bold'}}>
+                  Practice Questions
+                </Typography>
+              </div>
+              {lessonPracticeQuestions &&
+                lessonPracticeQuestions.map((question) => (
+                  <PracticeQuestion key={question.id} question={question} />
+                ))
+              }
+            </Grid>
+          </Grid>
+        </>
+      }
     </>
   );
 };

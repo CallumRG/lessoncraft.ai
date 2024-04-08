@@ -55,18 +55,22 @@ const Topbar = (props) => {
                         </Button>
                        
                         
-                        <IconButton size="large" color="secondary" onClick={()=> navigate('/profile')} data-testid = "PersonOutlinedIcon">
+                        {/* <IconButton size="large" color="secondary" onClick={()=> navigate('/profile')} data-testid = "PersonOutlinedIcon">
                             <PersonOutlinedIcon/>
-                        </IconButton>
-                  
-
-                        {/* <IconButton size="large" color="secondary">
-                            <SettingsOutlinedIcon/>
                         </IconButton> */}
 
-                        <IconButton size="large" color="secondary">
-                            <NotificationsOutlinedIcon/>
+                        <IconButton size="large" color="secondary" onClick={() => navigate(`/profile/${props.user.firstName}-${props.user.lastName}`)} data-testid="PersonOutlinedIcon">
+                            <PersonOutlinedIcon />
                         </IconButton>
+                                        
+
+                        <IconButton size="large" color="secondary" onClick={()=> navigate('/setting')}>
+                            <SettingsOutlinedIcon/>
+                        </IconButton>
+
+                        {/* <IconButton size="large" color="secondary">
+                            <NotificationsOutlinedIcon/>
+                        </IconButton> */}
                     </>
                 )
                 :

@@ -263,7 +263,12 @@ app.post('/lessonlikes', (req, res) => {
 app.post('/lessons/byme', (req, res) => {
     const { user_id } = req.body;
   
-    db.query('SELECT * FROM lessons WHERE user_id = ? ORDER BY id ASC', [user_id], (error, results) => {
+    db.query(`SELECT lessons.*, CONCAT(users.first_name, ' ', users.last_name) AS name
+    FROM lessons
+    LEFT JOIN users ON lessons.user_id = users.id
+    WHERE user_id = ?
+    GROUP BY lessons.id
+    ORDER BY lessons.id DESC`, [user_id], (error, results) => {
       if (error) {
         console.error('Error fetching lessons:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -276,7 +281,12 @@ app.post('/lessons/byme', (req, res) => {
 app.post('/lessons/liked', (req, res) => {
     const { user_id } = req.body;
 
-    const query = 'SELECT lessons.* FROM lessons INNER JOIN likes ON lessons.id = likes.lesson_id WHERE likes.user_id = ?';
+    const query = `SELECT lessons.*, CONCAT(users.first_name, ' ', users.last_name) AS name
+     FROM lessons 
+     INNER JOIN likes ON lessons.id = likes.lesson_id 
+     LEFT JOIN users ON lessons.user_id = users.id
+     WHERE likes.user_id = ?
+     GROUP BY lessons.id`;
     db.query(query, [user_id], (error, results) => {
         if (error) {
             console.error('Error fetching liked lessons:', error);
@@ -355,6 +365,23 @@ app.get('/getDBUserDetails', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+// Endpoint to update user profile picture
+app.post('/updateUserProfilePic', async (req, res) => {
+    const { firebase_uid, profile_pic_url } = req.body;
+    console.log(firebase_uid, profile_pic_url)
+    
+    const query = 'UPDATE users SET profile_pic_url = ? WHERE firebase_uid = ?';
+    db.query(query, [profile_pic_url, firebase_uid], (err, results) => {
+        if (err) {
+            console.error('Error updating profile picture:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json({ success: "Profile picture updated successfully", status: 200 });
+    });
+});
+
 
 // ----------------------------------------------------------------------------------------------------------
 
@@ -615,5 +642,108 @@ app.post('/searchCourses', (req, res) => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// EXPLORE QUERIES----------------------------------------------------------
 
+// Most liked lessons
+app.post('/most-liked-lessons', (req, res) => {
+    const sql = `
+      SELECT lessons.*, COUNT(likes.lesson_id) AS like_count, CONCAT(users.first_name, ' ', users.last_name) AS author
+      FROM lessons
+      LEFT JOIN likes ON lessons.id = likes.lesson_id
+      LEFT JOIN users ON lessons.user_id = users.id
+      GROUP BY lessons.id
+      ORDER BY like_count DESC
+      LIMIT 6
+    `;
+  
+    db.query(sql, (err, results) => {
+      if (err) {
+        console.error('Error fetching most liked lessons: ' + err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+  
+      res.json(results);
+    });
+});
+
+// Most viewed lessons
+app.post('/most-viewed-lessons', (req, res) => {
+    const sql = `
+        SELECT lessons.*, COUNT(likes.lesson_id) AS like_count, CONCAT(users.first_name, ' ', users.last_name) AS author
+        FROM lessons
+        LEFT JOIN likes ON lessons.id = likes.lesson_id
+        LEFT JOIN users ON lessons.user_id = users.id
+        GROUP BY lessons.id
+        ORDER BY view_count DESC
+        LIMIT 6
+    `;
+  
+    db.query(sql, (err, results) => {
+      if (err) {
+        console.error('Error fetching most viewed lessons: ' + err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+  
+      res.json(results);
+    });
+});
+
+// ----------------------------------------------------------------------
+
+// LESSON EDITING-----------------------------------------------------
+
+// Update lesson details
+app.put('/lessons/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, description, is_public } = req.body;
+  
+      // Update lesson in the database
+      const query = `UPDATE lessons SET title = ?, description = ?, is_public = ? WHERE id = ?`;
+      db.query(query, [title, description, is_public, id], (err, result) => {
+        return res.status(200).json({ message: 'Lesson updated successfully' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Update lesson section
+app.put('/lesson-sections/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, body } = req.body;
+  
+      // Update lesson section in the database
+      const query = `UPDATE lesson_sections SET title = ?, body = ? WHERE id = ?`;
+      db.query(query, [title, body, id], (err, result) => {
+        res.status(200).send({ message: 'Lesson section updated successfully' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Internal server error' });
+    }
+});
+
+// Update lesson practice question
+app.put('/lesson-practice-questions/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { question, option_a, option_b, option_c, option_d, answer } = req.body;
+  
+      // Update lesson practice question in the database
+      const query = `UPDATE lesson_practice_questions SET question = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, answer = ? WHERE id = ?`;
+      db.query(query, [question, option_a, option_b, option_c, option_d, answer, id], (err, result) => {
+        res.status(200).send({ message: 'Lesson practice question updated successfully' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Internal server error' });
+    }
+});
+
+// -------------------------------------------------------------------------
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
