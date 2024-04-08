@@ -133,6 +133,9 @@ const App = () => {
                         <Route path={constants.LESSONSBYME} element={<LessonDash user={user}/>} />
                         <Route path={constants.LIKEDLESSONS} element={<LessonDash user={user}/>} />
                         {/* <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} /> */}
+                        <Route path={constants.LESSONSSHAREDWITHME} element={<LessonDash user={user}/>} />
+                        <Route path={constants.RECENTLYVIEWEDLESSONS} element={<LessonDash user={user}/>} />
+                        <Route path={constants.PROFILE_PAGE} element={<ProfilePage user={user}/>} />
                         <Route path={constants.COURSE} element={<CoursePage />} />
                         <Route path={constants.COURSE_ADMIN} element={<CourseAdmin />} />
                         <Route path={constants.PASSWORD_FORGET} element={<PasswordForgetPage />} />

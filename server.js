@@ -296,7 +296,65 @@ app.post('/lessons/liked', (req, res) => {
     });
 });
 
- // USERS COURSE DASH----------------------------------------------------------------------------
+// Lesson shared with a user
+app.post('/lessons/sharedwithme', (req, res) => {
+    const { email } = req.body;
+
+    const query = `SELECT lessons.id, lessons.title, lessons.description, lessons.user_id, lessons.created_at, lessons.updated_at, lessons.is_public, lessons.citation, CONCAT(users.first_name, ' ', users.last_name) AS name, users.email AS sender_email
+    FROM lessons 
+    INNER JOIN shares ON lessons.id = shares.lesson_id 
+    LEFT JOIN users ON lessons.user_id = users.id
+    WHERE shares.recipient_email = ?
+    GROUP BY lessons.id, lessons.title, lessons.description, lessons.user_id, lessons.created_at, lessons.updated_at, lessons.is_public, lessons.citation, name, sender_email;
+    `;
+    db.query(query, [email], (error, results) => {
+        if (error) {
+            console.error('Error fetching shared lessons:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Fetch a users most recently viewed lessons
+app.post('/lessons/recentlyviewed', (req, res) => {
+    const { user_id } = req.body;
+
+    const query = `
+        SELECT 
+        DISTINCT recent_views.*, 
+        CONCAT(users.first_name, ' ', users.last_name) AS name
+        FROM (
+            SELECT 
+                lessons.id, 
+                lessons.title, 
+                lessons.description, 
+                lessons.user_id, 
+                lessons.created_at, 
+                lessons.updated_at, 
+                lessons.is_public, 
+                lessons.citation
+            FROM lessons 
+            INNER JOIN views ON lessons.id = views.lesson_id 
+            WHERE views.viewer_id = ?
+            ORDER BY views.view_timestamp DESC
+            LIMIT 10
+        ) AS recent_views
+        LEFT JOIN users ON recent_views.user_id = users.id;
+    `;
+    
+    db.query(query, [user_id], (error, results) => {
+        if (error) {
+            console.error('Error fetching recently viewed lessons:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// -----------------------------------------------------------------------------------
+
+// USERS COURSE DASH----------------------------------------------------------------------------
 
 // fetch courses created by a user
 app.post('/coursedash/byme', (req, res) => {
@@ -337,7 +395,7 @@ app.post('/coursedash/enrolled', (req, res) => {
         }
         res.status(200).json(results);
     });
-}); 
+});
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -1093,4 +1151,40 @@ app.put('/lesson-practice-questions/:id', async (req, res) => {
 });
 
 // -------------------------------------------------------------------------
+
+// LESSON SHARE----------------------------------------------------------
+
+app.post('/share', (req, res) => {
+    try {
+        const { lesson_id, sender_id, recipient_email } = req.body;
+
+        // Check if the share already exists
+        db.query('SELECT * FROM shares WHERE lesson_id = ? AND sender_id = ? AND recipient_email = ?', [lesson_id, sender_id, recipient_email], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+
+            if (result.length > 0) {
+                return res.status(400).json({ error: 'Share already exists' });
+            }
+
+            // Insert the share record into the database
+            db.query('INSERT INTO shares (lesson_id, sender_id, recipient_email) VALUES (?, ?, ?)', [lesson_id, sender_id, recipient_email], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
+
+                res.status(200).json({ message: 'Lesson shared successfully' });
+            });
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// ---------------------------------------------------------------------
+
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
