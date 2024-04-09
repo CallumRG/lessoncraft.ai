@@ -5,9 +5,9 @@ Callum:
 - What will I do today: Finish test cases and fix bugs
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: coding the new profile page 
+- What was in my way: n/a
+- What will I do today: finish the profile page, and finish up test cases. 
 
 Michael:
 - What did I do yesterday: Made recently viewed lessons dashboard
