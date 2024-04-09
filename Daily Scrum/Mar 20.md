@@ -5,9 +5,9 @@ Callum:
 - What will I do today: started writing sql queries for creating tables, and fetch requests
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: Research futher more on if user click on other people profile how they can view other user info
+- What was in my way: my current profile have some setting feature (changing new password) 
+- What will I do today: research how other have their profile in their app 
 
 Michael:
 - What did I do yesterday: Create queries/endpoints for most liked and most viewed lessons
