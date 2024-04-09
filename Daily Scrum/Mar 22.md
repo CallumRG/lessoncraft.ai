@@ -5,9 +5,9 @@ Callum:
 - What will I do today: Continue working on course component features like course lessons
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: come up the idea of serperating profile and setting, discuss with my group mate
+- What was in my way: n/a
+- What will I do today: start coding new setting page 
 
 Michael:
 - What did I do yesterday: Completed the explore page
