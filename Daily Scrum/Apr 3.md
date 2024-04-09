@@ -5,9 +5,9 @@ Callum:
 - What will I do today: continue work and start working on fixing and completing test cases for both component and e2e
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: finish up setting page
+- What was in my way: don't know what profile page can looks like now
+- What will I do today: research on what can the current profile page look 
 
 Michael:
 - What did I do yesterday: created endpoint to fetch lessons shared with me, UI for displaying the list of shared lessons
