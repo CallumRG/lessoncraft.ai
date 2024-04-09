@@ -5,9 +5,9 @@ Callum:
 - What will I do today: Continue working on course component features like course lessons, and course_classlist
 
 Kaitlyn:
-- What did I do yesterday: 
-- What was in my way:
-- What will I do today: 
+- What did I do yesterday: implmenting setting page, where people can edit information. change profile photo
+- What was in my way: ways to input a profile photo
+- What will I do today: research on how to input a profile photo
 
 Michael:
 - What did I do yesterday: Started working on the modal for lesson editing
