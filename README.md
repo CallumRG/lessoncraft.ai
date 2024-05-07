@@ -10,4 +10,12 @@ Node.js, React.js, Express.js, MySQL, OpenAI Assistants API, Firebase
 email: test@test.test
 password: Testing123
 
-![image](https://github.com/503stevenson/lessoncraft.ai/assets/84197552/6fb20e2b-b337-4502-9d4e-646307a17041)
+## Workflow
+
+1. Import a PDF and choose lesson topics
+![image](https://github.com/503stevenson/lessoncraft.ai/assets/84197552/0b415e55-0868-486c-bfd2-9289f8805ffa)
+
+2. AI generated Lesson!
+![localhost_3000_lesson_9](https://github.com/503stevenson/lessoncraft.ai/assets/84197552/6a452520-8cc3-4f01-871e-4a65231534c2)
+
+
