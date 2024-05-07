@@ -17,5 +17,3 @@ password: Testing123
 
 2. AI generated Lesson!
 ![localhost_3000_lesson_9](https://github.com/503stevenson/lessoncraft.ai/assets/84197552/6a452520-8cc3-4f01-871e-4a65231534c2)
-
-
