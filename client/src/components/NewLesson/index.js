@@ -8,6 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { tokens } from "../../theme";
 import Loading from "../Loading";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { toast } from 'react-toastify';
 
 const NewLesson = (props) => {
     const theme = useTheme();
@@ -63,6 +64,8 @@ const NewLesson = (props) => {
     };
 
     const handleCreateLesson = async () => {
+        toast.error("Lesson creation disabled. Sorry!");
+        return;
         setLoading(true);
         setError(null);
         

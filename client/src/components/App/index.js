@@ -14,8 +14,6 @@ import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import ExplorePage from '../Explore';
 import SearchPage from '../SearchPage';
-import AccountPage from '../Account';
-import AdminPage from '../Admin';
 import PasswordForgetPage from '../PasswordForget';
 import CreatePage from '../Create';
 import NewCourse from '../NewCourse';
