@@ -4,6 +4,8 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { API_URL } from '../../config';
 import axios from 'axios'
 import { tokens } from "../../theme";
+import Loading from "../Loading"
+import { toast } from 'react-toastify';
 
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -14,6 +16,8 @@ const ExplorePage = () => {
     const theme = useTheme();
     const [mostLiked, setMostLiked] = useState([]);
     const [mostViewed, setMostViewed] = useState([]);
+    const [likeLoading, setLikeLoading] = useState(true);
+    const [viewLoading, setViewLoading] = useState(true);
     const colors = tokens(theme.palette.mode);
 
     const fetchMostLiked = async () => {
@@ -22,7 +26,9 @@ const ExplorePage = () => {
             setMostLiked(response.data);
         } catch (error) {
             console.error('Error fetching lessons:', error);
+            toast.error("Unable to fetch some lessons :(");
         }
+        setLikeLoading(false);
     };
 
     const fetchMostViewed = async () => {
@@ -31,7 +37,9 @@ const ExplorePage = () => {
             setMostViewed(response.data);
         } catch (error) {
             console.error('Error fetching lessons:', error);
+            toast.error("Unable to fetch some lessons :(");
         }
+        setViewLoading(false);
     };
 
     useEffect(() => {
@@ -58,6 +66,12 @@ const ExplorePage = () => {
             <Grid item xs={12} style={{borderBottomWidth: 1, marginBottom: 40, marginTop: 40}}>
                 <Typography variant="h3" align = "left"><WhatshotIcon style={{marginRight: '10px', color: 'red'}}/>T R E N D I N G</Typography>
             </Grid>
+
+            {viewLoading &&
+                <>
+                    <Loading/>
+                </>
+            }
 
             {mostViewed.map((lesson) => (
                 <Grid item xs={4} style={{}}>
@@ -96,6 +110,12 @@ const ExplorePage = () => {
                     </Link>
                 </Grid>
             ))}
+
+            {likeLoading &&
+                <>
+                    <Loading/>
+                </>
+            }
             
         </Grid>
     )

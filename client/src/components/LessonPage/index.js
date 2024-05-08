@@ -9,6 +9,7 @@ import EditLessonModal from "./editLessonModal";
 import SharingModal from "./shareLessonModal";
 import axios from "axios";
 import {API_URL} from '../../config';
+import { toast } from 'react-toastify';
 
 const LessonPage = (props) => {
   const theme = useTheme();
@@ -33,7 +34,10 @@ const LessonPage = (props) => {
     }
   };
   const toggleShareModal = () => {
-    if(!loading){
+    if(!props.user){
+      toast.error("Log in to share lessons.");
+    }
+    else if(!loading){
       setIsShareModalOpen(!isShareModalOpen);
     }
   };

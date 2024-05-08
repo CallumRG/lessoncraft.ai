@@ -41,6 +41,10 @@ const LandingPage = () => {
                 <Typography variant="h1" gutterBottom>
                     Generate lessons with AI!
                 </Typography>
+
+                <Typography variant="h1" gutterBottom>
+                    ***The backend hosting service will take a minute to spin up
+                </Typography>
                 
                 {introduction}
                

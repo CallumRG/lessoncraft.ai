@@ -56,7 +56,10 @@ const ThirdBar = (props) => {
     }
 
     const changeLike = () => {
-        if(isLiked){
+        if(!props.user){
+            toast.error("Log in to like lessons.");
+        }
+        else if(isLiked){
             makeLikeAction('remove');
             toast.success("Unstarred Lesson.");
         }
