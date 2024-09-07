@@ -1,5 +1,7 @@
 Created By Callum Gillies, Michael Stevenson and Kaitlyn Yi-Hsien Lin
 
+Demo of platform: https://www.youtube.com/watch?v=xvlxcKdJW3Q
+
 # Lessoncraft
 
 https://lessoncraft.netlify.app/
